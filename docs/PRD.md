@@ -1,6 +1,6 @@
 # PRD: harness
 
-- Status: Draft
+- Status: Approved
 - Version: 1.0-rc1
 - Current-Release: 1
 - Updated: 2026-11-25
@@ -949,6 +949,9 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 ### 2026-11-25 第 9 轮
 - Q: 会话结束检查反复失败如何防死循环？ A: 连续阻止 3 次后放行，未通过项写入进度文件。
 - Q: 是否 git init 并初始提交？ A: 是。
+
+### 2026-11-25 第 10 轮
+- 用户批准 PRD 1.0-rc1。`harness approve` 实现后由用户在终端补录批准哈希。
 
 ## 8. 变更日志
 

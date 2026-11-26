@@ -129,3 +129,9 @@
 - 结论：Done。六个 skill（clarify、change、architect、plan、implement、test）作为模板内嵌，`harness init` 写入 `.claude/skills/<名称>/SKILL.md`；frontmatter 的 check 字段声明结束前运行的 `harness check` 子命令。静态测试：每个 skill 的 check 选择器都选中已注册规则、内置阶段引用的 skill 都存在；测试 skill 中五种语言的命名示例逐一放进临时项目，用 test.01、test.02 实际提取验证计入覆盖，并以不按约定命名的测试作对照。5 个用例（AC-016-1、AC-016-2、AC-011-5/N1）通过；逐一破坏 skill 内容后对应测试失败。
 - 设计取舍：skill 写入需要改 scaffold.go 与 init 的期望文件清单，T-020 的 Design 因此加上 IF-026、FLOW-07。FR-016 描述中的 UI 规范 skill 属于 FR-015 的范围，不在本任务。
 - 遗留：无。
+
+### 2026-11-26 T-021
+- 结论：Done。git 仓库中 init 安装可执行的 commit-msg（`harness check commit --msg-file`）与 pre-commit（产物文档规则）hook，非 git 仓库跳过并提示；`--ci github|gitlab` 生成 `.github/workflows/harness.yml` 或 `.gitlab-ci.yml`，运行 `harness check` 与 `harness check commits <范围>`；scaffold 注册 cfg.02，比对 hook 配置与已存在的 CI 配置，不一致时指出第一处不同的行并给出重新生成命令。10 个集成测试（AC-013-3、AC-043-1、AC-041-2）通过，其中 commit-msg hook 被实际执行并拒绝没有 Task 尾注的提交；逐一破坏各判定分支后对应用例失败。变异检查发现一处破坏导致构建失败被误判为存活，已改用能编译的变异重做。
+- 设计取舍：cfg.02 只在存在 harness.json 的项目（执行过 init）上运行；本仓库在 T-026 启用前没有 harness.json，提前写入 `.claude/settings.json` 会让门禁在当前会话中生效。git hook 不在版本库中，cfg.02 不比对，CI 环境里才不会误报。T-018 的会话夹具手写了 harness.json，因此补上生成的 hook 配置。
+- 需求解释：AC-N005-1/N1 的".yaml"按"YAML 文本"理解，`.yml` 同样允许；AC-043-1/N1 指定 `harness.yml`，GitLab 也要求 `.gitlab-ci.yml`。git hook 位于 `.git/hooks`，不属于项目产物。
+- 遗留：CI 模板的安装命令依赖 DEBT-001 的模块路径；`.gitlab-ci.yml` 不在 commit 规则的生成文件豁免列表中（builtin 的 generatedFiles），属于 MOD-05，留给后续修改该模块的任务。

@@ -11,7 +11,7 @@
 - Status: Open
 - Module: MOD-01
 
-仓库还没有远程地址，`go.mod` 的模块路径暂用 `harness`。T-027 发布前改为仓库地址，否则 `go install` 不可用。
+仓库还没有远程地址，`go.mod` 的模块路径暂用 `harness`。T-027 发布前改为仓库地址，否则 `go install` 不可用。CI 模板的安装步骤同样使用这个路径（`internal/scaffold/scaffold.go` 的 modulePath），需一并修改。
 
 ### DEBT-002 解析诊断未被任何规则报告
 - Status: Open

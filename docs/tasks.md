@@ -210,7 +210,7 @@ go:embed 模板；`harness init --lang go` 生成产物骨架、harness.json、C
 clarify、change、architect、plan、implement、test 六个 skill；每个声明结束前运行的 `harness check` 子命令；静态测试校验声明存在、测试命名约定与 test.01 的提取规则一致。
 
 ### T-021 git hook、CI 模板与生成文件一致性
-- Status: InProgress
+- Status: Done
 - Covers: AC-013-3, AC-043-1, AC-041-2
 - Design: FLOW-07, IF-020, IF-021
 - Flow: FLOW-07
@@ -220,7 +220,7 @@ clarify、change、architect、plan、implement、test 六个 skill；每个声�
 commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harness check` 和 `harness check commits`；cfg.02（由 scaffold 模块注册）。
 
 ### T-022 门禁配置锁定与 CI 检查步骤
-- Status: Todo
+- Status: InProgress
 - Covers: AC-041-1, AC-043-2
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01

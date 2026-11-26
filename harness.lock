@@ -709,6 +709,33 @@
         "MOD-11": "sha256:3ea03925ca4334f9286b1804c7062b8baf505b5452b4e5f21dff353e2bd5e253"
       }
     },
+    "ADR-004": {
+      "at": "2026-11-26T12:48:41Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:334be2bcdd57fd4f3f919834ee2b4c5bde98d716b88a01ad2c5ab3c8e01322e2",
+      "text": "# ADR-004 锁文件记录哈希、批准与当前阶段\n\n- Status: Superseded\n- Superseded-By: ADR-009\n- Relates: FR-004, FR-037, FR-041, MOD-06\n\n## 背景\n\n需求变更检测、批准有效性、门禁配置锁定、当前阶段都需要\"人确认过的状态\"，且必须防止代理篡改。\n\n## 决策\n\n统一放在仓库根目录的 `harness.lock`（JSON，键排序）。代理不能直接编辑锁文件（`gate.protect`）；`harness lock` 只在检查通过时更新哈希；批准与阶段推进只能由交互式终端的 `harness approve` 和 `harness phase next` 写入。\n\n## 后果\n\n- 一个受保护文件承载全部\"受信状态\"，门禁只需保护它与 `harness.json`、hook 配置。\n- 多人并行修改时锁文件可能冲突；冲突解决后重新运行 `harness lock`。",
+      "upstream": {
+        "FR-004": "sha256:29cff2224b43e995f455fad614314678c77e41d409a524db764c86a293a7c2b4",
+        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
+        "MOD-06": "sha256:33d87ec516d7a4efa65f776f6abce89f86d6f7f8d00f47a164b6a262c8dae59d"
+      }
+    },
+    "ADR-005": {
+      "at": "2026-11-26T12:48:50Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2a024ddb5d3dcadba51f3a0fa453f0c4bf402612dd4eea2409b653390fc586ae",
+      "text": "# ADR-005 阶段与规则可注册、可配置\n\n- Status: Superseded\n- Superseded-By: ADR-010\n- Relates: FR-046, NFR-009, MOD-04, MOD-05, MOD-10, EXT-03, EXT-04\n\n## 背景\n\n用户要求两个扩展点：新增流程阶段、在阶段中新增硬检测规则；扩展主体既包括 harness 开发者，也包括使用项目。\n\n## 决策\n\n- 规则实现统一的 Rule 接口（IF-011），内置规则每条一个文件，在 `registry.go` 中各占一行；项目规则（Release 2）由 `harness.json` 构造为同一接口。\n- 阶段是数据：内置阶段为 `internal/phase/builtin/*.json`，项目阶段写在 `harness.json` 的 `phases`，合并后按顺序排列；阶段只引用规则编号。\n- 规则编号格式 `<区域>.<两位序号>`，项目规则加前缀 `x.`。\n\n## 后果\n\n- 新增内置规则或阶段只新增文件和注册行，引擎、门禁、解析器保持封闭（由 EXT-03、EXT-04 的开闭校验保证）。\n- 少数规则需要上层模块的能力（`phase.01`、`cfg.02`），由所属模块自行注册，避免 builtin 依赖上层。",
+      "upstream": {
+        "EXT-03": "sha256:61989a0087c4eb8717f00f41928d2e64c53a65f20be33a695a5be38fda4bbc60",
+        "EXT-04": "sha256:d9b48db62ab67392b94b00ef7c594b9c350f929834bcc8623bd7367a039ca6a8",
+        "FR-046": "sha256:632f8f9b0c3c993072235d54f7d32854228593e56ad287bb236faf15dd6df096",
+        "MOD-04": "sha256:a0a66bc2f337694fb46d9d2578c481e8fbc1f3771e2d497c0b53f0bd877db38e",
+        "MOD-05": "sha256:a676dedf3565eeabad3a8fdfb5fb4d6ffafa396d92592f291e6e8f9b69695f68",
+        "MOD-10": "sha256:9b5c7bacbb3be56139fa4fa4da7dbdcc65010155017bcd51a430e567497fbefb",
+        "NFR-009": "sha256:bb584f2fce654615747908041237da4c8986f24501043907160c58ca6ed16a51"
+      }
+    },
     "ADR-006": {
       "at": "2026-11-26T03:46:04Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
@@ -2138,6 +2165,733 @@
       "text": "### OQ-007 分发方式\n- Resolution: 二进制内嵌全部模板，GitHub Releases + Homebrew tap（见 NFR-002）。\n\n二进制通过 GitHub Releases、Homebrew，还是 `go install`？skill 和 hook 是否打包为 Claude Code 插件？",
       "upstream": {}
     },
+    "T-001": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2b48b2138cba9669dd1da522a42dbe7356a073c6f0f4406946893a0a9485f433",
+      "text": "### T-001 CLI 骨架与 PRD 编号、必填字段检查\n- Covers: AC-003-1, AC-003-2, AC-003-4, NFR-004\n- Design: FLOW-01, IF-001, IF-002, IF-009, IF-010, IF-011, IF-012, IF-013, IF-014, IF-022, ADR-001, ADR-002, ADR-007\n- Flow: FLOW-01\n- Scope: go.mod, cmd/harness/**, internal/cli/**, internal/app/app.go, internal/app/check.go, internal/model/**, internal/workspace/**, internal/rules/engine/**, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_01.go, internal/rules/builtin/testdata/prd.01/**, internal/rules/builtin/prd_02.go, internal/rules/builtin/testdata/prd.02/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**\n- Depends:\n\n端到端骨架（prd.02 同时实现 Release、Current-Release 与 NFR Type 字段校验，AC-003-5 的追溯部分在 T-006 验收）：model 解析器、workspace 加载配置与产物、engine 注册与运行（含样本自检与修复建议必填）、app.Check、`harness check [--json]` 与退出码 0/1/2。完成后 `harness check prd.01 prd.02` 可检查本仓库。engine 附 `TestExample_EXT_03` 示例规则测试。",
+      "upstream": {
+        "ADR-001": "sha256:7163bb89a9c9ec64cc94c66f2ad507b3e9387b135da21584b9bc4e1a9ca44c2b",
+        "ADR-002": "sha256:8e10529630e6b8606ddaeddebf6948907c2d7f3fcb0008b0fc6e63a9ca1ed311",
+        "ADR-007": "sha256:9e5f951e4faf426d8c2ea7596611674146c45233e590fdc1dffb1cf2ee062a18",
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
+        "IF-001": "sha256:1a31becf33af95adb0f365cd64f6e9e3e96e2945538f6eac0b0225cc78728e61",
+        "IF-002": "sha256:79d0fb695ae7212053c7dec2281ae209927068398df5a5f1a8efda4a8d2d1ae6",
+        "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
+        "IF-010": "sha256:1c7e34091a1af8f7bd2c8a08ba64a969228f091eeb25db0d50c9b319752f8801",
+        "IF-011": "sha256:42a4a490aab881ba60b0ac650cd352ddcdc419321d39765f59453012fc999c6c",
+        "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+        "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b",
+        "NFR-004": "sha256:e1b1bd48f0c4e5b94fbb27bd560f718ec2942a01c27bb2667c17a5f4ee6f03b4"
+      }
+    },
+    "T-002": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:e4759b32cd11fdcf784ca1e92e7e8ba55c736d1f1c58b8ef207548690e9d946b",
+      "text": "### T-002 锁文件、`harness lock` 与需求变更追踪\n- Covers: FR-004, AC-003-3, AC-019-3\n- Design: FLOW-10, IF-005, IF-006, IF-023, ADR-004\n- Flow: FLOW-01\n- Scope: internal/lock/**, internal/workspace/**, internal/cli/**, internal/app/lock.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_03.go, internal/rules/builtin/testdata/prd.03/**, internal/rules/builtin/prd_08.go, internal/rules/builtin/testdata/prd.08/**, internal/app/lock_integration_test.go, internal/app/testdata/lock/**\n- Depends: T-001\n\n规范化与哈希、锁文件读写（键排序、逐字节稳定）、`harness lock`（检查通过才写，保留批准与阶段）、prd.03 编号不得消失或复用、prd.08 CHG 与哈希差异一致。",
+      "upstream": {
+        "ADR-004": "sha256:334be2bcdd57fd4f3f919834ee2b4c5bde98d716b88a01ad2c5ab3c8e01322e2",
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-10": "sha256:fc179f1474858beaec7216e9cde7119971e440b1ed73c6aeaa44f9014d108be1",
+        "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
+        "FR-004": "sha256:29cff2224b43e995f455fad614314678c77e41d409a524db764c86a293a7c2b4",
+        "FR-019": "sha256:684dd2a5cad1347eb024405c3ba952f8d24e28866d1fab1dd03f0c3e8417867e",
+        "IF-005": "sha256:f4dd1c6b9ed2ccff2edfda4823a5adbf48e70cf616512755696d616751975158",
+        "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
+        "IF-023": "sha256:c9a1ee5391322ba065c0ee970420d08ba40147a2b7183bb02eeb6038347b7283"
+      }
+    },
+    "T-003": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:07540eef48d8a6dfee0732ac14469908be48a685ab2cf6f2ab625a7dc4c76a5b",
+      "text": "### T-003 澄清记录、验收用例与需求文本质量\n- Covers: FR-002, AC-019-1, AC-019-2, FR-040\n- Design: FLOW-01, IF-014\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_04.go, internal/rules/builtin/testdata/prd.04/**, internal/rules/builtin/prd_05.go, internal/rules/builtin/testdata/prd.05/**, internal/rules/builtin/prd_06.go, internal/rules/builtin/testdata/prd.06/**, internal/rules/builtin/prd_07.go, internal/rules/builtin/testdata/prd.07/**, internal/rules/builtin/prd_09.go, internal/rules/builtin/testdata/prd.09/**, internal/rules/builtin/prd_10.go, internal/rules/builtin/testdata/prd.10/**, internal/app/clarify_integration_test.go, internal/app/testdata/clarify/**\n- Depends: T-002\n\n三章齐全、Open 待澄清项阻止 Approved、澄清记录按轮次且每轮不超过 5 问、用例编号与 N 加 B/E、模糊词（跳过代码格式）、Quantitative NFR 含数值与单位。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-002": "sha256:935cbeb722cd451bf2a5b8487a223221c9481ba47295cd4610cd3f7bd60c9dc6",
+        "FR-019": "sha256:684dd2a5cad1347eb024405c3ba952f8d24e28866d1fab1dd03f0c3e8417867e",
+        "FR-040": "sha256:f1b989982e42a8704338e1aae6fd93742c792366f4fdf835b13ef079d0ed3ed7",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-004": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:466dc6a159d77f44ccefab0b42c1c333b3f54fc99a32b83978de3a37f60da162",
+      "text": "### T-004 统一语言一致性\n- Covers: FR-005\n- Design: FLOW-01, IF-014\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/term_01.go, internal/rules/builtin/testdata/term.01/**, internal/rules/builtin/term_02.go, internal/rules/builtin/testdata/term.02/**, internal/app/term_integration_test.go, internal/app/testdata/term/**\n- Depends: T-003",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-005": "sha256:a5ff1072bde13a3d9934bdba2db2b85575a996a182852541b07e0a42bd6dc03d",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-005": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:57acb6756661ae4e3ddc007c414cc966f488d0e130e2efa0eb9ac2d1ad2e7a42",
+      "text": "### T-005 架构产物校验\n- Covers: FR-006, AC-033-2\n- Design: FLOW-01, MOD-03, IF-002, IF-014\n- Flow: FLOW-01\n- Scope: internal/model/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/arch_01.go, internal/rules/builtin/testdata/arch.01/**, internal/rules/builtin/arch_02.go, internal/rules/builtin/testdata/arch.02/**, internal/rules/builtin/arch_03.go, internal/rules/builtin/testdata/arch.03/**, internal/app/arch_integration_test.go, internal/app/testdata/arch/**\n- Depends: T-004\n\n模块、接口、流程、扩展点必填字段与模块路径不重叠，依赖无环，流程步骤与依赖一致。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-006": "sha256:9ada3a326d4333e1185fb2a06684196e93dcd4df1dc737b30c387857ce8c7fb1",
+        "FR-033": "sha256:ee931aefb0d0f42b5f12e042191d5939ee5af00648ef04359bc85768003b2875",
+        "IF-002": "sha256:79d0fb695ae7212053c7dec2281ae209927068398df5a5f1a8efda4a8d2d1ae6",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "MOD-03": "sha256:883a4c34a8a77463576b6781c5902a0b88160e8781f727e1d7e58ac8ba4fa491"
+      }
+    },
+    "T-006": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:46be9a96fb171fa416297d64134b77737543f1e9198f9bf2af808d1e2d573e6d",
+      "text": "### T-006 需求到设计追溯与覆盖矩阵\n- Covers: FR-007, AC-003-5\n- Design: FLOW-01, IF-014, IF-022\n- Flow: FLOW-01\n- Scope: internal/cli/**, internal/app/trace.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/testdata/trace.01/**, internal/rules/builtin/trace_02.go, internal/rules/builtin/testdata/trace.02/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/trace_integration_test.go, internal/app/testdata/trace/**\n- Depends: T-005\n\ntrace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型脚本 selfcheck.py。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
+        "FR-007": "sha256:d39454c94ae4964aac8a187c830d5aaf078f0a7005e991e44ad1bf0a51525571",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+      }
+    },
+    "T-007": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:e6af57220a04e8e7903017af3eea85eab140423b9862019677c4fa6650d31555",
+      "text": "### T-007 git 访问与架构决策记录检查\n- Covers: FR-010\n- Design: FLOW-01, IF-007, IF-009, IF-014\n- Flow: FLOW-01\n- Scope: internal/vcs/**, internal/workspace/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/adr_01.go, internal/rules/builtin/testdata/adr.01/**, internal/rules/builtin/adr_02.go, internal/rules/builtin/testdata/adr.02/**, internal/rules/builtin/adr_03.go, internal/rules/builtin/testdata/adr.03/**, internal/app/adr_integration_test.go, internal/app/testdata/adr/**\n- Depends: T-006\n\nvcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03 判断模块增删、依赖变化、扩展点变化是否在同一提交中被 ADR 引用。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-010": "sha256:4f92dbcc59005c34b10b8c30b5c61cda9ac553b9a4764c084ab1b823a0057106",
+        "IF-007": "sha256:47692e2ba6b7ea39ec3469586a95ba1b956db5a9613816c8b965f19bb60bff7d",
+        "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-008": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:76b929bb10f01e699948a6f8135f84551dbe9d20e4fc354b9167b7ed9a0266a6",
+      "text": "### T-008 测试报告解析、Go 语言包与集成测试追溯\n- Covers: FR-020\n- Design: FLOW-01, IF-003, IF-004, IF-008, IF-009, IF-014\n- Flow: FLOW-01\n- Scope: internal/testreport/**, internal/lang/**, internal/workspace/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/test_01.go, internal/rules/builtin/testdata/test.01/**, internal/rules/builtin/test_02.go, internal/rules/builtin/testdata/test.02/**, internal/app/tests_integration_test.go, internal/app/testdata/tests/**\n- Depends: T-007\n\nJUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integration_test.go` 判定为集成测试）；test.01、test.02。lang 附 `TestExample_EXT_01` 示例语言测试。完成后本仓库的测试报告写入 `.harness/reports/`。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-020": "sha256:33306e617e05d0f2c0d3c74a9fe3204e8cf3b8d5bfdaa107b233bb0e1c5fde2b",
+        "IF-003": "sha256:f99582967b3d08b88506ed685146b849adbdc7bc90e74dc478592b86022ece6d",
+        "IF-004": "sha256:feab23fd636fd19dd3d28c0d054a657fea8a6c0c88292a4ad2769fdd87c3fba8",
+        "IF-008": "sha256:81c79235740ebb3db9774188727106ce9943ea9a04632173a15523cb4b51e50c",
+        "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-009": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:d5c15c6b5756dbec12fe824b5c195a08bce80ce21819fa064450cebb3d454dfc",
+      "text": "### T-009 技术债登记检查\n- Covers: FR-031\n- Design: FLOW-01, IF-003, IF-014\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/debt_01.go, internal/rules/builtin/testdata/debt.01/**, internal/rules/builtin/debt_02.go, internal/rules/builtin/testdata/debt.02/**, internal/rules/builtin/debt_03.go, internal/rules/builtin/testdata/debt.03/**, internal/app/debt_integration_test.go, internal/app/testdata/debt/**\n- Depends: T-008",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-031": "sha256:0fea8b855ebac3ad88c3e2331ec3818c23fa03450e7d35d0b58e8951849abe74",
+        "IF-003": "sha256:f99582967b3d08b88506ed685146b849adbdc7bc90e74dc478592b86022ece6d",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-010": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:915f40b1105f9089877aabe386e4f7e7b5b29c79ca763ae1d852ee0743d0746b",
+      "text": "### T-010 扩展场景与扩展点规则\n- Covers: AC-033-1, AC-033-3, AC-033-4\n- Design: FLOW-01, IF-014\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_11.go, internal/rules/builtin/testdata/prd.11/**, internal/rules/builtin/arch_04.go, internal/rules/builtin/testdata/arch.04/**, internal/rules/builtin/arch_05.go, internal/rules/builtin/testdata/arch.05/**, internal/app/ext_integration_test.go, internal/app/testdata/ext/**\n- Depends: T-009",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-033": "sha256:ee931aefb0d0f42b5f12e042191d5939ee5af00648ef04359bc85768003b2875",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-011": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2b1ec66bdabe31eeaca2d5e4bfef9962b2891befa548d6c8c35ffb38cf8eeeff",
+      "text": "### T-011 任务列表检查\n- Covers: AC-011-1, AC-011-2, AC-011-3, AC-011-4, AC-011-6, AC-034-2\n- Design: FLOW-01, IF-014, ADR-008\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/task_01.go, internal/rules/builtin/testdata/task.01/**, internal/rules/builtin/task_02.go, internal/rules/builtin/testdata/task.02/**, internal/rules/builtin/task_03.go, internal/rules/builtin/testdata/task.03/**, internal/rules/builtin/task_04.go, internal/rules/builtin/testdata/task.04/**, internal/rules/builtin/task_05.go, internal/rules/builtin/testdata/task.05/**, internal/rules/builtin/task_06.go, internal/rules/builtin/testdata/task.06/**, internal/app/task_integration_test.go, internal/app/testdata/task/**\n- Depends: T-010\n\ntask.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC 都被关联。完成后本文件由 `harness check task` 校验。",
+      "upstream": {
+        "ADR-008": "sha256:6281afdaad97da7f54384b77e8c7ae719d11fb814385914f1d3e703cf98c319f",
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-011": "sha256:7b0e8bd3c8ab7393300ec321e4c76fde05b5bf3268f56485b9a349688761b077",
+        "FR-034": "sha256:b8b23faad1fcf5c282789d10493b6258eab72b3e39d489847d6135849c7a656b",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-012": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:563b39538d2f7609e23d059a48d286474eb19d30b22fa0157fccf15512bfe495",
+      "text": "### T-012 提交检查\n- Covers: AC-013-1, AC-013-2, AC-013-4, AC-034-1\n- Design: FLOW-09, IF-007, IF-014, IF-022, ADR-008\n- Flow: FLOW-01\n- Scope: internal/cli/**, internal/app/check.go, internal/workspace/workspace.go, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/rules/builtin/commit_02.go, internal/rules/builtin/testdata/commit.02/**, internal/rules/builtin/commit_03.go, internal/rules/builtin/testdata/commit.03/**, internal/rules/builtin/commit_04.go, internal/rules/builtin/testdata/commit.04/**, internal/app/commit_integration_test.go, internal/app/testdata/commit/**\n- Depends: T-011\n\n`harness check commits <范围>`；commit.02 豁免产物文件和生成文件。",
+      "upstream": {
+        "ADR-008": "sha256:6281afdaad97da7f54384b77e8c7ae719d11fb814385914f1d3e703cf98c319f",
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
+        "FR-013": "sha256:79e801ce72d2545f6cfecdac599d58514edac0d42521ec3fccdd43aa7f4c83b0",
+        "FR-034": "sha256:b8b23faad1fcf5c282789d10493b6258eab72b3e39d489847d6135849c7a656b",
+        "IF-007": "sha256:47692e2ba6b7ea39ec3469586a95ba1b956db5a9613816c8b965f19bb60bff7d",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+      }
+    },
+    "T-013": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:c03714b24a771c6d653913f5e16f966e082c97195857b530e1b7e9fc3850170f",
+      "text": "### T-013 人工批准与批准有效性\n- Covers: AC-037-1, AC-037-3\n- Design: FLOW-08, IF-005, IF-006, IF-024\n- Flow: FLOW-01\n- Scope: internal/cli/**, internal/app/approve.go, internal/workspace/approval.go, internal/lock/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/approve_01.go, internal/rules/builtin/testdata/approve.01/**, internal/app/approve_integration_test.go, internal/app/testdata/approve/**\n- Depends: T-012\n\n`harness approve <产物>` 要求交互式终端并确认，写入批准人、时间、哈希；approve.01 内容与批准哈希不一致时视为 Draft。完成后用户在终端补录 PRD 与架构的批准。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-08": "sha256:e124ecc4f24078826c4108a811af103b2623ffef24b29b3ad56e108a8b475a70",
+        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "IF-005": "sha256:f4dd1c6b9ed2ccff2edfda4823a5adbf48e70cf616512755696d616751975158",
+        "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
+        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74"
+      }
+    },
+    "T-014": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:ca9f16d82bf6d2f13b4360f9b7af6064c8e071f31574da48de8f3a95b3fc2aaf",
+      "text": "### T-014 流程阶段定义与推进\n- Covers: AC-045-1, AC-045-2\n- Design: FLOW-08, IF-015, IF-016, IF-024, ADR-005\n- Flow: FLOW-08\n- Scope: internal/phase/**, internal/lock/**, internal/cli/**, internal/app/phase.go, internal/app/app.go, internal/app/approve.go, internal/app/phase_integration_test.go, internal/app/testdata/phase/**\n- Depends: T-013\n\n内置四个阶段 JSON、项目配置合并、phase.01（由 phase 模块注册）、`harness phase list|next`（交互式终端、退出与进入规则通过）。AC-045-3 的 `phase next` 在本任务实现并写测试，但其 E3（门禁拒绝代理改阶段）依赖门禁，整条 AC 由 T-016 关联。phase 附 `TestExample_EXT_04` 示例阶段测试。",
+      "upstream": {
+        "ADR-005": "sha256:2a024ddb5d3dcadba51f3a0fa453f0c4bf402612dd4eea2409b653390fc586ae",
+        "FLOW-08": "sha256:e124ecc4f24078826c4108a811af103b2623ffef24b29b3ad56e108a8b475a70",
+        "FR-045": "sha256:efc03e02e46d19269848e97f5152ad252128bd8edcf3b6fceb11e5dd62007543",
+        "IF-015": "sha256:18474bcfef2afc15f9e155451cc65b5e41b04dae55ae4bc453d4f5928d72d5e4",
+        "IF-016": "sha256:980a4574511aea2be14e7b9c12def0f4a644c129464f6f9418957088d1a7eddb",
+        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74"
+      }
+    },
+    "T-015": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:aebd2c83220e556faf807ef64369e50b9fcf0018c0b8719c9cd0c650e75cfde9",
+      "text": "### T-015 阶段前置条件与任务完成定义\n- Covers: FR-038, FR-039, AC-024-2\n- Design: FLOW-01, IF-014, ADR-008\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/test_02.go, internal/app/task_integration_test.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/task_08.go, internal/rules/builtin/testdata/task.08/**, internal/app/dod_integration_test.go, internal/app/testdata/dod/**\n- Depends: T-014\n\ntask.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联需求无 Open 待澄清项。task.08：Done 任务所关联条目涉及的用例全部 passed、全量检查通过、进度文件有记录。",
+      "upstream": {
+        "ADR-008": "sha256:6281afdaad97da7f54384b77e8c7ae719d11fb814385914f1d3e703cf98c319f",
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-024": "sha256:f14699ad8abf11030b45096ee05d39780bf6dfa2b53194c0fe3013ffcabe4a27",
+        "FR-038": "sha256:889730e9dcfb1dfa5c697fe37234574e53cb8a43bb691fdfe95e68f6d718e7f6",
+        "FR-039": "sha256:b91b973e0e29320e0d4fe7fbe9a7d6bc724eabd6e6df06f3dd57945cb2cedb60",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-016": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:7f5bda6dcf1197ef0121706b419d91af8563719a71d2136145bc86177c9b0fad",
+      "text": "### T-016 写操作门禁与 Claude Code 适配器\n- Covers: AC-012-1, AC-012-2, AC-012-5, AC-037-2, AC-045-3, AC-045-4\n- Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019, IF-025, ADR-003, ADR-006\n- Flow: FLOW-02\n- Scope: go.mod, go.sum, internal/gate/**, internal/adapter/**, internal/cli/**, internal/app/gate.go, internal/app/gate_integration_test.go, internal/app/testdata/gate/**\n- Depends: T-015\n\ngate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解析，事后快照比对与回滚（大于 1 MiB 只报告）；claudecode 适配器解码 PreToolUse、编码 deny，无法解析即拒绝；`harness gate`。adapter 附 `TestExample_EXT_02` 示例适配器测试。",
+      "upstream": {
+        "ADR-003": "sha256:50a0f48d68c8731ab5dbc5cad840ea9b76de3ee0091acea0c488eceb1d049746",
+        "ADR-006": "sha256:21e10448022e638d0867f6602dc9aee2177dd402c40e172c65916cac2806d0a5",
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FLOW-03": "sha256:b06dcead297d29b7d1dbba69463213911be341286208a000539c8b49968ba6e8",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
+        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-045": "sha256:efc03e02e46d19269848e97f5152ad252128bd8edcf3b6fceb11e5dd62007543",
+        "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
+        "IF-018": "sha256:026462d45210401744c68ca0486f26b6ab2c4b9dda435fe266b145a007bdcb37",
+        "IF-019": "sha256:8ba0869f2215c708a5c157ae39ab141ae68a8f58268c576a83da6084f96f7308",
+        "IF-025": "sha256:b75b999f7f1d7977f08e67e7f364ffe82fd39c4298da506ffdc1eb712cfca6eb"
+      }
+    },
+    "T-017": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:ef55b11dfbeebf024cd2b9c68b6207b19724ea9696b05d955423257df371b768",
+      "text": "### T-017 安全边界\n- Covers: FR-025\n- Design: FLOW-02, IF-017\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/app/gate.go, internal/app/security_integration_test.go, internal/app/testdata/security/**\n- Depends: T-016\n\ngate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危险命令可配置。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434",
+        "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560"
+      }
+    },
+    "T-018": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:fa0d816e93be4ce70693e87bd870fabe10fdae4b86d528d68ef06dca1d18a688",
+      "text": "### T-018 写后检查、会话结束检查与会话开始注入\n- Covers: AC-012-3, AC-012-4, AC-024-1, AC-024-3\n- Design: FLOW-04, FLOW-05, FLOW-06, IF-012, IF-017, IF-019, IF-025\n- Flow: FLOW-05\n- Scope: internal/gate/**, internal/adapter/**, internal/cli/**, internal/rules/engine/engine.go, internal/app/gate.go, internal/app/session_integration_test.go, internal/app/testdata/session/**\n- Depends: T-017\n\nPostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连续阻止 3 次后放行并写进度文件；SessionStart 注入阶段、InProgress 任务、未通过检查、Open 待澄清项、冒烟测试结果。",
+      "upstream": {
+        "FLOW-04": "sha256:0f261333f80acd5f27842d680053349eb5a496651fbc852f40ed9ae0a2f5ab76",
+        "FLOW-05": "sha256:5fda2b415ab8f85214a7e6933dca35b96607e0eb376c5521cb59426128ed08dc",
+        "FLOW-06": "sha256:ea215ca977c6c5c199ce7b299f3d672df4ff8682b116c1a7a759e61fee8fab3a",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
+        "FR-024": "sha256:f14699ad8abf11030b45096ee05d39780bf6dfa2b53194c0fe3013ffcabe4a27",
+        "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+        "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
+        "IF-019": "sha256:8ba0869f2215c708a5c157ae39ab141ae68a8f58268c576a83da6084f96f7308",
+        "IF-025": "sha256:b75b999f7f1d7977f08e67e7f364ffe82fd39c4298da506ffdc1eb712cfca6eb"
+      }
+    },
+    "T-019": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:c3f02cc8d2c683c141ab3b812afd4411b5b33749598f84da179d77a1ed46c5ba",
+      "text": "### T-019 项目初始化与产物模板\n- Covers: FR-001, AC-N002-2, NFR-005\n- Design: FLOW-07, IF-020, IF-021, IF-026\n- Flow: FLOW-07\n- Scope: internal/scaffold/**, internal/lang/**, internal/cli/**, internal/app/init.go, internal/app/init_integration_test.go, internal/app/testdata/init/**\n- Depends: T-018\n\ngo:embed 模板；`harness init --lang go` 生成产物骨架、harness.json、Claude Code hook 配置；重复执行不覆盖已修改文件并列出跳过的文件。",
+      "upstream": {
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-001": "sha256:bcf8817cb290c6fff9338fa6c2e441a857f3b5b3d9e39a73896ade4cdfa0457c",
+        "IF-020": "sha256:2c0bcab8d4df679a77c5ce4ad88f85bf02172653b6106ee620f06d0abf793f61",
+        "IF-021": "sha256:82dfc28a06b1ebe84257e3bdcf9c7d8bedf6440d9a40d84710c88b97ca8eb1c1",
+        "IF-026": "sha256:9b0bcb737b73ccc9389490608608ddc29f9553658671eb705ba17b18973a96e7",
+        "NFR-002": "sha256:1b9aa8ae4773d700beffc7653f801c01e1099f0b972001acfd7cc51db2976598",
+        "NFR-005": "sha256:8c6e97162d13b996cf104fff991888a065588f6914468955a6cbe963273f0f0e"
+      }
+    },
+    "T-020": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:61d44c23e84955d7dde0e775b20eb4255ba43d9e0cf5af397bfa4248e8dd4f4c",
+      "text": "### T-020 流程 skill 集\n- Covers: FR-016, AC-011-5, AC-033-5\n- Design: MOD-13, IF-020, IF-026, FLOW-07\n- Flow: FLOW-07\n- Scope: internal/scaffold/templates/skills/**, internal/scaffold/scaffold.go, internal/scaffold/skills_integration_test.go, internal/app/init_integration_test.go\n- Depends: T-019\n\nclarify、change、architect、plan、implement、test 六个 skill；每个声明结束前运行的 `harness check` 子命令；静态测试校验声明存在、测试命名约定与 test.01 的提取规则一致。",
+      "upstream": {
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-011": "sha256:7b0e8bd3c8ab7393300ec321e4c76fde05b5bf3268f56485b9a349688761b077",
+        "FR-016": "sha256:bc571b5bdd87db8fb418fa6d277dc61574bc2440909ca301c0edd03095f7ff7a",
+        "FR-033": "sha256:ee931aefb0d0f42b5f12e042191d5939ee5af00648ef04359bc85768003b2875",
+        "IF-020": "sha256:2c0bcab8d4df679a77c5ce4ad88f85bf02172653b6106ee620f06d0abf793f61",
+        "IF-026": "sha256:9b0bcb737b73ccc9389490608608ddc29f9553658671eb705ba17b18973a96e7",
+        "MOD-13": "sha256:31fbc3f0b021329efbeb71bae494e34070df03cb8313497040686d26f2e77f6a"
+      }
+    },
+    "T-021": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:740804c66682c3626ad74d407c4275bb4a16a99b81a8dee2abea0ad99ac75b85",
+      "text": "### T-021 git hook、CI 模板与生成文件一致性\n- Covers: AC-013-3, AC-043-1, AC-041-2\n- Design: FLOW-07, IF-020, IF-021\n- Flow: FLOW-07\n- Scope: internal/scaffold/**, internal/app/init.go, internal/app/app.go, internal/app/init_integration_test.go, internal/app/session_integration_test.go, internal/cli/init.go, internal/cli/cli.go, internal/app/ci_integration_test.go, internal/app/testdata/ci/**\n- Depends: T-020\n\ncommit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harness check` 和 `harness check commits`；cfg.02（由 scaffold 模块注册）。",
+      "upstream": {
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-013": "sha256:79e801ce72d2545f6cfecdac599d58514edac0d42521ec3fccdd43aa7f4c83b0",
+        "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
+        "FR-043": "sha256:5bd2a1b296642bc6e9d4a6524bd2152766a832fcb09348cc10ca83268abe4be7",
+        "IF-020": "sha256:2c0bcab8d4df679a77c5ce4ad88f85bf02172653b6106ee620f06d0abf793f61",
+        "IF-021": "sha256:82dfc28a06b1ebe84257e3bdcf9c7d8bedf6440d9a40d84710c88b97ca8eb1c1"
+      }
+    },
+    "T-022": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:19db2b54dc79c36b0827fc259ccea87dc603eabeaeb49785113203fc82533f94",
+      "text": "### T-022 门禁配置锁定与 CI 检查步骤\n- Covers: AC-041-1, AC-043-2\n- Design: FLOW-01, IF-014\n- Flow: FLOW-01\n- Scope: internal/workspace/lockitems.go, internal/rules/builtin/prd_08.go, internal/app/session_integration_test.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/cfg_01.go, internal/rules/builtin/testdata/cfg.01/**, internal/rules/builtin/ci_01.go, internal/rules/builtin/testdata/ci.01/**, internal/app/cfg_integration_test.go, internal/app/testdata/cfg/**\n- Depends: T-021",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
+        "FR-043": "sha256:5bd2a1b296642bc6e9d4a6524bd2152766a832fcb09348cc10ca83268abe4be7",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-023": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:7ddc97241020a1d30961cb1bc5f387b55fd5244ebdc01f13a8ceecf711c2a93c",
+      "text": "### T-023 扩展场景回归：新增阶段与新增规则\n- Covers: NFR-008, NFR-009\n- Design: FLOW-09, EXT-03, EXT-04\n- Scope: internal/app/extdemo_integration_test.go, internal/app/testdata/extdemo/**\n- Depends: T-022\n\n在临时 git 仓库中按 EXT-04、EXT-03 各做一次示例扩展提交，验证只改允许路径时 commit.04 通过、改动封闭模块时失败。",
+      "upstream": {
+        "EXT-03": "sha256:61989a0087c4eb8717f00f41928d2e64c53a65f20be33a695a5be38fda4bbc60",
+        "EXT-04": "sha256:d9b48db62ab67392b94b00ef7c594b9c350f929834bcc8623bd7367a039ca6a8",
+        "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
+        "NFR-008": "sha256:b16220b7b86bee9ec27abad8eb7b9d94907f483358332b93273c9edda03fa897",
+        "NFR-009": "sha256:bb584f2fce654615747908041237da4c8986f24501043907160c58ca6ed16a51"
+      }
+    },
+    "T-024": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:e92f9a1028f7dd7683409171b15ec47dd99cbd6f67239f4226359eca3beea011",
+      "text": "### T-024 确定性与无网络访问\n- Covers: NFR-001\n- Design: FLOW-01, ADR-001\n- Scope: internal/app/determinism_integration_test.go, internal/app/testdata/determinism/**\n- Depends: T-023\n\n静态测试：除 audit 包外不得引入网络包；全部检查子命令在禁用网络时结果一致。",
+      "upstream": {
+        "ADR-001": "sha256:7163bb89a9c9ec64cc94c66f2ad507b3e9387b135da21584b9bc4e1a9ca44c2b",
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "NFR-001": "sha256:1911852aba790868f7710b86cea99d8d53be3ebf5798e35911202b40a76b5911"
+      }
+    },
+    "T-025": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:a131e0e6af8c7612d5e7163a01cf304068fd47b5833e3151b1208e1801b0476b",
+      "text": "### T-025 性能基准\n- Covers: NFR-003\n- Design: FLOW-01, FLOW-02\n- Scope: internal/app/perf_integration_test.go, internal/app/testdata/perf/**\n- Depends: T-024\n\n生成 5000 个源文件、200 个任务的样例仓库；PreToolUse 门禁 p95 < 200ms，全量检查 < 10s，50000 行 PRD 的 `harness check prd` < 2s。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "NFR-003": "sha256:db1ded2f49600ca48257e28f4be4eb1fdc0d2d7e43dbbf66428a630c131c91ac"
+      }
+    },
+    "T-026": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:462c68bea51c740360119ad5cd7f1eae0bdf0a1269c75c414990a2276f3bbe56",
+      "text": "### T-026 自举：本仓库启用 harness\n- Covers: FR-017\n- Design: FLOW-01, FLOW-07\n- Scope: internal/rules/builtin/util.go, internal/app/bootstrap_integration_test.go, internal/app/testdata/bootstrap/**\n- Depends: T-025\n\n对本仓库执行 `harness init`，提交生成文件与锁文件，启用 hook 与 CI；集成测试对仓库根目录运行 `harness check` 并校验 hook 配置存在。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-017": "sha256:0553e33e220e3ce1f65b6a1a908982f12d2dd65ef1e3d02bc0ca58579eed0265"
+      }
+    },
+    "T-027": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:23916658571cffab9a88050c5c702102f1a13ee2e06257a84301cbd567f36345",
+      "text": "### T-027 跨平台构建与发布\n- Covers: AC-N002-1, AC-N002-3\n- Design: MOD-01, ADR-001, FLOW-07\n- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/**, internal/app/ci_integration_test.go, internal/app/cfg_integration_test.go\n- Depends: T-026\n\n6 个平台交叉编译、GitHub Release 附校验和、Homebrew tap formula。需要 GitHub 仓库与 tap 仓库，发布前由用户确认。",
+      "upstream": {
+        "ADR-001": "sha256:7163bb89a9c9ec64cc94c66f2ad507b3e9387b135da21584b9bc4e1a9ca44c2b",
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "MOD-01": "sha256:1257dbb473c20fbfa97a8e8ec5203cbb22fcd7e179e065e1ee3f8e6124723b53",
+        "NFR-002": "sha256:1b9aa8ae4773d700beffc7653f801c01e1099f0b972001acfd7cc51db2976598"
+      }
+    },
+    "T-028": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:de5fe43dd74a6025a99d1b75d2f12f7f7351aca1e80455e66f5dbaf3cf475c01",
+      "text": "### T-028 门禁修复：纯赋值命令崩溃与路径误判为密钥\n- Covers: AC-012-2, AC-025-2\n- Design: FLOW-02\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/app/gate_integration_test.go, internal/app/security_integration_test.go\n- Depends: T-026\n\nT-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门禁 panic 并以退出码 2 拒绝命令；secret.entropy 把含大小写与数字的长路径当作密钥（DEBT-006）。T-027 在本任务完成前为 Blocked。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
+        "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434"
+      }
+    },
+    "T-029": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:191cd90b512fc1df054388b409acd4404d407d60b52a6b2a126bea02424ece7d",
+      "text": "### T-029 解析测试不再断言本仓库产物的固定数量\n- Covers: AC-003-1\n- Design: IF-001\n- Scope: internal/model/model_test.go\n- Depends: T-028\n\n`TestParseRepoArtifacts_IF_001` 用固定数字断言本仓库的需求、模块、接口、任务数量，新增 T-028 后失败。改为下限断言，测试只保证本仓库产物能无诊断地解析。",
+      "upstream": {
+        "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
+        "IF-001": "sha256:1a31becf33af95adb0f365cd64f6e9e3e96e2945538f6eac0b0225cc78728e61"
+      }
+    },
+    "T-030": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:3c446c87a65af0b30f58fb24e7791e9a445a5e050cc87e108eea902707d77715",
+      "text": "### T-030 找不到 harness 二进制时 hook 失败即阻断（DEBT-004）\n- Covers: AC-012-5\n- Design: IF-019, FLOW-02\n- Flow: FLOW-02\n- Scope: internal/adapter/**, internal/app/hookcmd_integration_test.go\n- Depends: T-029\n\n生成的 hook 命令先检查 harness 是否可执行：PreToolUse 找不到时输出拒绝，SessionStart 注入\"harness 未安装\"，PostToolUse 与 Stop 不阻止。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
+        "IF-019": "sha256:8ba0869f2215c708a5c157ae39ab141ae68a8f58268c576a83da6084f96f7308"
+      }
+    },
+    "T-031": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:b3a75687d445364a42a2103eb8fdb33e0e1606485a92e8ebd0210d8870f32ea0",
+      "text": "### T-031 门禁允许删除不属于任何模块的生成文件（DEBT-009）\n- Covers: AC-012-2\n- Design: FLOW-02\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/workspace/generated.go, internal/app/gate_integration_test.go\n- Depends: T-030\n\n代理可按 cfg.02 的修复办法删除生成文件，再由单独一次 `harness init` 写回；写入其他内容仍按范围判定。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a"
+      }
+    },
+    "T-032": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:289c4e83cd8cbcdc5d6f2e33ab4d905babfb6d2b6e4278c37cdb6b6a8abe1d7c",
+      "text": "### T-032 报告失败的测试与剩余的解析诊断（DEBT-008、DEBT-002、DEBT-003）\n- Covers: AC-039-2, AC-003-1\n- Design: MOD-05\n- Scope: internal/rules/builtin/**\n- Depends: T-031\n\n新增规则：测试报告中有失败的测试时报告测试名；报告 PRD 与进度文件中尚无规则输出的解析诊断。task.08 改用 `engine.FullCheck`。",
+      "upstream": {
+        "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
+        "FR-039": "sha256:b91b973e0e29320e0d4fe7fbe9a7d6bc724eabd6e6df06f3dd57945cb2cedb60",
+        "MOD-05": "sha256:a676dedf3565eeabad3a8fdfb5fb4d6ffafa396d92592f291e6e8f9b69695f68"
+      }
+    },
+    "T-033": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:279793132e4c1686119c861292b652f3511243ae68605b6da6213b24623307aa",
+      "text": "### T-033 harness init 忽略门禁运行时目录（DEBT-005）\n- Covers: AC-001-1\n- Design: FLOW-07\n- Scope: internal/scaffold/**, internal/app/init_integration_test.go\n- Depends: T-032\n\ninit 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它自身：不改项目根目录的 `.gitignore`，不需要提交；已有项目重新运行 `harness init` 即补上。",
+      "upstream": {
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-001": "sha256:bcf8817cb290c6fff9338fa6c2e441a857f3b5b3d9e39a73896ade4cdfa0457c"
+      }
+    },
+    "T-034": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:4059146434f3aca6e3034bbdfcef0fd359b979402b1faa3600ad75208a24761c",
+      "text": "### T-034 测试包构建失败记为失败结果（DEBT-011）\n- Covers: AC-020-2\n- Design: IF-008\n- Scope: internal/testreport/**\n- Depends: T-033\n\n`go test -json` 中某个包失败、而该包没有任何失败的测试时（构建失败、TestMain 失败、测试外的 panic、超时），解析结果增加一条该包的失败记录，由 test.03 报告。",
+      "upstream": {
+        "FR-020": "sha256:33306e617e05d0f2c0d3c74a9fe3204e8cf3b8d5bfdaa107b233bb0e1c5fde2b",
+        "IF-008": "sha256:81c79235740ebb3db9774188727106ce9943ea9a04632173a15523cb4b51e50c"
+      }
+    },
+    "T-035": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:a53295377f188741df463d6afb8309e0420ebe858d4036d0c79ebd97ad3d6165",
+      "text": "### T-035 门禁解析命令时跟随 cd（DEBT-012）\n- Covers: AC-012-2\n- Design: FLOW-02\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/app/gate_integration_test.go\n- Depends: T-034\n\n同一条命令中字面量的 `cd <目录>` 之后，相对路径按该目录解析；`cd` 的目标无法静态判定时，之后的写入交给命令后比对。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a"
+      }
+    },
+    "T-036": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:eb4fd01c5ce57332f121ee82525c03dc5a46e9fe96d3f55e1dc3e4722a1dd193",
+      "text": "### T-036 secret.entropy 不把由单词拼成的标识符判为密钥（DEBT-013）\n- Covers: AC-025-2\n- Design: FLOW-02\n- Scope: internal/gate/**, internal/app/security_integration_test.go\n- Depends: T-035\n\n计算熵之前排除标识符形状的 token：只含字母、数字、下划线，按大小写边界、字母数字边界与 `_` 切开后至少 3 段，且大部分字母落在 3 个字符以上的段中。随机密钥切开后多为一两个字符的碎片，仍按熵判定。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434"
+      }
+    },
+    "T-037": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:269d9deef31565df74d2f0a34c23738ffe06f9e8e8cf6b262a62e7cfd1897b05",
+      "text": "### T-037 需求提交使用 Change 尾注\n- Covers: AC-013-5\n- Design: FLOW-09, IF-014\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/app/commit_integration_test.go\n- Depends: T-036\n\ncommit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CHG-n` 尾注代替 Task 尾注；Change 尾注引用的 CHG 须在变更日志中存在，不能与 Task 尾注同时出现。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
+        "FR-013": "sha256:79e801ce72d2545f6cfecdac599d58514edac0d42521ec3fccdd43aa7f4c83b0",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-038": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:08b7553940e256856dece9e5d487e4e39067b35153560685512e20dcf61d04c3",
+      "text": "### T-038 需求取代关系（Replaces / Replaced-By）\n- Covers: AC-003-6\n- Design: FLOW-01, IF-014, IF-022\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_02.go, internal/rules/builtin/prd_12.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/task_02.go, internal/rules/builtin/test_02.go, internal/rules/builtin/testdata/prd.12/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**\n- Depends: T-037\n\n被取代的条目在取代者的 Release 不大于 Current-Release 时按 Removed 判定：覆盖检查不再要求它，trace.03 报告对它的引用。新增 prd.12 校验 `Replaces` 与 `Replaced-By` 互相对应、引用存在、被取代者的 Release 小于取代者。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+      }
+    },
+    "T-039": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:60244ec1fca9eca76c8eb0b4f85402a041dd779d25756e4f9d641073dd75ff1b",
+      "text": "### T-039 门禁以项目根判定，命令从代理的当前目录解析（DEBT-015）\n- Covers: AC-012-2, AC-025-4\n- Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019\n- Flow: FLOW-02\n- Scope: internal/cli/gate.go, internal/app/gate.go, internal/gate/**, internal/adapter/**, internal/app/gate_integration_test.go\n- Depends: T-037\n\n适配器在 Request 中填写 Root（从 hook 输入的 cwd 向上查找的项目根）与 Cwd；`harness gate` 以 Root 加载快照、保存命令前快照与会话状态，Root 为空时退回进程当前目录；命令中的相对路径从 Cwd 开始解析。回归测试：shell 停在子目录时，写 `../harness.lock` 被拒绝，命令前快照建在仓库根的 `.harness/` 下。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FLOW-03": "sha256:b06dcead297d29b7d1dbba69463213911be341286208a000539c8b49968ba6e8",
+        "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
+        "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434",
+        "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
+        "IF-018": "sha256:026462d45210401744c68ca0486f26b6ab2c4b9dda435fe266b145a007bdcb37",
+        "IF-019": "sha256:8ba0869f2215c708a5c157ae39ab141ae68a8f58268c576a83da6084f96f7308"
+      }
+    },
+    "T-040": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:f00a7b0897d40e05a8db7de6e537cdad77be311e916bab9b138c87a9acc9e81a",
+      "text": "### T-040 版本信息\n- Covers: FR-049\n- Design: MOD-18, IF-037, FLOW-07\n- Flow: FLOW-07\n- Scope: internal/version/**, internal/cli/**, .goreleaser.yaml, internal/scaffold/scaffold.go, internal/scaffold/rule.go, internal/scaffold/*_test.go, internal/app/version_integration_test.go\n- Depends: T-039\n\n`harness version` 与 `--version` 输出版本；发布构建经 -ldflags 注入版本号，`go install` 构建取模块版本或提交哈希（含 -dirty）。顺带为 IF-020、IF-021 补锚点与单元测试。",
+      "upstream": {
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-049": "sha256:765e0b6f3b403387ff75dcd60bef7dab96da73b623194fe1dbf91e23f6e7c367",
+        "IF-037": "sha256:16245cb12efaea30a5bda7cef503e0cbd127ec026b2d7e5f5181229353adfe73",
+        "MOD-18": "sha256:3e0c21b76ac4e5236986293c46fd3bf206bfd49a62ba04f6dff7122b2e8a7ff8"
+      }
+    },
+    "T-041": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:7ca0578515ff79391ed66e8dd902737f15e7f102f5d616734cd3d5189b937c77",
+      "text": "### T-041 按单位批准\n- Covers: AC-047-1, AC-047-2, AC-047-3\n- Design: MOD-15, IF-027, IF-028, IF-029, IF-006, IF-011, IF-024, FLOW-08\n- Flow: FLOW-08\n- Scope: internal/approval/**, internal/lock/**, internal/rules/engine/**, internal/rules/builtin/approve_01.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/approve.01/**, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/registry.go, internal/app/**, internal/cli/**\n- Depends: T-040\n\n批准单位与哈希、批准链与状态（IF-027、IF-028），锁文件第 2 版的 `units`，`harness approve <路径、prd 或单位编号>` 显示差异并按单位记录。engine 的告警（Violation.Warn，不影响退出码）在此加入；approve.01 在锁文件为第 2 版时按单位列出未批准与失效项（告警），task.07 在第 2 版时按批准链判定。",
+      "upstream": {
+        "FLOW-08": "sha256:e124ecc4f24078826c4108a811af103b2623ffef24b29b3ad56e108a8b475a70",
+        "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
+        "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
+        "IF-011": "sha256:42a4a490aab881ba60b0ac650cd352ddcdc419321d39765f59453012fc999c6c",
+        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+        "IF-027": "sha256:3799e27c399926e4cbc1b4ad4630d54e3640195c619c80c9dbdd7957107d1046",
+        "IF-028": "sha256:428ef7a9301799478b870755a067a0ca13644a92e432a1bdbe3b540f54e6a972",
+        "IF-029": "sha256:54206b45b55cc67ea23facba4d65ff0e619f23f06c6ce0213e33fd8b31fa6380",
+        "MOD-15": "sha256:8bc0da94a3e7e2d34d921e892f98a12151cbb525917c198a769472b28cd3b25e"
+      }
+    },
+    "T-042": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:eb1d536f0f3343178bfeb3d433f6d1019779c0ebeab1c11a1985608dd49ba005",
+      "text": "### T-042 锁文件迁移\n- Covers: AC-047-6\n- Design: IF-029, IF-006, IF-023, FLOW-10\n- Flow: FLOW-10\n- Scope: internal/approval/**, internal/lock/**, internal/app/**\n- Depends: T-041\n\n`harness lock` 把 Release 1 的按文件批准迁移为按单位批准，写审计记录；`phase` 字段由 T-054 删除（在此之前门禁仍按阶段判定产物写入）。在本仓库执行迁移后，任务需要按单位批准才能开工。",
+      "upstream": {
+        "FLOW-10": "sha256:fc179f1474858beaec7216e9cde7119971e440b1ed73c6aeaa44f9014d108be1",
+        "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
+        "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
+        "IF-023": "sha256:c9a1ee5391322ba065c0ee970420d08ba40147a2b7183bb02eeb6038347b7283",
+        "IF-029": "sha256:54206b45b55cc67ea23facba4d65ff0e619f23f06c6ce0213e33fd8b31fa6380"
+      }
+    },
+    "T-043": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:93c59a0c987a3fe39b8e28dccd37968167a5b3bedcf533fa44692163daa184f3",
+      "text": "### T-043 门禁按批准链判定\n- Covers: AC-047-4, AC-047-5, AC-048-2, AC-048-3\n- Design: IF-017, IF-028, IF-025, FLOW-02, FLOW-06\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/adapter/**, internal/approval/**, internal/phase/**, internal/app/**\n- Depends: T-042\n\n锁文件为第 2 版时：`docs/` 任何时候可写（去掉 gate.artifact），源码写入检查 InProgress 任务的批准链，会话开始注入批准状态摘要与建议的 skill。顺带为 IF-015 ~ IF-019、IF-025 补锚点与单元测试。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FLOW-06": "sha256:ea215ca977c6c5c199ce7b299f3d672df4ff8682b116c1a7a759e61fee8fab3a",
+        "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
+        "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
+        "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
+        "IF-025": "sha256:b75b999f7f1d7977f08e67e7f364ffe82fd39c4298da506ffdc1eb712cfca6eb",
+        "IF-028": "sha256:428ef7a9301799478b870755a067a0ca13644a92e432a1bdbe3b540f54e6a972"
+      }
+    },
+    "T-044": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:d5a1b64847befb8367d80a12a8564efcf3e0d11aeb36569ec392d6ba1e12b91c",
+      "text": "### T-044 声明式自定义规则\n- Covers: FR-054\n- Design: MOD-17, IF-036, IF-013, IF-024, FLOW-08\n- Flow: FLOW-08\n- Scope: internal/rules/custom/**, internal/workspace/**, internal/lock/**, internal/app/**\n- Depends: T-043\n\n按 `harness.json` 的 rules 构造 required、enum、ref、forbid 四类规则；校验编号前缀、样本与批准单位类型；样本目录纳入锁文件；`approveFor` 的规则在批准该类单位时运行。",
+      "upstream": {
+        "FLOW-08": "sha256:e124ecc4f24078826c4108a811af103b2623ffef24b29b3ad56e108a8b475a70",
+        "FR-054": "sha256:383913c520d024c7aef642f0291b857bf8374102dda6f21c270ce55bbfcfa2d5",
+        "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
+        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+        "IF-036": "sha256:5aa92fb81827b2b249325bbd3115ac27f6734dd1053ee007d1c8fa4598d00dfb",
+        "MOD-17": "sha256:e6c8dee6cfaef8ac554487264153743764f3d46aa1f987eee1f6c1c3b568857b"
+      }
+    },
+    "T-045": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:a684fc61cb0313107c51e396c367f8d76e13823b5033d2419fd4c08816e15524",
+      "text": "### T-045 外部工具运行器与 lint\n- Covers: AC-014-2, AC-014-3, AC-014-4, AC-014-5\n- Design: MOD-16, IF-030, IF-031, IF-032, IF-033, IF-034, IF-038, FLOW-11\n- Flow: FLOW-11\n- Scope: internal/toolrun/**, internal/lang/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/lint_01.go, internal/rules/builtin/cfg_03.go, internal/rules/builtin/testdata/lint.01/**, internal/rules/builtin/testdata/cfg.03/**, internal/rules/builtin/registry.go\n- Depends: T-044\n\n五种语言的语言配置包（IF-034）；toolrun 的 Lint、Unit、Smoke 运行器与报告读写；`harness check lint|unit|smoke`；规则 lint.01、cfg.03。Unit 的覆盖率采集在 T-049 接入 Go。",
+      "upstream": {
+        "FLOW-11": "sha256:4cca329d02de900b1a828292b24b8a40d81b8dc600170e6d6a8b03f32b6e7bbe",
+        "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
+        "IF-030": "sha256:692b0b050c908f87c589aeff96e7f649ea0ccf6522ef43e3f4a2da0be111ec54",
+        "IF-031": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
+        "IF-032": "sha256:856657cd1cbeda2636c4d357481de5bbbeba651dde4a5e7492d59937143c0fe0",
+        "IF-033": "sha256:14f032c6bd64269bf30a952afd01fdd5ac3495da071b286a259d2b9b8f21c926",
+        "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4",
+        "IF-038": "sha256:861c935b4ef3a43bc75d208515d0885d141d75b6ecb3dce3f7c607f62bdb8719",
+        "MOD-16": "sha256:8d746428ba215e9b4a580acbc234fc84b265004637eff503ccfaade6a1502366"
+      }
+    },
+    "T-046": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:7e8ad7521db476cf7956a68345b3667cecb17ec4584a7b82dcf867a019076012",
+      "text": "### T-046 启动与冒烟测试命令声明\n- Covers: AC-055-1\n- Design: IF-010, IF-014, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/workspace/**, internal/rules/builtin/smoke_01.go, internal/rules/builtin/testdata/smoke.01/**, internal/rules/builtin/registry.go, internal/app/**\n- Depends: T-045\n\n项目配置的 `start` 字段（`none: <原因>`）与规则 smoke.01；本仓库的 `harness.json` 补上 start（由人修改并登记 CHG）。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-055": "sha256:c0093cbbf518e4e135a6ec7c338fcb1cb5db63100c5ac91716dd18d51520baf6",
+        "IF-010": "sha256:1c7e34091a1af8f7bd2c8a08ba64a969228f091eeb25db0d50c9b319752f8801",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-047": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:1d2acff0cdf044b32f7e766506b25d2d9be2369b6a15ab9efb4b0c1be36a1ae5",
+      "text": "### T-047 init 与 CI：语言配置包、工具配置文件、固定版本\n- Covers: AC-014-1, AC-014-6, AC-014-7, AC-055-2, FR-051\n- Design: IF-020, IF-021, IF-026, IF-034, IF-037, FLOW-07\n- Flow: FLOW-07\n- Scope: internal/scaffold/**, internal/lang/**, internal/app/**, internal/cli/**\n- Depends: T-046\n\ninit 改用 IF-034 的语言配置包，缺失时生成工具配置文件；CI 模板依次运行 lint、unit、smoke、check、check commits；用户项目下载固定版本的发布归档并校验，没有发布版本号时拒绝（`--ci-version`）；cfg.02 按 CI 固定版本比对并提示升级。本仓库的 CI 配置用 `harness init` 重新生成。",
+      "upstream": {
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
+        "FR-051": "sha256:5b19968302a9e20d4ae9e11bc13f88c21da0553654e0c2daf767a7bac2bcb16a",
+        "FR-055": "sha256:c0093cbbf518e4e135a6ec7c338fcb1cb5db63100c5ac91716dd18d51520baf6",
+        "IF-020": "sha256:2c0bcab8d4df679a77c5ce4ad88f85bf02172653b6106ee620f06d0abf793f61",
+        "IF-021": "sha256:82dfc28a06b1ebe84257e3bdcf9c7d8bedf6440d9a40d84710c88b97ca8eb1c1",
+        "IF-026": "sha256:9b0bcb737b73ccc9389490608608ddc29f9553658671eb705ba17b18973a96e7",
+        "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4",
+        "IF-037": "sha256:16245cb12efaea30a5bda7cef503e0cbd127ec026b2d7e5f5181229353adfe73"
+      }
+    },
+    "T-048": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:291c4282cfcc3531516748bab2305dbb5e176ef172f825dc03128beaf8c096c0",
+      "text": "### T-048 Go 接口锚点与签名快照\n- Covers: FR-052\n- Design: IF-035, IF-039, IF-014, FLOW-01, FLOW-12\n- Flow: FLOW-01\n- Scope: internal/lang/**, internal/app/**, internal/cli/**, internal/workspace/**, internal/lock/**, internal/model/**, internal/rules/engine/**, internal/rules/builtin/**, internal/rules/custom/**, internal/vcs/**, internal/testreport/**, internal/approval/**\n- Depends: T-047\n\nGo Analyzer 的 Imports、Anchors、Resolve；`harness snapshot` 写 `docs/architecture/interfaces.txt`；规则 if.01 ~ if.04；锁文件的 `snapshot:IF-n`。补齐 FLOW-01 各模块的锚点。详细设计与代码签名不一致的接口，改设计或改代码，改设计时需人重新批准。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FLOW-12": "sha256:da610a98e5e4803f723c405938e2f75ba7c57d094b8f7b4dc01a5444323a32d0",
+        "FR-052": "sha256:8489677566027f291fd7cd00fa595d467c7d366834c42251dbde7a8f8fa06cfb",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-035": "sha256:41cba669a3c7470faa4dde0f7a9b9c83a6ae3befc66abdd5a378ad3784bf9ece",
+        "IF-039": "sha256:0fbcc9158b547c1fbd018ad3de17e475646bf2e9f43df574f12c0c6257ab261c"
+      }
+    },
+    "T-049": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:5f27fb8c3afef2b08efc8f22409efe710cef5407859a7cbef1141681f4533afd",
+      "text": "### T-049 单元测试追溯\n- Covers: FR-021\n- Design: IF-031, IF-033, IF-035, IF-014, FLOW-11\n- Flow: FLOW-11\n- Scope: internal/lang/**, internal/toolrun/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/unit_0*.go, internal/rules/builtin/testdata/unit.0*/**, internal/rules/builtin/registry.go\n- Depends: T-048\n\nGo Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆盖率；规则 unit.01 ~ unit.03。补齐 IF-004、IF-022 ~ IF-026 的单元测试；模块覆盖率低于阈值时补测试。",
+      "upstream": {
+        "FLOW-11": "sha256:4cca329d02de900b1a828292b24b8a40d81b8dc600170e6d6a8b03f32b6e7bbe",
+        "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-031": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
+        "IF-033": "sha256:14f032c6bd64269bf30a952afd01fdd5ac3495da071b286a259d2b9b8f21c926",
+        "IF-035": "sha256:41cba669a3c7470faa4dde0f7a9b9c83a6ae3befc66abdd5a378ad3784bf9ece"
+      }
+    },
+    "T-050": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:9e352732c539a3909a010ea89ab241b831ce5f7680bc74e4539539f29f851bd3",
+      "text": "### T-050 Go 模块依赖与封装\n- Covers: FR-053, FR-035\n- Design: IF-035, IF-014, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/lang/**, internal/rules/builtin/deps_0*.go, internal/rules/builtin/testdata/deps.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-049\n\n规则 deps.01 ~ deps.04：跨模块 import 须在 Depends 中且指向 Public，sourcePaths 内的源文件须有归属，Depends 中的模块须被使用。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-035": "sha256:73c6fb37ae06b7e007adeebd7aa4452f68d2cba1efe70a790fd032b3ce559ae0",
+        "FR-053": "sha256:cc50039cd3243ab909132397cdc4c457a2bceb209f80df4ce78d85e1c64e4b7b",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-035": "sha256:41cba669a3c7470faa4dde0f7a9b9c83a6ae3befc66abdd5a378ad3784bf9ece"
+      }
+    },
+    "T-051": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:5c2f6b6600ed3029ca85c04f7429aaa09ebe754edd33fbdd179bf47fee2c7389",
+      "text": "### T-051 机械改动任务\n- Covers: FR-050\n- Design: IF-035, IF-014, FLOW-09\n- Flow: FLOW-09\n- Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-050\n\n`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。",
+      "upstream": {
+        "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
+        "FR-050": "sha256:816ac65f0cc05099c0ea0f75ae029ef40ac4ad4b821812fa2fd60df7668f566c",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-035": "sha256:41cba669a3c7470faa4dde0f7a9b9c83a6ae3befc66abdd5a378ad3784bf9ece"
+      }
+    },
+    "T-052": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:cce3a831107c85c37d822d7de5de7a2feaf50f509b1ba68089de8ad2d1ab4c72",
+      "text": "### T-052 文档引用检查\n- Covers: FR-030\n- Design: IF-012, IF-014, IF-022, IF-009, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/doc_0*.go, internal/rules/builtin/testdata/doc.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/workspace/**, internal/app/**, internal/cli/**\n- Depends: T-051\n\n规则 doc.02 ~ doc.05：受检 Markdown 行内代码中的路径、`harness` 子命令、编号引用，以及详细设计可能过期的告警；cli 把子命令名传入 CheckOptions。修正本仓库文档中被报告的过期引用。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-030": "sha256:70bddc4c3540f9fa146260cece22cfd56457a981f054215110dc416743d381a1",
+        "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
+        "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
+        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+      }
+    },
+    "T-053": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:fd5f917e435632bc0bba4d13982d38d1c24e84b27dbbdd6bc35822330e47e369",
+      "text": "### T-053 抑制注释登记\n- Covers: FR-042\n- Design: IF-003, IF-014, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/supp_01.go, internal/rules/builtin/testdata/supp.01/**, internal/rules/builtin/registry.go, internal/app/**\n- Depends: T-052\n\n规则 supp.01：抑制注释同一行须引用 Open 的 DEBT。",
+      "upstream": {
+        "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
+        "FR-042": "sha256:7e93d0e8add0e17b5bdf32a607bc3a4dc45b7bbd9674dc9e4fe47970b7df80ed",
+        "IF-003": "sha256:f99582967b3d08b88506ed685146b849adbdc7bc90e74dc478592b86022ece6d",
+        "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525"
+      }
+    },
+    "T-054": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:6d0ddd01ac466a3211ac9738532360148d61708764efc07747a457595ed1a05e",
+      "text": "### T-054 删除阶段（门禁、命令）\n- Covers: AC-048-1\n- Design: IF-017, IF-024, FLOW-02\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/app/**, internal/cli/**, internal/phase/**\n- Depends: T-053\n\n去掉门禁、app、cli 中的阶段逻辑与 Release 1 的按文件批准分支；`harness phase` 提示已删除。",
+      "upstream": {
+        "FLOW-02": "sha256:96c4d2ad9e0878d212fa419b9aa0d9c71cc3ff6678d21e4a7c35b360f004218d",
+        "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
+        "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
+        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74"
+      }
+    },
+    "T-055": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:22fadcaebf61346f1b22c027456ce05f8c78d62099a8abe3a03319a7682d43ba",
+      "text": "### T-055 删除阶段模块，Release 2 生效\n- Covers: FR-048\n- Design: MOD-10, EXT-04, IF-020, FLOW-07\n- Flow: FLOW-07\n- Scope: internal/phase/**, internal/scaffold/**, internal/app/**, internal/cli/**\n- Depends: T-054\n\n删除 `internal/phase/`、scaffold 中的阶段用法与 skill 中的阶段说明；设计中 MOD-10、EXT-04 改为 Removed，去掉对 MOD-10 的依赖与 IF-015、IF-016 的流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。",
+      "upstream": {
+        "EXT-04": "sha256:d9b48db62ab67392b94b00ef7c594b9c350f929834bcc8623bd7367a039ca6a8",
+        "FLOW-07": "sha256:b4b1d947a31ab4bb0040b1e972c37975cf4c2415bb516fdd6500dc716ce09d40",
+        "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
+        "IF-020": "sha256:2c0bcab8d4df679a77c5ce4ad88f85bf02172653b6106ee620f06d0abf793f61",
+        "MOD-10": "sha256:9b5c7bacbb3be56139fa4fa4da7dbdcc65010155017bcd51a430e567497fbefb"
+      }
+    },
     "TERM": {
       "at": "2026-11-26T12:17:49Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
@@ -2486,6 +3240,13 @@
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:37fb46f6d0086ddf771419732e98cc0f3f1d20c00c59d197aaccd4706b0f90d5",
       "text": "# 架构总览：harness\n\n- Updated: 2026-11-26\n- PRD: 1.0-rc3\n\n本文件是概要设计：模块划分、依赖、扩展点。每个模块的接口签名和内部设计见 `docs/architecture/modules/`，跨模块调用流程见 `docs/architecture/flows.md`，产物格式见 `docs/architecture/formats.md`，架构决策见 `docs/adr/`。\n\n## 1. 分层与依赖\n\n```\nL4 入口   MOD-01 cli ──▶ app, adapter, version\nL3 编排   MOD-02 app\nL2 能力   MOD-13 scaffold ──▶ adapter, lang, version\n          MOD-11 gate ──────▶ approval, engine            MOD-12 adapter ──▶ gate ◀ EXT-02\n          MOD-16 toolrun ───▶ testreport, lang\n          MOD-17 custom ────▶ engine                      （项目自定义规则）\n          MOD-05 builtin ───▶ engine, approval + L0        ◀ EXT-03\n          MOD-04 engine\n          MOD-15 approval ──▶ workspace, lock, model\n          MOD-10 phase（Release 2 删除；app、gate、scaffold 对它的依赖随之去掉） ◀ EXT-04\nL1 加载   MOD-09 workspace\nL0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MOD-14 lang ◀ EXT-01 · MOD-18 version\n```\n\n依赖规则（与第 2 节各模块的 Depends 字段一致，以 Depends 字段为准）：\n\n- 叶子模块（model、lock、vcs、testreport、lang、version）不依赖任何模块。\n- workspace 只依赖叶子模块，负责一次性加载项目快照。\n- engine 只依赖 workspace；approval 依赖 workspace 与叶子模块；builtin（内置规则）依赖 engine、approval 和叶子模块；custom 依赖 engine。\n- gate、scaffold、toolrun 依赖其下各层，不互相依赖。\n- app 是唯一的编排层；cli 只依赖 app、adapter 和 version。\n\n## 2. 模块\n\n## 3. 扩展点",
+      "upstream": {}
+    },
+    "docs/tasks.md#正文": {
+      "at": "2026-11-26T12:48:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:c4f12bd10e4a3b0078022275f20524fbad09dcf2ab1c1595e1f5696c8e6c07aa",
+      "text": "# 任务列表\n\n- Updated: 2026-11-26\n- PRD: 1.0-rc3\n- Release: 1\n\nRelease 1 的任务，按执行顺序编号。字段格式见 `docs/architecture/formats.md` 第 3 节。\n\n约定：\n- 集成测试放在 `internal/app/<主题>_integration_test.go`，夹具在 `internal/app/testdata/<主题>/`，测试名包含用例编号（如 `TestCheck_AC_003_1_N1`）。\n- 每个提交带 `Task: T-n` 尾注，改动不超过 400 行（不含产物文件和生成文件）。\n- 任务的 Covers 可以是 FR、NFR 或 AC（ADR-008）；任务 Done 要求所关联条目涉及的用例全部通过。\n- 在对应检查实现之前完成的任务，用 `go test` 与原型脚本验证；检查上线后回溯校验此前全部任务。\n\n## 任务\n\n## Release 2\n\n各任务实现新接口时，在实现处加 `// harness:IF-n` 锚点（formats.md 第 8 节），并为接口写测试名含其编号的单元测试（如 `TestUnits_IF_027`）；任务涉及已有模块时，顺带补齐这些模块中接口的锚点与单元测试。T-048、T-049 的规则依赖这些锚点与测试。",
       "upstream": {}
     }
   },

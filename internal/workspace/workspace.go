@@ -13,6 +13,7 @@ import (
 
 	"harness/internal/lock"
 	"harness/internal/model"
+	"harness/internal/vcs"
 )
 
 // Snapshot 是一次检查的只读输入。规则只读快照，不自行读文件。
@@ -21,6 +22,9 @@ type Snapshot struct {
 	Config  *Config
 	Project *model.Project
 	Lock    *lock.Lock // 锁文件不存在时为空 Lock（空基线）
+	Repo    vcs.Repo   // 非 git 仓库时为 nil
+	// CommitRange 是要检查的提交范围；为空时依赖 git 的规则检查暂存区（即将形成的提交）。
+	CommitRange string
 	Diags   []model.Diagnostic
 }
 
@@ -52,7 +56,10 @@ func Load(root string, opt LoadOptions) (*Snapshot, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &Snapshot{Root: root, Config: cfg, Lock: lk}
+	s := &Snapshot{Root: root, Config: cfg, Lock: lk, CommitRange: opt.CommitRange}
+	if r, err := vcs.Open(root); err == nil {
+		s.Repo = r
+	}
 	var docs []*model.Doc
 	for _, rel := range artifactFiles(root) {
 		src, err := os.ReadFile(filepath.Join(root, rel))

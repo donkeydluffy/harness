@@ -1,0 +1,11 @@
+{
+  "sourceHash": "sha256:7b4f38949735434373a7bb22d6072afbb543963e1a6d6338974d6445b00d547d",
+  "issues": [
+    {
+      "file": "internal/a/a.go",
+      "line": 1,
+      "tool": "go vet",
+      "msg": "unreachable code"
+    }
+  ]
+}

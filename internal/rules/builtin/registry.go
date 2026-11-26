@@ -52,6 +52,8 @@ func Rules() []engine.Rule {
 		commit04{},
 		approve01{},
 		cfg01{},
+		cfg03{},
+		lint01{},
 		ci01{},
 	}
 }

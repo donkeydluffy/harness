@@ -1,0 +1,10 @@
+{
+  "languages": [
+    "go"
+  ],
+  "tools": {
+    "go": {
+      "lint": "staticcheck ./..."
+    }
+  }
+}

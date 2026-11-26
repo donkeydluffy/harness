@@ -252,4 +252,3 @@
 ### 2026-11-26 T-048
 - 结论：Go 分析器实现 Imports、ModuleDecl、Anchors、Resolve 与 Coverage（Coverage 原计划在 T-049，因 IF-035 的接口须与设计一致而提前实现，T-049 直接使用）。签名按词法单元规范化为一行，去掉注释、函数体与结构体字段标签，`[` 前是否留空格按源码原有空白区分类型参数与切片类型。`harness snapshot` 写 `docs/architecture/interfaces.txt`，锁文件记录 `snapshot:IF-n`。规则 if.01 ~ if.04 只检查路径内有 Go 源文件的模块；if.04 在锁文件还没有接口快照时视为空基线。设计中全部 39 个接口都已有锚点；Approve 的参数名改为与设计一致的 target。IF-012 的设计补上 Report.Warnings，formats.md 写明 `rule:<编号>` 的哈希包含规则定义，两处需人重新批准。
 - 遗留：IF-006 的锚点放在 `Read` 上：代码中的 `Lock` 结构体还有 Phase 字段，设计已是删除后的形态，T-054 删除 Phase 后把锚点移回 `Lock`。本仓库锁文件的接口快照基线需人运行 `harness lock` 写入。
-

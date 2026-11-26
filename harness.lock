@@ -634,7 +634,7 @@
     "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
     "IF-010": "sha256:1c7e34091a1af8f7bd2c8a08ba64a969228f091eeb25db0d50c9b319752f8801",
     "IF-011": "sha256:42a4a490aab881ba60b0ac650cd352ddcdc419321d39765f59453012fc999c6c",
-    "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+    "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
     "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
     "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
     "IF-015": "sha256:18474bcfef2afc15f9e155451cc65b5e41b04dae55ae4bc453d4f5928d72d5e4",
@@ -671,7 +671,46 @@
     "NFR-007": "sha256:bf87e515080cebeaebc99536614feaf1bb582ea02997f0cc494564f6583d7957",
     "NFR-008": "sha256:5718afd9e0144ee9cdb1dabe790a40dd24d619891461354d176b86b39f325e4a",
     "NFR-009": "sha256:d4adb1bec845b78818fd9250e067c71f531d1eb86db732c3ff38c2dfd739d6fc",
-    "config": "sha256:b7e0a004e7ab3704146c432fba428eed349df7892e5b662bcdae4aa3b484cfaa"
+    "config": "sha256:b7e0a004e7ab3704146c432fba428eed349df7892e5b662bcdae4aa3b484cfaa",
+    "snapshot:IF-001": "sha256:16ba19399e8518f4086d2118d1407a2f4e30362f784255fb11c287acd5cac142",
+    "snapshot:IF-002": "sha256:7a49a8e775537cf005b45ca9f278ca74b78a2d215e90bb2c475448b77f7d5720",
+    "snapshot:IF-003": "sha256:0f93308a63830057b8215071a6ebb2afc89f4606e61704390fbafd722e09d871",
+    "snapshot:IF-004": "sha256:6cdad9cb89c152aac128e29bf5a8beb55ea5032ab0a66c1e4bf83becb58dc450",
+    "snapshot:IF-005": "sha256:ab247cb8d8bbc2ed96faf4d01fc21bff80086c06241f4c2e7fb16727c52f4dc1",
+    "snapshot:IF-006": "sha256:b71a7bd8e7d22045092e203bfa70a013701a07ce843676fb8a2cdde2af3f10ff",
+    "snapshot:IF-007": "sha256:1ec701db750a7fe5c594a18488479e679d9e58dac595c2041f469cb540bac15e",
+    "snapshot:IF-008": "sha256:99184c0b0b48e6f0fa5cb0c3e428dfb323ae75453067b4c0e3d4ef59760c8c3c",
+    "snapshot:IF-009": "sha256:0cf1b52e60574294c495d7692deac9f4e644042d38cc208227fae9d25cabfbd2",
+    "snapshot:IF-010": "sha256:f307ce22f10cba42851cd9079562234bf9752e3e6fd11f3defe2a89b3ee667b0",
+    "snapshot:IF-011": "sha256:6425d2423dacd7f86c9ab8f1d6e2db6294ebc5e13868517ab6be3ae0f04f63a9",
+    "snapshot:IF-012": "sha256:bdea8d4aea9c4c7ab0ec65340c4be45dc07842087122f314832afe2859001237",
+    "snapshot:IF-013": "sha256:5dc85c3eefb407712e5132cf2f8d91c7eb0f4b43a4aae1b6a74dff25aa2f73c2",
+    "snapshot:IF-014": "sha256:1ca4b8e58567da1d6b79c44afb9a27da9e31b5388364c492a100f99841e013d4",
+    "snapshot:IF-015": "sha256:855c7e9cba51ee2f7ab17e4e197cebf012805e8f3ea339b3eb45a56512b21cfd",
+    "snapshot:IF-016": "sha256:30512fc20079dd58598200507e9a43825e415b75fd13d68e8943fde2bdebf532",
+    "snapshot:IF-017": "sha256:c705c681d698f0f81ec864bb570ab58f4e834c657e644bdf473986dce6543796",
+    "snapshot:IF-018": "sha256:e7dfa2073ba3cf80dfd63192276ac3b661ce4dc00e64126ed1a9465c39d5f11d",
+    "snapshot:IF-019": "sha256:8fc5aaa33f5c91169c8b9784a7a14878a6a5e466cd723a97e266138582f9eba4",
+    "snapshot:IF-020": "sha256:bb376d143c86f8735aac24ded58ec821b878d7c7ddb43c6ab212f31a043b02e3",
+    "snapshot:IF-021": "sha256:81000f9561084feebef6595649a61e30db7cbe2778d74330fa75b0fc3716bd58",
+    "snapshot:IF-022": "sha256:646337131a5739d6c5896798ca1863992d533a2be4ece69cb1589dca60a70887",
+    "snapshot:IF-023": "sha256:68f31282e263c55d3974f344032ad4862f2953a0234c27ef2ea3d142612ac317",
+    "snapshot:IF-024": "sha256:55ccedf3181b13ced4a6e9975502cc0b2f15a513b4e573c11c7607944b5b9897",
+    "snapshot:IF-025": "sha256:e0696a3b48bbbd59103e547b2b7f483d82d048a5e4aeac01833cf46502c9ed0b",
+    "snapshot:IF-026": "sha256:1111b42bc518765eb84e428fcf9a6f82e543a14094dca96b72e4f631dc007dfb",
+    "snapshot:IF-027": "sha256:5736b4b0d04a22904f8bf4f9b1e4f43db42272bbd6314ff279e4cf16d6097de7",
+    "snapshot:IF-028": "sha256:24e51a4f31fb6338d2b599e76cb52ecee2c6fe0d1def91563a12ff5c5a4b5f0e",
+    "snapshot:IF-029": "sha256:740d733419a4bbb962be378c3f8388e4df8e3d23378751031f29eacc1127013a",
+    "snapshot:IF-030": "sha256:b0169c698b8dd48634e0f28a120117e53dbfeb55e3876c78fc40a645f15b34ca",
+    "snapshot:IF-031": "sha256:948440e9df47e8dfa1b21c85cd43f0d6724135e5a9dedae5e7fba96932d6590e",
+    "snapshot:IF-032": "sha256:4132d210bcc6843baf989c1037fe428469b2272c47b76d71fd0399d596d1d4c1",
+    "snapshot:IF-033": "sha256:9af781a2abd2682f157edf033ca66f93056d4b37897acfad47d3cdc1755bccd1",
+    "snapshot:IF-034": "sha256:133e9fd3d4d4eaa70fc153aa6868e7af93f03667fb600e68f6d4fa86661b96cb",
+    "snapshot:IF-035": "sha256:a54f16e49d7f02f7b2733750c27beef154c5ffb4673d5917ad6dfe8386e4bbfc",
+    "snapshot:IF-036": "sha256:b9805361144909c34af8e167890e6cdf4b694cd8d7a665bd121c99eed18d9fd1",
+    "snapshot:IF-037": "sha256:45d4e680780c4150e6415a3b5e972ddc17bff1d1811212f7779f871a7d81b093",
+    "snapshot:IF-038": "sha256:a12246274c2250d619414625e573c92668368947675134c2d2e303056896b247",
+    "snapshot:IF-039": "sha256:35bb404ae21b4ace339bebc63f938200e623a7f968d2e00bd4070481d23f7510"
   },
   "phase": "implementation",
   "units": {
@@ -1519,10 +1558,10 @@
       }
     },
     "IF-012": {
-      "at": "2026-11-26T12:17:52Z",
+      "at": "2026-11-26T23:31:50Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
-      "text": "### IF-012 Run\n- Module: MOD-04\n- Covers: FR-030, NFR-004\n\n```go\n// IF-012\ntype Selector struct{ IDs []string; Prefixes []string } // 空选择器表示全部\ntype Report struct{ Violations []Violation; Ran []string; Errors []error }\n\nfunc Run(s *workspace.Snapshot, sel Selector) Report // 输出按 文件、行号、规则编号 排序\n```",
+      "hash": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
+      "text": "### IF-012 Run\n- Module: MOD-04\n- Covers: FR-030, NFR-004\n\n```go\n// IF-012\ntype Selector struct{ IDs []string; Prefixes []string } // 空选择器表示全部\ntype Report struct{ Violations, Warnings []Violation; Ran []string; Errors []error } // Warnings：Warn 为 true 的违规，不影响退出码\n\nfunc Run(s *workspace.Snapshot, sel Selector) Report // 输出按 文件、行号、规则编号 排序\n```",
       "upstream": {
         "FR-030": "sha256:70bddc4c3540f9fa146260cece22cfd56457a981f054215110dc416743d381a1",
         "NFR-004": "sha256:e1b1bd48f0c4e5b94fbb27bd560f718ec2942a01c27bb2667c17a5f4ee6f03b4"
@@ -2167,7 +2206,7 @@
       "upstream": {}
     },
     "T-001": {
-      "at": "2026-11-26T12:48:57Z",
+      "at": "2026-11-26T23:32:13Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:2b48b2138cba9669dd1da522a42dbe7356a073c6f0f4406946893a0a9485f433",
       "text": "### T-001 CLI 骨架与 PRD 编号、必填字段检查\n- Covers: AC-003-1, AC-003-2, AC-003-4, NFR-004\n- Design: FLOW-01, IF-001, IF-002, IF-009, IF-010, IF-011, IF-012, IF-013, IF-014, IF-022, ADR-001, ADR-002, ADR-007\n- Flow: FLOW-01\n- Scope: go.mod, cmd/harness/**, internal/cli/**, internal/app/app.go, internal/app/check.go, internal/model/**, internal/workspace/**, internal/rules/engine/**, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_01.go, internal/rules/builtin/testdata/prd.01/**, internal/rules/builtin/prd_02.go, internal/rules/builtin/testdata/prd.02/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**\n- Depends:\n\n端到端骨架（prd.02 同时实现 Release、Current-Release 与 NFR Type 字段校验，AC-003-5 的追溯部分在 T-006 验收）：model 解析器、workspace 加载配置与产物、engine 注册与运行（含样本自检与修复建议必填）、app.Check、`harness check [--json]` 与退出码 0/1/2。完成后 `harness check prd.01 prd.02` 可检查本仓库。engine 附 `TestExample_EXT_03` 示例规则测试。",
@@ -2182,7 +2221,7 @@
         "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
         "IF-010": "sha256:1c7e34091a1af8f7bd2c8a08ba64a969228f091eeb25db0d50c9b319752f8801",
         "IF-011": "sha256:42a4a490aab881ba60b0ac650cd352ddcdc419321d39765f59453012fc999c6c",
-        "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+        "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
         "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
         "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b",
@@ -2410,7 +2449,7 @@
       }
     },
     "T-018": {
-      "at": "2026-11-26T12:48:57Z",
+      "at": "2026-11-26T23:32:19Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:fa0d816e93be4ce70693e87bd870fabe10fdae4b86d528d68ef06dca1d18a688",
       "text": "### T-018 写后检查、会话结束检查与会话开始注入\n- Covers: AC-012-3, AC-012-4, AC-024-1, AC-024-3\n- Design: FLOW-04, FLOW-05, FLOW-06, IF-012, IF-017, IF-019, IF-025\n- Flow: FLOW-05\n- Scope: internal/gate/**, internal/adapter/**, internal/cli/**, internal/rules/engine/engine.go, internal/app/gate.go, internal/app/session_integration_test.go, internal/app/testdata/session/**\n- Depends: T-017\n\nPostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连续阻止 3 次后放行并写进度文件；SessionStart 注入阶段、InProgress 任务、未通过检查、Open 待澄清项、冒烟测试结果。",
@@ -2420,7 +2459,7 @@
         "FLOW-06": "sha256:ea215ca977c6c5c199ce7b299f3d672df4ff8682b116c1a7a759e61fee8fab3a",
         "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
         "FR-024": "sha256:f14699ad8abf11030b45096ee05d39780bf6dfa2b53194c0fe3013ffcabe4a27",
-        "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+        "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
         "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
         "IF-019": "sha256:8ba0869f2215c708a5c157ae39ab141ae68a8f58268c576a83da6084f96f7308",
         "IF-025": "sha256:b75b999f7f1d7977f08e67e7f364ffe82fd39c4298da506ffdc1eb712cfca6eb"
@@ -2843,7 +2882,7 @@
       }
     },
     "T-052": {
-      "at": "2026-11-26T12:48:57Z",
+      "at": "2026-11-26T23:32:24Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:cce3a831107c85c37d822d7de5de7a2feaf50f509b1ba68089de8ad2d1ab4c72",
       "text": "### T-052 文档引用检查\n- Covers: FR-030\n- Design: IF-012, IF-014, IF-022, IF-009, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/doc_0*.go, internal/rules/builtin/testdata/doc.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/workspace/**, internal/app/**, internal/cli/**\n- Depends: T-051\n\n规则 doc.02 ~ doc.05：受检 Markdown 行内代码中的路径、`harness` 子命令、编号引用，以及详细设计可能过期的告警；cli 把子命令名传入 CheckOptions。修正本仓库文档中被报告的过期引用。",
@@ -2851,7 +2890,7 @@
         "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
         "FR-030": "sha256:70bddc4c3540f9fa146260cece22cfd56457a981f054215110dc416743d381a1",
         "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
-        "IF-012": "sha256:9d13498565e95ce6583b5226cc8100a3ebf7f733cbe928efdff55868cfba67e4",
+        "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
         "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
       }
@@ -3115,10 +3154,10 @@
       "upstream": {}
     },
     "docs/architecture/formats.md#正文": {
-      "at": "2026-11-26T12:17:49Z",
+      "at": "2026-11-26T23:32:02Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:a298781d2f2cd6cd598b45576f826c520afebd9bd6db0383c0b754c3f63f85bc",
-      "text": "# 产物格式规范\n\n- Updated: 2026-11-26\n- Relates: ADR-002, MOD-03\n\n所有产物都是 Markdown，由 MOD-03 的同一个解析器读取。机器只读取本文件定义的结构，其余文字自由书写。\n\n## 1. 实体\n\n实体是带编号的标题，加上紧随其后的字段列表：\n\n```markdown\n### MOD-04 engine\n- Status: Active\n- Depends: MOD-09\n- Covers: FR-028, FR-045\n\n自由文字……\n```\n\n- 标题级别不限（`##` 到 `####`），标题文字以编号开头，编号后是名称。\n- 字段：标题之后、第一个空行之前，形如 `- Key: value` 的行。键为英文，区分大小写。\n- 列表值用英文逗号分隔；空值表示空列表。\n- 实体范围：从标题到下一个同级或更高级标题。\n\n## 2. 编号\n\n| 前缀 | 含义 | 正则 | 所在文件 |\n|---|---|---|---|\n| FR / NFR | 需求 | `FR-\\d{3,}` / `NFR-\\d{3,}` | `docs/PRD.md`、`docs/prd/*.md` |\n| AC | 验收标准 | `AC-N?\\d{3,}-\\d+` | 需求内的列表项 `- AC-...:` |\n| 用例 | 验收用例 | `<AC编号>/[NBE]\\d+` | 验收标准下缩进两格的列表项；文字以 `Removed` 开头表示已删除 |\n| OQ | 待澄清项 | `OQ-\\d{3,}` | PRD |\n| CHG | 变更记录 | `CHG-\\d{3,}` | PRD 变更日志表格的第一列；同一编号可占多行 |\n| MOD / EXT | 模块 / 扩展点 | `MOD-\\d{2,}` / `EXT-\\d{2,}` | `docs/architecture/overview.md` |\n| IF | 接口 | `IF-\\d{3,}` | `docs/architecture/modules/*.md` |\n| FLOW | 调用流程 | `FLOW-\\d{2,}` | `docs/architecture/flows.md` |\n| ADR | 架构决策 | `ADR-\\d{3,}` | `docs/adr/ADR-*.md`，一文件一条 |\n| T | 任务 | `T-\\d{3,}` | `docs/tasks.md` |\n| DEBT | 技术债 | `DEBT-\\d{3,}` | `docs/debt.md` |\n| 规则 | 检查规则 | `[a-z]+\\.\\d{2,}`；项目规则同一形式，前缀不得是内置规则的区域（如 `acme.01`，Release 1 为 `x\\.[a-z]+\\.\\d{2,}`） | 代码与 `harness.json` |\n\n规则编号使用小写加点（如 `trace.01`），与产物编号（如 `ADR-001`）在形式上不重叠。\n\n## 3. 各产物的必填字段\n\n| 实体 | 必填字段 | 取值 |\n|---|---|---|\n| FR / NFR | Status, Release, Priority | Active / Removed；正整数；P0 / P1 / P2 |\n| NFR | Type | Quantitative / Constraint / Scenario |\n| FR / NFR（可选） | Replaces, Replaced-By | Replaces 列出被取代的需求或验收标准编号；被取代的需求用 Replaced-By 指回取代者，两边须互相对应（prd.12）。取代者的 Release 不大于 Current-Release 时，被取代的条目按 Removed 判定：覆盖类规则（trace.01、task.02、test.02）不再要求它，trace.03 报告对它的引用；在此之前被取代的条目照常有效 |\n| NFR（Scenario） | Adds, Allowed-Paths, Closed-Modules | 文字 |\n| OQ | Status；Closed 时 Resolution；可选 Relates（关联的需求编号，task.07 据此判定） | Open / Closed |\n| MOD | Status, Paths, Public, Depends, Interfaces, Covers, Core, Coverage | Paths/Public 为 glob 列表；Core 为 true/false；Coverage 为 0-100 |\n| IF | Module, Covers，及一个首行为 `// IF-xxx` 的代码块（签名） | |\n| MOD / IF（可选） | Domain | 该模块或接口使用的领域概念代码名，逗号分隔；每个名称必须出现在统一语言表格的\"代码名\"列（规则 term.02） |\n| FLOW | Covers, Steps | Steps 为 `MOD-a -> IF-xxx` 的有序列表，见第 4 节 |\n| EXT | Status, Interface, Paths, Closed, Relates | Relates 必须是 Scenario 类 NFR |\n| ADR | Status, Relates；正文含 `## 背景`、`## 决策`、`## 后果` | Proposed / Accepted / Superseded；Superseded 时 Superseded-By |\n| T | Status, Covers, Design, Scope, Depends；可选 Extends, Flow | Status: Todo / InProgress / Done / Blocked；Covers: FR、NFR 或 AC 编号；Scope: 仓库相对路径 glob |\n| T（机械改动，可选） | Kind, Rewrite, Relates | Kind: mechanical；Rewrite: 逗号分隔的 `<旧前缀> -> <新前缀>`；Relates 须含一个 ADR；此时 Design 可为空（AC-050-1） |\n| CHG（接口变更） | 说明列以 `Breaking:` 开头 | 删除接口或修改签名的变更必须标注（AC-052-4） |\n| DEBT | Status, Module | Open / Resolved |\n| 进度记录 | 标题 `### <日期> T-n`（日期在前，不构成任务实体；标题后可加说明），正文含 `- 结论：` 与 `- 遗留：` 两行 | 位于 `docs/progress.md`；同一任务可有多条，任意一条两行齐全即可 |\n| 产物文件 | 文件头 Status | Draft / Approved（Approved 只能由 `harness approve` 写入） |\n\n## 4. 调用流程步骤\n\n```markdown\n### FLOW-02 写操作门禁\n- Covers: FR-012, FR-025\n- Steps: MOD-12 -> IF-017, MOD-11 -> IF-016, MOD-11 -> IF-012\n```\n\n每一步读作\"调用方模块 -> 被调用接口\"。规则 `arch.03` 检查：接口存在，且接口所属模块是调用方自身或在调用方的 Depends 中。\n\n## 5. 测试引用编号\n\n测试名中出现的用例、接口、扩展点编号视为引用。编号中的 `-` 和 `/` 在函数名中写作 `_`：\n\n| 引用 | Go 测试名示例 |\n|---|---|\n| `AC-001-1/N1` | `TestInit_AC_001_1_N1` |\n| `IF-012` | `TestRun_IF_012` |\n| `EXT-01` | `TestExample_EXT_01` |\n\n## 6. 项目配置 `harness.json`\n\n```json\n{\n  \"languages\": [\"go\"],\n  \"sourcePaths\": [\"cmd/**\", \"internal/**\"],\n  \"testReports\": [\".harness/reports/*.xml\", \".harness/reports/*.jsonl\"],\n  \"smoke\": \"go build ./... && go test ./internal/app/...\",\n  \"sensitivePaths\": [\".env*\", \"*.pem\", \"*.key\", \"id_rsa*\"],\n  \"sensitiveAllow\": [\".env.example\"],\n  \"dangerousCommands\": [\"git push --force\", \"git push -f\", \"curl * | sh\", \"wget * | sh\"],\n  \"vagueWords\": [\"快速\", \"友好\", \"适当\", \"尽量\", \"等等\", \"之类\", \"如有必要\", \"和/或\", \"大约\", \"灵活\", \"高效\", \"包括但不限于\"],\n  \"commitMaxLines\": 400,\n  \"stopMaxBlocks\": 3,\n  \"staleCommits\": 10,\n  \"start\": \"go run ./cmd/harness version\",\n  \"tools\": { \"go\": { \"lint\": \"staticcheck ./...\" } },\n  \"rules\": []\n}\n```\n\n整个文件的规范化哈希记入锁文件（规则 `cfg.01`）：按 JSON 解析，去掉键为 `\"//\"` 的注释项，键排序后紧凑序列化再求哈希，因此空白、键顺序和注释的变化不算配置变化。配置有实际变化时，须在 PRD 变更日志新增一行对象为 `harness.json` 的 CHG，或新增一条 Relates 含 `harness.json` 的 ADR，然后运行 `harness lock`。\n\n`ci.01`、`cfg.02` 只检查存在 `harness.json` 的项目（执行过 `harness init`）。\n\nRelease 2 新增与删除的字段：\n\n- `start`：启动命令；没有可启动应用的项目写 `none: <原因>`（AC-055-1）。`smoke` 为冒烟测试命令。\n- `tools`：按语言覆盖 `format`、`lint` 命令，未覆盖的使用语言配置包的默认值；语言必须在 `languages` 中（AC-014-3，规则 cfg.03）。\n- `rules`：声明式自定义规则，字段见 IF-036 的 `Def`（如 `{\"id\": \"acme.01\", \"kind\": \"forbid\", \"paths\": [\"internal/**\"], \"pattern\": \"fmt\\\\.Println\", \"message\": \"用日志\", \"samples\": \".harness/rules/acme.01\", \"approveFor\": [\"design\"]}`）。\n- `phases` 删除；存在时被忽略。\n\n以下 `phases` 格式只在 Release 1 有效，Release 2 随 MOD-10 删除。\n\n`phases` 中每项是以下两种之一（规则 `phase.01` 校验）：\n\n- 新增阶段：`{\"name\": \"release\", \"after\": \"implementation\", \"entry\": [], \"exit\": [\"prd.*\"], \"writable\": [\"docs/release/**\"], \"skill\": \"release\"}`。`name` 不得与已有阶段同名；`entry`、`exit`、`writable`、`skill` 必须出现，`entry` 可以为空列表。\n- 修改已有阶段：`{\"name\": \"architecture\", \"addExit\": [\"x.lint\"], \"removeExit\": [\"adr.*\"], \"adr\": \"ADR-009\"}`。只允许 `addEntry`、`addExit`、`removeEntry`、`removeExit`；有移除项时 `adr` 必须引用存在的 ADR。\n\n规则引用写规则编号、`区域.*`（该区域全部规则）或 `*`（全部规则）。内置阶段文件 `internal/phase/builtin/<阶段>.json` 使用与\"新增阶段\"相同的字段（不含 `after`），顺序由 `order.json` 决定。当前阶段记录在 `harness.lock` 的 `phase` 字段，为空时是第一个阶段。\n\n## 7. 锁文件 `harness.lock`\n\nJSON，键按字典序排序，两次生成逐字节一致。\n\n```json\n{\n  \"version\": 2,\n  \"items\": { \"FR-001\": \"sha256:…\", \"AC-001-1/N1\": \"sha256:…\", \"IF-001\": \"sha256:…\", \"snapshot:IF-001\": \"sha256:…\", \"rule:acme.01\": \"sha256:…\", \"config\": \"sha256:…\" },\n  \"units\": {\n    \"FR-001\": { \"hash\": \"sha256:…\", \"text\": \"### FR-001 …\", \"by\": \"name <email>\", \"at\": \"2026-11-25T10:00:00Z\", \"upstream\": {} },\n    \"MOD-02\": { \"hash\": \"sha256:…\", \"text\": \"…\", \"by\": \"…\", \"at\": \"…\", \"upstream\": { \"FR-001\": \"sha256:…\" } }\n  },\n  \"audit\": {}\n}\n```\n\n规范化：统一为 LF，去掉行尾空白，连续空行合并为一行，去掉首尾空行。实体的哈希覆盖其标题到实体范围结束的全部文本。\n\n`items` 的键与值：\n\n| 键 | 值 |\n|---|---|\n| FR / NFR 编号 | 需求实体的哈希；需求为 Removed 时值前加 `removed:` |\n| 用例编号 | 用例所在行文字的哈希；用例已删除时值前加 `removed:` |\n| IF 编号 | 接口实体的哈希 |\n| CHG 编号 | 该编号全部表格行的哈希，用于判断哪些变更记录是锁定之后新增的 |\n| ADR 编号 | ADR 实体的哈希，用于判断哪些 ADR 是锁定之后新增的 |\n| `config` | `harness.json` 的规范化哈希（文件存在时，见第 6 节） |\n| `snapshot:IF-n` | 接口快照中该接口签名的哈希（AC-052-4） |\n| `rule:<编号>` | 自定义规则的样本目录（全部文件按路径排序）的哈希（AC-054-2） |\n\n`units` 按批准单位编号记录批准（AC-047-1）：`hash` 与 `text` 为批准时的规范化内容（不含 Status 字段；PRD 正文不含变更日志），`upstream` 为批准时各上游单位的哈希。Release 1 的 `phase` 与 `approvals` 由 `harness lock` 迁移后删除（AC-047-6、AC-048-1）。\n\n锁文件不存在时视为空基线：依赖锁文件的规则不报告\"消失\"或\"未登记\"，`harness lock` 生成第一份锁文件。\n\n## 8. 接口锚点与快照（Release 2，Go）\n\n接口实现处的声明紧前一行写锚点注释：\n\n```go\n// harness:IF-022\nfunc Check(root string, opt CheckOptions) (engine.Report, error) {\n```\n\n`harness snapshot` 把每个锚点后的声明去掉注释与函数体、空白规范化后写入 `docs/architecture/interfaces.txt`，每个接口一段、按编号排序：\n\n```\nIF-022\nfunc Check(root string, opt CheckOptions) (engine.Report, error)\n```\n\n详细设计中接口代码块里同名声明经相同规范化后与快照比对（规则 if.03）；代码块中的说明注释不参与比对。\n\n## 9. 外部工具报告\n\n`harness check lint`、`harness check unit` 分别写入 `.harness/reports/lint.json`、`.harness/reports/unit.json`（字段见 IF-033），其中 `sourceHash` 为生成时 sourcePaths 内源文件的哈希，与当前不同即过期。报告不提交到仓库；CI 中先运行这两个命令再运行 `harness check`。",
+      "hash": "sha256:34137c66c1cb67ebec2a472c975e4f7a739a91f696166095bf623602bb3f903f",
+      "text": "# 产物格式规范\n\n- Updated: 2026-11-26\n- Relates: ADR-002, MOD-03\n\n所有产物都是 Markdown，由 MOD-03 的同一个解析器读取。机器只读取本文件定义的结构，其余文字自由书写。\n\n## 1. 实体\n\n实体是带编号的标题，加上紧随其后的字段列表：\n\n```markdown\n### MOD-04 engine\n- Status: Active\n- Depends: MOD-09\n- Covers: FR-028, FR-045\n\n自由文字……\n```\n\n- 标题级别不限（`##` 到 `####`），标题文字以编号开头，编号后是名称。\n- 字段：标题之后、第一个空行之前，形如 `- Key: value` 的行。键为英文，区分大小写。\n- 列表值用英文逗号分隔；空值表示空列表。\n- 实体范围：从标题到下一个同级或更高级标题。\n\n## 2. 编号\n\n| 前缀 | 含义 | 正则 | 所在文件 |\n|---|---|---|---|\n| FR / NFR | 需求 | `FR-\\d{3,}` / `NFR-\\d{3,}` | `docs/PRD.md`、`docs/prd/*.md` |\n| AC | 验收标准 | `AC-N?\\d{3,}-\\d+` | 需求内的列表项 `- AC-...:` |\n| 用例 | 验收用例 | `<AC编号>/[NBE]\\d+` | 验收标准下缩进两格的列表项；文字以 `Removed` 开头表示已删除 |\n| OQ | 待澄清项 | `OQ-\\d{3,}` | PRD |\n| CHG | 变更记录 | `CHG-\\d{3,}` | PRD 变更日志表格的第一列；同一编号可占多行 |\n| MOD / EXT | 模块 / 扩展点 | `MOD-\\d{2,}` / `EXT-\\d{2,}` | `docs/architecture/overview.md` |\n| IF | 接口 | `IF-\\d{3,}` | `docs/architecture/modules/*.md` |\n| FLOW | 调用流程 | `FLOW-\\d{2,}` | `docs/architecture/flows.md` |\n| ADR | 架构决策 | `ADR-\\d{3,}` | `docs/adr/ADR-*.md`，一文件一条 |\n| T | 任务 | `T-\\d{3,}` | `docs/tasks.md` |\n| DEBT | 技术债 | `DEBT-\\d{3,}` | `docs/debt.md` |\n| 规则 | 检查规则 | `[a-z]+\\.\\d{2,}`；项目规则同一形式，前缀不得是内置规则的区域（如 `acme.01`，Release 1 为 `x\\.[a-z]+\\.\\d{2,}`） | 代码与 `harness.json` |\n\n规则编号使用小写加点（如 `trace.01`），与产物编号（如 `ADR-001`）在形式上不重叠。\n\n## 3. 各产物的必填字段\n\n| 实体 | 必填字段 | 取值 |\n|---|---|---|\n| FR / NFR | Status, Release, Priority | Active / Removed；正整数；P0 / P1 / P2 |\n| NFR | Type | Quantitative / Constraint / Scenario |\n| FR / NFR（可选） | Replaces, Replaced-By | Replaces 列出被取代的需求或验收标准编号；被取代的需求用 Replaced-By 指回取代者，两边须互相对应（prd.12）。取代者的 Release 不大于 Current-Release 时，被取代的条目按 Removed 判定：覆盖类规则（trace.01、task.02、test.02）不再要求它，trace.03 报告对它的引用；在此之前被取代的条目照常有效 |\n| NFR（Scenario） | Adds, Allowed-Paths, Closed-Modules | 文字 |\n| OQ | Status；Closed 时 Resolution；可选 Relates（关联的需求编号，task.07 据此判定） | Open / Closed |\n| MOD | Status, Paths, Public, Depends, Interfaces, Covers, Core, Coverage | Paths/Public 为 glob 列表；Core 为 true/false；Coverage 为 0-100 |\n| IF | Module, Covers，及一个首行为 `// IF-xxx` 的代码块（签名） | |\n| MOD / IF（可选） | Domain | 该模块或接口使用的领域概念代码名，逗号分隔；每个名称必须出现在统一语言表格的\"代码名\"列（规则 term.02） |\n| FLOW | Covers, Steps | Steps 为 `MOD-a -> IF-xxx` 的有序列表，见第 4 节 |\n| EXT | Status, Interface, Paths, Closed, Relates | Relates 必须是 Scenario 类 NFR |\n| ADR | Status, Relates；正文含 `## 背景`、`## 决策`、`## 后果` | Proposed / Accepted / Superseded；Superseded 时 Superseded-By |\n| T | Status, Covers, Design, Scope, Depends；可选 Extends, Flow | Status: Todo / InProgress / Done / Blocked；Covers: FR、NFR 或 AC 编号；Scope: 仓库相对路径 glob |\n| T（机械改动，可选） | Kind, Rewrite, Relates | Kind: mechanical；Rewrite: 逗号分隔的 `<旧前缀> -> <新前缀>`；Relates 须含一个 ADR；此时 Design 可为空（AC-050-1） |\n| CHG（接口变更） | 说明列以 `Breaking:` 开头 | 删除接口或修改签名的变更必须标注（AC-052-4） |\n| DEBT | Status, Module | Open / Resolved |\n| 进度记录 | 标题 `### <日期> T-n`（日期在前，不构成任务实体；标题后可加说明），正文含 `- 结论：` 与 `- 遗留：` 两行 | 位于 `docs/progress.md`；同一任务可有多条，任意一条两行齐全即可 |\n| 产物文件 | 文件头 Status | Draft / Approved（Approved 只能由 `harness approve` 写入） |\n\n## 4. 调用流程步骤\n\n```markdown\n### FLOW-02 写操作门禁\n- Covers: FR-012, FR-025\n- Steps: MOD-12 -> IF-017, MOD-11 -> IF-016, MOD-11 -> IF-012\n```\n\n每一步读作\"调用方模块 -> 被调用接口\"。规则 `arch.03` 检查：接口存在，且接口所属模块是调用方自身或在调用方的 Depends 中。\n\n## 5. 测试引用编号\n\n测试名中出现的用例、接口、扩展点编号视为引用。编号中的 `-` 和 `/` 在函数名中写作 `_`：\n\n| 引用 | Go 测试名示例 |\n|---|---|\n| `AC-001-1/N1` | `TestInit_AC_001_1_N1` |\n| `IF-012` | `TestRun_IF_012` |\n| `EXT-01` | `TestExample_EXT_01` |\n\n## 6. 项目配置 `harness.json`\n\n```json\n{\n  \"languages\": [\"go\"],\n  \"sourcePaths\": [\"cmd/**\", \"internal/**\"],\n  \"testReports\": [\".harness/reports/*.xml\", \".harness/reports/*.jsonl\"],\n  \"smoke\": \"go build ./... && go test ./internal/app/...\",\n  \"sensitivePaths\": [\".env*\", \"*.pem\", \"*.key\", \"id_rsa*\"],\n  \"sensitiveAllow\": [\".env.example\"],\n  \"dangerousCommands\": [\"git push --force\", \"git push -f\", \"curl * | sh\", \"wget * | sh\"],\n  \"vagueWords\": [\"快速\", \"友好\", \"适当\", \"尽量\", \"等等\", \"之类\", \"如有必要\", \"和/或\", \"大约\", \"灵活\", \"高效\", \"包括但不限于\"],\n  \"commitMaxLines\": 400,\n  \"stopMaxBlocks\": 3,\n  \"staleCommits\": 10,\n  \"start\": \"go run ./cmd/harness version\",\n  \"tools\": { \"go\": { \"lint\": \"staticcheck ./...\" } },\n  \"rules\": []\n}\n```\n\n整个文件的规范化哈希记入锁文件（规则 `cfg.01`）：按 JSON 解析，去掉键为 `\"//\"` 的注释项，键排序后紧凑序列化再求哈希，因此空白、键顺序和注释的变化不算配置变化。配置有实际变化时，须在 PRD 变更日志新增一行对象为 `harness.json` 的 CHG，或新增一条 Relates 含 `harness.json` 的 ADR，然后运行 `harness lock`。\n\n`ci.01`、`cfg.02` 只检查存在 `harness.json` 的项目（执行过 `harness init`）。\n\nRelease 2 新增与删除的字段：\n\n- `start`：启动命令；没有可启动应用的项目写 `none: <原因>`（AC-055-1）。`smoke` 为冒烟测试命令。\n- `tools`：按语言覆盖 `format`、`lint` 命令，未覆盖的使用语言配置包的默认值；语言必须在 `languages` 中（AC-014-3，规则 cfg.03）。\n- `rules`：声明式自定义规则，字段见 IF-036 的 `Def`（如 `{\"id\": \"acme.01\", \"kind\": \"forbid\", \"paths\": [\"internal/**\"], \"pattern\": \"fmt\\\\.Println\", \"message\": \"用日志\", \"samples\": \".harness/rules/acme.01\", \"approveFor\": [\"design\"]}`）。\n- `phases` 删除；存在时被忽略。\n\n以下 `phases` 格式只在 Release 1 有效，Release 2 随 MOD-10 删除。\n\n`phases` 中每项是以下两种之一（规则 `phase.01` 校验）：\n\n- 新增阶段：`{\"name\": \"release\", \"after\": \"implementation\", \"entry\": [], \"exit\": [\"prd.*\"], \"writable\": [\"docs/release/**\"], \"skill\": \"release\"}`。`name` 不得与已有阶段同名；`entry`、`exit`、`writable`、`skill` 必须出现，`entry` 可以为空列表。\n- 修改已有阶段：`{\"name\": \"architecture\", \"addExit\": [\"x.lint\"], \"removeExit\": [\"adr.*\"], \"adr\": \"ADR-009\"}`。只允许 `addEntry`、`addExit`、`removeEntry`、`removeExit`；有移除项时 `adr` 必须引用存在的 ADR。\n\n规则引用写规则编号、`区域.*`（该区域全部规则）或 `*`（全部规则）。内置阶段文件 `internal/phase/builtin/<阶段>.json` 使用与\"新增阶段\"相同的字段（不含 `after`），顺序由 `order.json` 决定。当前阶段记录在 `harness.lock` 的 `phase` 字段，为空时是第一个阶段。\n\n## 7. 锁文件 `harness.lock`\n\nJSON，键按字典序排序，两次生成逐字节一致。\n\n```json\n{\n  \"version\": 2,\n  \"items\": { \"FR-001\": \"sha256:…\", \"AC-001-1/N1\": \"sha256:…\", \"IF-001\": \"sha256:…\", \"snapshot:IF-001\": \"sha256:…\", \"rule:acme.01\": \"sha256:…\", \"config\": \"sha256:…\" },\n  \"units\": {\n    \"FR-001\": { \"hash\": \"sha256:…\", \"text\": \"### FR-001 …\", \"by\": \"name <email>\", \"at\": \"2026-11-25T10:00:00Z\", \"upstream\": {} },\n    \"MOD-02\": { \"hash\": \"sha256:…\", \"text\": \"…\", \"by\": \"…\", \"at\": \"…\", \"upstream\": { \"FR-001\": \"sha256:…\" } }\n  },\n  \"audit\": {}\n}\n```\n\n规范化：统一为 LF，去掉行尾空白，连续空行合并为一行，去掉首尾空行。实体的哈希覆盖其标题到实体范围结束的全部文本。\n\n`items` 的键与值：\n\n| 键 | 值 |\n|---|---|\n| FR / NFR 编号 | 需求实体的哈希；需求为 Removed 时值前加 `removed:` |\n| 用例编号 | 用例所在行文字的哈希；用例已删除时值前加 `removed:` |\n| IF 编号 | 接口实体的哈希 |\n| CHG 编号 | 该编号全部表格行的哈希，用于判断哪些变更记录是锁定之后新增的 |\n| ADR 编号 | ADR 实体的哈希，用于判断哪些 ADR 是锁定之后新增的 |\n| `config` | `harness.json` 的规范化哈希（文件存在时，见第 6 节） |\n| `snapshot:IF-n` | 接口快照中该接口签名的哈希（AC-052-4） |\n| `rule:<编号>` | 自定义规则的定义与样本目录（全部文件按路径排序）的哈希；定义或样本变化都要重新执行 `harness lock`（AC-054-2） |\n\n`units` 按批准单位编号记录批准（AC-047-1）：`hash` 与 `text` 为批准时的规范化内容（不含 Status 字段；PRD 正文不含变更日志），`upstream` 为批准时各上游单位的哈希。Release 1 的 `phase` 与 `approvals` 由 `harness lock` 迁移后删除（AC-047-6、AC-048-1）。\n\n锁文件不存在时视为空基线：依赖锁文件的规则不报告\"消失\"或\"未登记\"，`harness lock` 生成第一份锁文件。\n\n## 8. 接口锚点与快照（Release 2，Go）\n\n接口实现处的声明紧前一行写锚点注释：\n\n```go\n// harness:IF-022\nfunc Check(root string, opt CheckOptions) (engine.Report, error) {\n```\n\n`harness snapshot` 把每个锚点后的声明去掉注释与函数体、空白规范化后写入 `docs/architecture/interfaces.txt`，每个接口一段、按编号排序：\n\n```\nIF-022\nfunc Check(root string, opt CheckOptions) (engine.Report, error)\n```\n\n详细设计中接口代码块里同名声明经相同规范化后与快照比对（规则 if.03）；代码块中的说明注释不参与比对。\n\n## 9. 外部工具报告\n\n`harness check lint`、`harness check unit` 分别写入 `.harness/reports/lint.json`、`.harness/reports/unit.json`（字段见 IF-033），其中 `sourceHash` 为生成时 sourcePaths 内源文件的哈希，与当前不同即过期。报告不提交到仓库；CI 中先运行这两个命令再运行 `harness check`。",
       "upstream": {}
     },
     "docs/architecture/modules/MOD-01-cli.md#正文": {

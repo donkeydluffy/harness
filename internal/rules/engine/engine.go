@@ -11,6 +11,8 @@ import (
 )
 
 // Rule 是一条确定性检查（IF-011）。
+//
+// harness:IF-011
 type Rule interface {
 	ID() string       // 如 "trace.01"
 	Covers() []string // 对应的验收标准，如 "AC-007-1"
@@ -218,6 +220,8 @@ type Sample struct {
 
 // Verify 用违规样本和合规样本验证规则：违规样本必须报告，合规样本必须不报告（IF-013）。
 // 至少需要一个违规样本和一个合规样本，规则的 Fix() 不得为空。
+//
+// harness:IF-013
 func Verify(r Rule, samples []Sample) error {
 	if strings.TrimSpace(r.Fix()) == "" {
 		return fmt.Errorf("规则 %s 没有默认修复建议", r.ID())

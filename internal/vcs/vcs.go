@@ -15,6 +15,8 @@ import (
 var ErrNotRepo = errors.New("不是 git 仓库")
 
 // Repo 是 git 仓库的只读访问（IF-007）。
+//
+// harness:IF-007
 type Repo interface {
 	Root() string
 	Commits(rangeSpec string) ([]Commit, error)

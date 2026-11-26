@@ -47,6 +47,8 @@ type junitSuite struct {
 }
 
 // ParseJUnit 解析 JUnit XML（根元素为 testsuites 或 testsuite）（IF-008）。
+//
+// harness:IF-008
 func ParseJUnit(r io.Reader) ([]TestCase, error) {
 	var root struct {
 		XMLName xml.Name

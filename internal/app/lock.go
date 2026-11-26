@@ -22,6 +22,8 @@ func (e *ViolationsError) Error() string {
 // （包括新建的）在 Release 2 生效前保持第 1 版，第 1 版逻辑删除时（T-055）一并按第 2 版处理。
 // 需要源码、测试报告或 git 的规则不参与：需求阶段就要能锁定 PRD。
 // 检查未通过时返回 *ViolationsError，锁文件不变。
+//
+// harness:IF-023
 func Lock(root string) error {
 	registerRules()
 	rep, err := run(root, docRules(), workspace.LoadOptions{})

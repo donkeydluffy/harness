@@ -1,0 +1,116 @@
+IF-001
+func ParseMarkdown(path string, src []byte) (*Doc, []Diagnostic)
+
+IF-002
+func Build(docs []*Doc) (*Project, []Diagnostic)
+
+IF-003
+type Language interface { Name() string; Extensions() []string; Comments(src []byte) []Comment; TestKind(path string, src []byte) TestKind; TestNames(src []byte) []string }
+
+IF-004
+func Register(l Language)
+
+IF-005
+func Normalize(text string) string
+
+IF-006
+func Read(path string) (*Lock, error)
+
+IF-007
+type Repo interface { Root() string; Commits(rangeSpec string) ([]Commit, error); Changes(c Commit) ([]FileChange, error); Staged() ([]FileChange, error); FileAt(rev, path string) ([]byte, error); CommitsTouching(paths []string, since string) (int, error) }
+
+IF-008
+func ParseJUnit(r io.Reader) ([]TestCase, error)
+
+IF-009
+func Load(root string, opt LoadOptions) (*Snapshot, error)
+
+IF-010
+func LoadConfig(path string) (*Config, error)
+
+IF-011
+type Rule interface { ID() string; Covers() []string; Fix() string; Check(s *workspace.Snapshot) []Violation }
+
+IF-012
+func Run(s *workspace.Snapshot, sel Selector) Report
+
+IF-013
+func Verify(r Rule, samples []Sample) error
+
+IF-014
+func Rules() []engine.Rule
+
+IF-015
+func Load(s *workspace.Snapshot) ([]Phase, error)
+
+IF-016
+func Current(s *workspace.Snapshot, phases []Phase) (Phase, error)
+
+IF-017
+func Decide(s *workspace.Snapshot, req Request) Decision
+
+IF-018
+func Before(root, sessionID string) error
+
+IF-019
+type Adapter interface { Name() string; Decode(event string, stdin []byte) (gate.Request, error); Encode(event string, d gate.Decision) (stdout []byte, exit int); HookConfig(binary string) (path string, content []byte) }
+
+IF-020
+func Generate(root string, opt InitOptions) (Result, error)
+
+IF-021
+func Expected(s *workspace.Snapshot) (map[string][]byte, error)
+
+IF-022
+func Check(root string, opt CheckOptions) (engine.Report, error)
+
+IF-023
+func Lock(root string) error
+
+IF-024
+func Approve(root, target string, t Terminal) error
+
+IF-025
+func Gate(root string, req gate.Request) gate.Decision
+
+IF-026
+func Init(root string, opt scaffold.InitOptions) (scaffold.Result, error)
+
+IF-027
+func Units(s *workspace.Snapshot) []Unit
+
+IF-028
+func Evaluate(s *workspace.Snapshot) map[string]Status
+
+IF-029
+func PendingIn(s *workspace.Snapshot, target string) ([]Pending, error)
+
+IF-030
+func Lint(s *workspace.Snapshot) (*testreport.LintReport, error)
+
+IF-031
+func Unit(s *workspace.Snapshot) (*testreport.UnitReport, error)
+
+IF-032
+func Smoke(s *workspace.Snapshot) (exit int, tail []string, err error)
+
+IF-033
+func ReadLint(path string) (*LintReport, error)
+
+IF-034
+func PackFor(name string) (Pack, bool)
+
+IF-035
+type Analyzer interface { Imports(src []byte) []Import; ModuleDecl(path string, src []byte) (mod string, line int, ok bool); Anchors(path string, src []byte) []Decl; Resolve(root, importPath string) (dir string, ok bool); Coverage(root, pattern string) (passed bool, tests []string, executed map[string][]int, err error) }
+
+IF-036
+func Load(s *workspace.Snapshot, builtin []string) ([]engine.Rule, []engine.Violation)
+
+IF-037
+func Current() string
+
+IF-038
+func Run(root, kind string) (engine.Report, error)
+
+IF-039
+func Snapshot(root string) error

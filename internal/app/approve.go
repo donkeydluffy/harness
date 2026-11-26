@@ -32,10 +32,10 @@ var now = func() time.Time { return time.Now().UTC().Truncate(time.Second) }
 
 // Approve 由人批准（IF-024）。锁文件为第 2 版时按批准单位批准（approveUnits）；为第 1 版时批准整个产物：
 // 产物文档规则通过后请求确认，把文件头 Status 改为 Approved（ADR 为 Accepted），并在锁文件追加批准记录。
-// artifact 可以是产物路径、prd（docs/PRD.md），第 2 版时还可以是单位编号。检查未通过时返回 *ViolationsError。
+// target 可以是产物路径、prd（docs/PRD.md），第 2 版时还可以是单位编号。检查未通过时返回 *ViolationsError。
 //
 // harness:IF-024
-func Approve(root, artifact string, t Terminal) error {
+func Approve(root, target string, t Terminal) error {
 	if !t.IsInteractive() {
 		return ErrNotInteractive
 	}
@@ -45,14 +45,14 @@ func Approve(root, artifact string, t Terminal) error {
 		if err != nil {
 			return err
 		}
-		return approveUnits(root, s, artifact, t)
+		return approveUnits(root, s, target, t)
 	}
-	rel := filepath.ToSlash(filepath.Clean(artifact))
-	if strings.EqualFold(artifact, "prd") {
+	rel := filepath.ToSlash(filepath.Clean(target))
+	if strings.EqualFold(target, "prd") {
 		rel = workspace.PRDIndex
 	}
 	if !workspace.Approvable(rel) {
-		return fmt.Errorf("%s 不是可批准的产物（可批准：prd 或 docs/PRD.md、docs/architecture/*.md、docs/architecture/modules/*.md、docs/adr/*.md）", artifact)
+		return fmt.Errorf("%s 不是可批准的产物（可批准：prd 或 docs/PRD.md、docs/architecture/*.md、docs/architecture/modules/*.md、docs/adr/*.md）", target)
 	}
 	s, err := workspace.Load(root, workspace.LoadOptions{})
 	if err != nil {

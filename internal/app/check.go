@@ -19,6 +19,8 @@ type CheckOptions struct {
 
 // Check 加载项目快照并运行选中的规则（IF-022）。
 // 返回的 error 表示内部错误（如产物不可读、选择器无效），与"有违规"区分。
+//
+// harness:IF-022
 func Check(root string, opt CheckOptions) (engine.Report, error) {
 	registerRules()
 	sel := selector(opt.Rules)

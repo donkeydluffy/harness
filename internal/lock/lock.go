@@ -21,6 +21,8 @@ const File = "harness.lock"
 const RemovedPrefix = "removed:"
 
 // Normalize 统一换行为 LF，去掉行尾空白，合并连续空行，去掉首尾空行（IF-005）。
+//
+// harness:IF-005
 func Normalize(text string) string {
 	text = strings.ReplaceAll(text, "\r\n", "\n")
 	text = strings.ReplaceAll(text, "\r", "\n")
@@ -51,9 +53,7 @@ func Hash(text string) string {
 }
 
 // Lock 是 harness.lock 的内容（IF-006）。Version 为 2 时按批准单位记录批准（Units，ADR-009）；
-// 为 1 时是 Release 1 的按文件批准（Legacy）与当前阶段（Phase）。
-//
-// harness:IF-006
+// 为 1 时是 Release 1 的按文件批准（Legacy）与当前阶段（Phase）。Phase 随阶段模块删除（T-054）。
 type Lock struct {
 	Version int                        `json:"version"`
 	Phase   string                     `json:"phase"`
@@ -93,6 +93,8 @@ func New() *Lock {
 }
 
 // Read 读取锁文件；文件不存在时返回空 Lock 而非错误（IF-006）。
+//
+// harness:IF-006
 func Read(path string) (*Lock, error) {
 	src, err := os.ReadFile(path)
 	if errors.Is(err, fs.ErrNotExist) {

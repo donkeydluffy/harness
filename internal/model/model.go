@@ -110,6 +110,8 @@ var (
 )
 
 // ParseMarkdown 把单个 Markdown 文件解析为实体列表，同时保留表格行和代码块（IF-001）。
+//
+// harness:IF-001
 func ParseMarkdown(path string, src []byte) (*Doc, []Diagnostic) {
 	text := strings.ReplaceAll(string(src), "\r\n", "\n")
 	lines := strings.Split(text, "\n")
@@ -319,6 +321,8 @@ type Change struct {
 var caseRe = regexp.MustCompile(`^(AC-N?\d+-\d+)/([NBE])\d+$`)
 
 // Build 把多个 Doc 组装为项目模型，按编号建立索引；重复编号作为 Diagnostic 返回（IF-002）。
+//
+// harness:IF-002
 func Build(docs []*Doc) (*Project, []Diagnostic) {
 	p := &Project{Docs: docs, ByID: map[string]*Entity{}, ByKind: map[string][]*Entity{}, Cases: map[string]*Case{}}
 	var diags []Diagnostic

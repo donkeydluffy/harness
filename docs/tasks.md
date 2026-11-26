@@ -443,7 +443,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 按 `harness.json` 的 rules 构造 required、enum、ref、forbid 四类规则；校验编号前缀、样本与批准单位类型；样本目录纳入锁文件；`approveFor` 的规则在批准该类单位时运行。
 
 ### T-045 外部工具运行器与 lint
-- Status: Todo
+- Status: Done
 - Covers: AC-014-2, AC-014-3, AC-014-4, AC-014-5
 - Design: MOD-16, IF-030, IF-031, IF-032, IF-033, IF-034, IF-038, FLOW-11
 - Flow: FLOW-11

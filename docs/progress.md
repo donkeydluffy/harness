@@ -236,3 +236,7 @@
 ### 2026-11-26 T-044
 - 结论：新增 MOD-17（internal/rules/custom）：按 `harness.json` 的 rules 构造 required、enum、ref、forbid 四类规则，校验编号（须有项目前缀且不与内置区域冲突）、类型、必填字段、正则、批准单位类型与样本目录；`harness check` 先用样本验证，定义有误或样本不符合预期的规则判定失效，不运行。锁文件新增 `rule:<编号>`，哈希覆盖规则定义与样本目录（formats.md 只写了样本目录，加上定义是为了满足 AC-054-2/E1 修改定义后未 lock 时报告不一致）。`harness approve` 时运行登记在待批准单位类型上的规则，只保留落在这些单位内的违规。engine 注册表是全局的，项目规则在 app 中按快照运行。变异测试 11 处均被发现。
 - 遗留：门禁会话开始与结束的全量检查（gate 包内的 engine.Run）还不含项目规则，留给触及 gate 的后续任务；formats.md 第 7 节 `rule:<编号>` 的说明待补"含定义"。
+
+### 2026-11-26 T-045
+- 结论：MOD-14 为 Go、Python、TypeScript、Java、C/C++ 提供语言配置包（IF-034 `Pack`：源码路径、CI 测试命令、格式化检查与静态检查的命令、输出格式、安装提示）。新增 MOD-16（internal/toolrun）：Lint 对声明且有源文件的语言运行工具（`tools` 覆盖优先），工具缺失时返回带安装提示的 MissingTool，不写报告；问题与源码哈希写入 `.harness/reports/lint.json`。Unit 在 T-049 接入 Go 之前把全部语言记为 Skipped；Smoke 返回退出码与最后 50 行。`harness check lint|unit|smoke` 先运行工具再运行同名区域的规则，工具缺失时退出码 1。lint.01 只读报告（缺失、过期、有问题时失败），cfg.03 校验 tools 的语言与键。为保持"规则只读快照"，lint 报告在 WithTests 时随快照加载。prettier 用 `--list-different` 代替 `--check`，输出才是逐行文件名。变异测试 10 处均被发现。
+- 遗留：Kotlin 文件归在 java 语言下，ktlint 尚未作为独立配置包接入；本仓库 CI 在 T-047 加入 lint 步骤之前没有 lint 报告，T-045 ~ T-047 一起推送。

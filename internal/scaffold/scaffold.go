@@ -17,6 +17,7 @@ import (
 
 	"github.com/donkeydluffy/harness/internal/adapter"
 	"github.com/donkeydluffy/harness/internal/lang"
+	"github.com/donkeydluffy/harness/internal/version"
 	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
@@ -32,6 +33,23 @@ type InitOptions struct {
 	// SelfHosted 表示目标项目就是 harness 自身（go.mod 的模块路径为 modulePath）：
 	// CI 从当前提交的源码构建 harness，生成文件与同一提交的模板一致。
 	SelfHosted bool
+	Version    string // 当前 harness 版本（IF-037）
+	CIVersion  string // --ci-version；为空时用 Version
+}
+
+// pin 返回 CI 中固定的 harness 版本。
+func (o InitOptions) pin() string {
+	if o.CIVersion != "" {
+		return strings.TrimPrefix(o.CIVersion, "v")
+	}
+	return o.Version
+}
+
+// VersionError 表示 CI 要固定的版本不是发布版本号（AC-051-2）。
+type VersionError struct{ Version string }
+
+func (e *VersionError) Error() string {
+	return fmt.Sprintf("当前 harness 版本 %q 不是发布版本号，生成的 CI 无法固定 harness 版本；改用发布版的 harness，或用 --ci-version <版本> 指定（如 --ci-version 0.2.0）", e.Version)
 }
 
 // gateIgnoreFile 是忽略门禁运行时目录的 .gitignore。
@@ -64,11 +82,11 @@ func (e *UnsupportedError) Error() string {
 	return fmt.Sprintf("不支持的%s %q，支持：%s", e.What, e.Name, strings.Join(e.Supported, ", "))
 }
 
-// Languages 返回有语言配置包且已注册的语言。
+// Languages 返回有语言配置包（IF-034）的语言。
 func Languages() []string {
 	var out []string
 	for _, l := range lang.All() {
-		if _, err := fs.Stat(templates, "templates/langs/"+l.Name()+"/pack.json"); err == nil {
+		if _, ok := lang.PackFor(l.Name()); ok {
 			out = append(out, l.Name())
 		}
 	}
@@ -99,6 +117,9 @@ func GitHooksDir(root string) (dir string, ok bool) {
 // harness:IF-020
 func Generate(root string, opt InitOptions) (Result, error) {
 	opt.SelfHosted = selfHosted(root)
+	if !opt.SelfHosted && !version.Release(opt.pin()) {
+		return Result{}, &VersionError{Version: opt.pin()}
+	}
 	files, err := Files(opt)
 	if err != nil {
 		return Result{}, err
@@ -172,9 +193,10 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 		return nil, err
 	}
 	cfg := struct {
-		Languages   []string `json:"languages"`
-		SourcePaths []string `json:"sourcePaths"`
-	}{Languages: []string{}, SourcePaths: []string{}}
+		Languages   []string                     `json:"languages"`
+		SourcePaths []string                     `json:"sourcePaths"`
+		Tools       map[string]map[string]string `json:"tools"`
+	}{Languages: []string{}, SourcePaths: []string{}, Tools: map[string]map[string]string{}}
 	var tests []langTest
 	for _, name := range opt.Languages {
 		if !contains(supported, name) {
@@ -184,18 +206,10 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 			continue
 		}
 		cfg.Languages = append(cfg.Languages, name)
-		b, err := templates.ReadFile("templates/langs/" + name + "/pack.json")
-		if err != nil {
-			return nil, err
-		}
-		var pack struct {
-			SourcePaths []string
-			CITest      string `json:"ciTest"` // CI 中生成测试报告的命令；为空表示没有通用命令
-		}
-		if err := json.Unmarshal(b, &pack); err != nil {
-			return nil, fmt.Errorf("语言配置包 %s 的 pack.json 有误：%w", name, err)
-		}
-		tests = append(tests, langTest{name, pack.CITest})
+		pack, _ := lang.PackFor(name)
+		tests = append(tests, langTest{name, pack.Test})
+		// 写明各语言的格式化与静态检查命令，项目可直接修改（AC-014-1、AC-014-3）。
+		cfg.Tools[name] = map[string]string{"format": pack.Format.Cmd, "lint": pack.Lint.Cmd}
 		for _, p := range pack.SourcePaths {
 			if !contains(cfg.SourcePaths, p) {
 				cfg.SourcePaths = append(cfg.SourcePaths, p)
@@ -205,8 +219,12 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 			return nil, err
 		}
 	}
-	b, _ := json.MarshalIndent(cfg, "", "  ")
-	out[workspace.ConfigFile] = append(b, '\n')
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false) // 命令中的 >、& 原样写出
+	enc.SetIndent("", "  ")
+	enc.Encode(cfg)
+	out[workspace.ConfigFile] = buf.Bytes()
 	ci := opt.CI
 	if ci == "" {
 		ci = "github"
@@ -215,7 +233,7 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 	if !ok {
 		return nil, &UnsupportedError{"CI", ci, []string{"github", "gitlab"}}
 	}
-	b, err := ciConfig(ci, tests, opt)
+	b, err := ciConfig(ci, cfg.Languages, tests, opt)
 	if err != nil {
 		return nil, err
 	}
@@ -231,33 +249,71 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 	return out, nil
 }
 
-// CIConfig 返回 harness init 为语言列表 langs 生成的 CI 配置（ci 为 github 或 gitlab）。
-func CIConfig(ci string, langs []string) ([]byte, error) {
-	return ciConfig(ci, langTests(langs), InitOptions{})
+// CIConfig 返回 harness init 为语言列表 langs 生成、固定 harness 版本 pin 的 CI 配置（ci 为 github 或 gitlab）。
+func CIConfig(ci string, langs []string, pin string) ([]byte, error) {
+	return ciConfig(ci, langs, langTests(langs), InitOptions{CIVersion: pin})
 }
 
-// ciConfig 渲染 CI 配置：模板中的 {{binary}}、{{module}} 与各语言的测试步骤。
-func ciConfig(ci string, tests []langTest, opt InitOptions) ([]byte, error) {
+// ciConfig 渲染 CI 配置：安装 harness 的步骤、各语言的测试步骤与模板中的 {{binary}}、{{module}}。
+func ciConfig(ci string, langs []string, tests []langTest, opt InitOptions) ([]byte, error) {
 	tmpl, err := templates.ReadFile("templates/ci/" + ci + ".yml")
 	if err != nil {
 		return nil, err
 	}
-	return []byte(strings.ReplaceAll(string(render(tmpl, opt)), "{{testSteps}}", testSteps(ci, tests))), nil
+	out := strings.ReplaceAll(string(render(tmpl, opt)), "{{testSteps}}", testSteps(ci, tests))
+	out = strings.ReplaceAll(out, "{{install}}", installSteps(ci, langs, opt))
+	image := "buildpack-deps:stable"
+	if opt.SelfHosted || contains(langs, "go") {
+		image = "golang:latest"
+	}
+	return []byte(strings.ReplaceAll(out, "{{image}}", image)), nil
 }
 
-// langTests 读取各语言配置包的 CI 测试命令；不支持的语言忽略。
+// releaseURL 是发布资产的下载地址前缀。
+const releaseURL = "https://" + modulePath + "/releases/download/v"
+
+// installSteps 渲染 CI 中安装 harness 的步骤：harness 自身仓库从当前提交的源码构建；用户项目下载固定版本的
+// Linux amd64 发布归档并用 checksums.txt 校验，校验失败时步骤失败、后续检查不运行（AC-051-1）。
+// 需要 Go 工具链的只有 harness 自身仓库与 Go 项目（测试与 go vet）。
+func installSteps(ci string, langs []string, opt InitOptions) string {
+	archive := "harness_" + opt.pin() + "_linux_amd64.tar.gz"
+	download := []string{
+		"curl -fsSLO " + releaseURL + opt.pin() + "/" + archive,
+		"curl -fsSLO " + releaseURL + opt.pin() + "/checksums.txt",
+		"grep ' " + archive + "$' checksums.txt | sha256sum -c -",
+		"tar -xzf " + archive + " harness",
+	}
+	var b strings.Builder
+	if ci == "github" {
+		if opt.SelfHosted || contains(langs, "go") {
+			b.WriteString("      - uses: actions/setup-go@v5\n        with:\n          go-version: stable\n")
+		}
+		if opt.SelfHosted {
+			b.WriteString("      - name: 安装 harness\n        run: go install ./cmd/harness\n")
+			return b.String()
+		}
+		fmt.Fprintf(&b, "      - name: 安装 harness %s\n        run: |\n", opt.pin())
+		for _, l := range append(download, "sudo install harness /usr/local/bin/harness") {
+			b.WriteString("          " + l + "\n")
+		}
+		return b.String()
+	}
+	if opt.SelfHosted {
+		return "    - go install ./cmd/harness\n"
+	}
+	for _, l := range append(download, "install harness /usr/local/bin/harness") {
+		b.WriteString("    - " + l + "\n")
+	}
+	return b.String()
+}
+
+// langTests 返回各语言配置包的 CI 测试命令；没有配置包的语言忽略。
 func langTests(langs []string) []langTest {
 	var out []langTest
 	for _, name := range langs {
-		b, err := templates.ReadFile("templates/langs/" + name + "/pack.json")
-		if err != nil {
-			continue
+		if pack, ok := lang.PackFor(name); ok {
+			out = append(out, langTest{name, pack.Test})
 		}
-		var pack struct {
-			CITest string `json:"ciTest"`
-		}
-		json.Unmarshal(b, &pack)
-		out = append(out, langTest{name, pack.CITest})
 	}
 	return out
 }
@@ -284,18 +340,13 @@ func testSteps(ci string, tests []langTest) string {
 	return b.String()
 }
 
-// render 替换模板中的 {{binary}}、{{install}}（CI 安装 harness 的命令）与 {{module}}。
+// render 替换模板中的 {{binary}} 与 {{module}}。
 func render(b []byte, opt InitOptions) []byte {
 	binary := opt.Binary
 	if binary == "" {
 		binary = "harness"
 	}
-	install := "go install " + modulePath + "/cmd/harness@latest"
-	if opt.SelfHosted {
-		install = "go install ./cmd/harness"
-	}
 	s := strings.ReplaceAll(string(b), "{{binary}}", binary)
-	s = strings.ReplaceAll(s, "{{install}}", install)
 	return []byte(strings.ReplaceAll(s, "{{module}}", modulePath))
 }
 

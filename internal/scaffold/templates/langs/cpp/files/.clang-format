@@ -1,0 +1,3 @@
+# harness init 生成的 clang-format 配置，归项目所有，可以随意修改（不受 cfg.02 校验）。
+BasedOnStyle: Google
+ColumnLimit: 100

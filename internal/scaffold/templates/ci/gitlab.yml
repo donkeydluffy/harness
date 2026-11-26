@@ -1,10 +1,12 @@
 # 由 harness init 生成。修改后 harness check（规则 cfg.02）会失败；需要调整时删除本文件并重新运行 harness init。
 harness:
-  image: golang:latest
+  image: {{image}}
   variables:
     GIT_DEPTH: "0"
   script:
-    - {{install}}
-{{testSteps}}    - harness check
+{{install}}{{testSteps}}    - harness check lint
+    - harness check unit
+    - harness check smoke
+    - harness check
     - git fetch origin "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}"
     - harness check commits "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}..HEAD"

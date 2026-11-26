@@ -4,16 +4,19 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
 	"github.com/donkeydluffy/harness/internal/adapter"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/version"
 	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Expected 返回纳入版本库的生成文件的期望内容（IF-021）：claudecode 的 hook 配置必有；
-// CI 配置只比对已存在的那一份（缺少 CI 配置由 ci.01 报告）。git hook 不在版本库中，不比对。
+// CI 配置只比对已存在的那一份（缺少 CI 配置由 ci.01 报告），按其中固定的 harness 版本生成（AC-051-3）。
+// git hook 不在版本库中，不比对。
 //
 // harness:IF-021
 func Expected(s *workspace.Snapshot) (map[string][]byte, error) {
@@ -23,10 +26,12 @@ func Expected(s *workspace.Snapshot) (map[string][]byte, error) {
 		out[p] = b
 	}
 	for ci, p := range ciFiles {
-		if _, err := os.Stat(filepath.Join(s.Root, filepath.FromSlash(p))); err != nil {
+		cur, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(p)))
+		if err != nil {
 			continue
 		}
-		b, err := ciConfig(ci, langTests(s.Config.Languages), InitOptions{SelfHosted: selfHosted(s.Root)})
+		pin, _ := pinned(cur)
+		b, err := ciConfig(ci, s.Config.Languages, langTests(s.Config.Languages), InitOptions{SelfHosted: selfHosted(s.Root), CIVersion: pin})
 		if err != nil {
 			return nil, err
 		}
@@ -66,7 +71,14 @@ func (cfg02) Check(s *workspace.Snapshot) []engine.Violation {
 	}
 	sort.Strings(paths)
 	var out []engine.Violation
+	local := version.Current()
 	for _, p := range paths {
+		if got, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(p))); err == nil && version.Release(local) {
+			if pin, ok := pinned(got); ok && pin != local {
+				out = append(out, engine.Violation{File: p, Line: 1,
+					Msg: "CI 固定 " + pin + "，本地 " + local + "；删除 " + p + " 后运行 " + init + " 重新生成 CI 配置"})
+			}
+		}
 		got, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(p)))
 		switch {
 		case err != nil:
@@ -91,4 +103,14 @@ func firstDiff(a, b []byte) int {
 		return len(la)
 	}
 	return len(lb)
+}
+
+var pinRe = regexp.MustCompile(`releases/download/v([^/\s]+)/`)
+
+// pinned 返回 CI 配置中固定的 harness 版本；从源码构建的配置（harness 自身仓库）没有固定版本。
+func pinned(ci []byte) (string, bool) {
+	if m := pinRe.FindSubmatch(ci); m != nil {
+		return string(m[1]), true
+	}
+	return "", false
 }

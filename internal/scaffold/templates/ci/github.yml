@@ -8,12 +8,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@v5
-        with:
-          go-version: stable
-      - name: 安装 harness
-        run: {{install}}
-{{testSteps}}      - name: harness check
+{{install}}{{testSteps}}      - name: harness check lint
+        run: harness check lint
+      - name: harness check unit
+        run: harness check unit
+      - name: harness check smoke
+        run: harness check smoke
+      - name: harness check
         run: harness check
       - name: harness check commits
         env:

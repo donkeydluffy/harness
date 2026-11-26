@@ -13,7 +13,7 @@ import (
 
 func TestGenerate_IF_020(t *testing.T) {
 	dir := t.TempDir()
-	opt := scaffold.InitOptions{Languages: []string{"go"}, CI: "github"}
+	opt := scaffold.InitOptions{Languages: []string{"go"}, CI: "github", CIVersion: "0.2.0"}
 	r, err := scaffold.Generate(dir, opt)
 	if err != nil {
 		t.Fatal(err)
@@ -45,7 +45,7 @@ func TestGenerate_IF_020(t *testing.T) {
 
 func TestExpected_IF_021(t *testing.T) {
 	dir := t.TempDir()
-	if _, err := scaffold.Generate(dir, scaffold.InitOptions{Languages: []string{"go"}, CI: "github"}); err != nil {
+	if _, err := scaffold.Generate(dir, scaffold.InitOptions{Languages: []string{"go"}, CI: "github", CIVersion: "0.2.0"}); err != nil {
 		t.Fatal(err)
 	}
 	s, err := workspace.Load(dir, workspace.LoadOptions{})

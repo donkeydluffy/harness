@@ -26,7 +26,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 端到端骨架（prd.02 同时实现 Release、Current-Release 与 NFR Type 字段校验，AC-003-5 的追溯部分在 T-006 验收）：model 解析器、workspace 加载配置与产物、engine 注册与运行（含样本自检与修复建议必填）、app.Check、`harness check [--json]` 与退出码 0/1/2。完成后 `harness check prd.01 prd.02` 可检查本仓库。engine 附 `TestExample_EXT_03` 示例规则测试。
 
 ### T-002 锁文件、`harness lock` 与需求变更追踪
-- Status: InProgress
+- Status: Done
 - Covers: FR-004, AC-003-3, AC-019-3
 - Design: FLOW-10, IF-005, IF-006, IF-023, ADR-004
 - Flow: FLOW-01
@@ -36,7 +36,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 规范化与哈希、锁文件读写（键排序、逐字节稳定）、`harness lock`（检查通过才写，保留批准与阶段）、prd.03 编号不得消失或复用、prd.08 CHG 与哈希差异一致。
 
 ### T-003 澄清记录、验收用例与需求文本质量
-- Status: Todo
+- Status: InProgress
 - Covers: FR-002, AC-019-1, AC-019-2, FR-040
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01

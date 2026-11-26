@@ -11,3 +11,8 @@
 - 结论：Done。`harness check [规则或前缀] [--json]` 可用，退出码 0/1/2；model、workspace、engine、prd.01、prd.02 完成。17 个用例（AC-003-1、AC-003-2、AC-003-4、NFR-004）的集成测试全部通过（`go test ./...`）；故意删掉 prd.02 的 Priority 检查后 3 个测试失败，恢复后通过。本仓库 `harness check` 0 条违规。
 - 调整：AC-003-5 的追溯部分依赖 trace.01，移到 T-006 验收；T-001 范围补充 `internal/rules/builtin/util.go` 与 `registry_test.go`。
 - 遗留：DEBT-001 模块路径；DEBT-002 解析诊断未输出。task.08 尚未实现，本任务的完成定义由 `go test` 人工核对，T-015 上线后回溯校验。
+
+### 2026-11-26 T-002
+- 结论：Done。lock 模块（规范化、哈希、键排序且逐字节稳定的读写）、workspace 加载锁文件并计算锁定条目、`harness lock`（全量检查通过才写，保留批准与阶段）、prd.03、prd.08。17 个用例（FR-004、AC-003-3、AC-019-3）集成测试通过；把 prd.08 的动作比对改为恒通过后 3 个测试失败。本仓库已生成首份 `harness.lock`，此后需求变化必须登记 CHG。
+- 调整：formats.md 补充锁文件条目定义、用例删除标记（文字以 Removed 开头）、进度记录标题 `### <日期> T-n`（原标题被解析为重复的任务实体，由 model 的仓库自检测试发现）。formats.md 因此回到 Draft，待用户重新确认。
+- 遗留：无新增技术债。

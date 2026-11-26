@@ -45,5 +45,6 @@ func Rules() []engine.Rule {
 		commit02{},
 		commit03{},
 		commit04{},
+		approve01{},
 	}
 }

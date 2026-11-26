@@ -3,12 +3,14 @@ package cli
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 
 	"harness/internal/app"
+	"harness/internal/rules/engine"
 )
 
 // 退出码（AC-N004-2）。
@@ -22,6 +24,7 @@ const usage = `用法：harness <命令> [参数]
 
 命令：
   check [规则或前缀...] [--json]   运行检查；无参数时运行全部规则
+  lock                             全量检查通过后更新 harness.lock
 `
 
 // Main 执行命令并返回退出码。
@@ -38,6 +41,8 @@ func Main(args []string, stdout, stderr io.Writer) int {
 	switch args[0] {
 	case "check":
 		return check(root, args[1:], stdout, stderr)
+	case "lock":
+		return lockCmd(root, stdout, stderr)
 	case "help", "-h", "--help":
 		fmt.Fprint(stdout, usage)
 		return ExitOK
@@ -65,7 +70,28 @@ func check(root string, args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "harness check: 内部错误：", err)
 		return ExitInternal
 	}
-	if opt.JSON {
+	return printReport(rep, opt.JSON, stdout, stderr)
+}
+
+func lockCmd(root string, stdout, stderr io.Writer) int {
+	err := app.Lock(root)
+	var ve *app.ViolationsError
+	if errors.As(err, &ve) {
+		printReport(ve.Report, false, stdout, stderr)
+		fmt.Fprintln(stderr, "harness lock: 检查未通过，锁文件未更新")
+		return ExitViolated
+	}
+	if err != nil {
+		fmt.Fprintln(stderr, "harness lock: 内部错误：", err)
+		return ExitInternal
+	}
+	fmt.Fprintln(stdout, "已更新 harness.lock")
+	return ExitOK
+}
+
+// printReport 按文本或 JSON 输出报告，返回退出码。
+func printReport(rep engine.Report, asJSON bool, stdout, stderr io.Writer) int {
+	if asJSON {
 		enc := json.NewEncoder(stdout)
 		enc.SetIndent("", "  ")
 		enc.SetEscapeHTML(false)

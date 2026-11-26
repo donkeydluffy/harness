@@ -1,0 +1,15 @@
+{
+  "approvals": [],
+  "audit": {},
+  "items": {
+    "AC-001-1/N1": "sha256:3ea0e6e41518ea24ecaa6301cddf282fc855a63aef80bd9cf1a1d9a9bd2bf37c",
+    "AC-005-1/N1": "sha256:296de0e31f8c22d9343c1f07f7fcd2e88a425d769cb0c88d8b24cc865f2c0685",
+    "AC-N001-1/N1": "sha256:cbce51541dc2b76050c1a1ccf53a25433f3fa62eef0f08a28ebb9c8298ca1ecd",
+    "CHG-001": "sha256:dedb6a2b7ecf5d1c5db78d1586b06f55b9ed708e573e55d767ff833317fa16a8",
+    "FR-001": "sha256:5c6597f3f8827171e32adfc4ee14873e7ddd94449d414dc073f31a9c6843c4b1",
+    "FR-005": "sha256:e0a0d19bb272ac8ff7f56a04eda73f0c56028894da68d9a608f2164b8da8c6f4",
+    "NFR-001": "sha256:d298d4ed4282bff25f9a4df0a2808cdd8e0382fc24c4616232afbf487fc4c444"
+  },
+  "phase": "",
+  "version": 1
+}

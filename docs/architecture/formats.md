@@ -59,6 +59,7 @@
 | ADR | Status, Relates；正文含 `## 背景`、`## 决策`、`## 后果` | Proposed / Accepted / Superseded；Superseded 时 Superseded-By |
 | T | Status, Covers, Design, Scope, Depends；可选 Extends, Flow | Status: Todo / InProgress / Done / Blocked；Covers: FR、NFR 或 AC 编号；Scope: 仓库相对路径 glob |
 | DEBT | Status, Module | Open / Resolved |
+| 进度记录 | 标题 `### <日期> T-n`（日期在前，不构成任务实体），正文含结论与遗留问题 | 位于 `docs/progress.md` |
 | 产物文件 | 文件头 Status | Draft / Approved（Approved 只能由 `harness approve` 写入） |
 
 ## 4. 调用流程步骤

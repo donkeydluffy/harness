@@ -155,6 +155,24 @@
       "at": "2026-11-26T03:46:07Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:9f250320fe88a01f8317a4ea0610d91fea19fe00e670a5faa2b4bf23e1897158"
+    },
+    {
+      "artifact": "docs/PRD.md",
+      "at": "2026-11-26T05:18:43Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:1aa6d0e0dd4803bb13b21af315b8896e5fc81256ac2956a330f74ea11b03bee9"
+    },
+    {
+      "artifact": "docs/architecture/formats.md",
+      "at": "2026-11-26T05:18:47Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:0cfd22e6f878b54fc52bf54936a6fccb1dbfa587b58c3c5b0802ebfd10ac4660"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-10-phase.md",
+      "at": "2026-11-26T05:18:48Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:417767cd55f7e7051577956c192e17135bb1d55a2468d2b114a71b9d10ea35c7"
     }
   ],
   "audit": {},
@@ -478,6 +496,14 @@
     "AC-N008-1/N1": "sha256:0fc0b8016e37aeaeb8742ebacde7b0e9ba69cefc017a39e9c042beac5fd19fb9",
     "AC-N009-1/E1": "sha256:5fcad345d4ade3b1244d86ab84c9c816145f02d724e426a6b930e2eb7fd7c93b",
     "AC-N009-1/N1": "sha256:db2a63a34b63f4b025f9a6c9ad5c1a51a396e2cfc93e13ff9b65d0b30fc3ce99",
+    "ADR-001": "sha256:7163bb89a9c9ec64cc94c66f2ad507b3e9387b135da21584b9bc4e1a9ca44c2b",
+    "ADR-002": "sha256:8e10529630e6b8606ddaeddebf6948907c2d7f3fcb0008b0fc6e63a9ca1ed311",
+    "ADR-003": "sha256:50a0f48d68c8731ab5dbc5cad840ea9b76de3ee0091acea0c488eceb1d049746",
+    "ADR-004": "sha256:d18f312517cd4b638b06be657ab8e7c24b32a0c4b4dbbd64e437fe9fdb9c41a6",
+    "ADR-005": "sha256:1eb2221586caa68fb13ffa8a5315ffcd032cbcb6f4a3c501cb15343e007cbc38",
+    "ADR-006": "sha256:21e10448022e638d0867f6602dc9aee2177dd402c40e172c65916cac2806d0a5",
+    "ADR-007": "sha256:9e5f951e4faf426d8c2ea7596611674146c45233e590fdc1dffb1cf2ee062a18",
+    "ADR-008": "sha256:6281afdaad97da7f54384b77e8c7ae719d11fb814385914f1d3e703cf98c319f",
     "CHG-001": "sha256:5226a6da8954f94bedfecedde9d4567415507233bb6b9ba570679b3198b099f4",
     "CHG-002": "sha256:3bc37a559f863e46003df42921748e725ee77ed64a2e83bf18c064c5d72cf117",
     "CHG-003": "sha256:0ce85cdae4b10648ac115017008f04197561a5e1b9fcf4de1b4164dd08bf4f80",
@@ -493,6 +519,7 @@
     "CHG-013": "sha256:f17f82446915a96b2dc5c349b7458eaa91c47d019fc383540a0fc80eb5ece51d",
     "CHG-014": "sha256:618cf5aa0cf7cccd9fc50f5ae6d2ee82c28d618af98dc44ab225ed516e650f47",
     "CHG-015": "sha256:8536ae56606467b9b6e5869c27cb0365ab6d5655bf48efe5c23f0541394e6fed",
+    "CHG-016": "sha256:ea92cc8a9d176a5315e74a88f74c0a8778bac7b1d9bcf86a5c47d836bbbb4b39",
     "FR-001": "sha256:3d3161ed1ebffc0c0cc4808d744f6ea94f2c6c334ac2753acc120ee35cbb2ecf",
     "FR-002": "sha256:26b639028bbd3261ba7d6892b11e1b63deeed0126c61d5bc2a147837f8ffe07c",
     "FR-003": "sha256:6df5cad624fe418234e592d67c89e689031629f1422c7cd10d3f71736efa012d",
@@ -553,7 +580,7 @@
     "IF-012": "sha256:e738dfc946aa27be99a388728498125bd6d66c0b6d98e6aee661c508524d545a",
     "IF-013": "sha256:52f03d38a7849d5487d24e76954b60f6976626fc935772c1b23b1c4f9ae4aa64",
     "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-    "IF-015": "sha256:4fb47b6aa00542d853944510f6337fcccf06528c68725b9597b38c22a78bcc35",
+    "IF-015": "sha256:18474bcfef2afc15f9e155451cc65b5e41b04dae55ae4bc453d4f5928d72d5e4",
     "IF-016": "sha256:980a4574511aea2be14e7b9c12def0f4a644c129464f6f9418957088d1a7eddb",
     "IF-017": "sha256:f9589959fbf5af68659a953957d454c6635b6df41b14d0af7887154f0860a6f4",
     "IF-018": "sha256:026462d45210401744c68ca0486f26b6ab2c4b9dda435fe266b145a007bdcb37",
@@ -573,8 +600,9 @@
     "NFR-006": "sha256:e1e4c950ab6aa1cd23c96285c7a65e16142a02721e87e4ea920ac26f2ffbabe4",
     "NFR-007": "sha256:bf87e515080cebeaebc99536614feaf1bb582ea02997f0cc494564f6583d7957",
     "NFR-008": "sha256:6e475e381eed080d5860e3c913a25eb97887cfa8a8b4feff05043b6243d56152",
-    "NFR-009": "sha256:d4adb1bec845b78818fd9250e067c71f531d1eb86db732c3ff38c2dfd739d6fc"
+    "NFR-009": "sha256:d4adb1bec845b78818fd9250e067c71f531d1eb86db732c3ff38c2dfd739d6fc",
+    "config": "sha256:bc9dfd873b79749f56d9a236f54a40be5acd4f88e8e3ecdbcd134d7c242d0a1c"
   },
-  "phase": "",
+  "phase": "implementation",
   "version": 1
 }

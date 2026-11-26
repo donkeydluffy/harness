@@ -1,6 +1,6 @@
 # PRD: harness
 
-- Status: Draft
+- Status: Approved
 - Version: 1.0-rc3
 - Current-Release: 1
 - Updated: 2026-11-26

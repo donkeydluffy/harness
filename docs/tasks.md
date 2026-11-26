@@ -150,7 +150,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 内置四个阶段 JSON、项目配置合并、phase.01（由 phase 模块注册）、`harness phase list|next`（交互式终端、退出与进入规则通过）。AC-045-3 的 `phase next` 在本任务实现并写测试，但其 E3（门禁拒绝代理改阶段）依赖门禁，整条 AC 由 T-016 关联。phase 附 `TestExample_EXT_04` 示例阶段测试。
 
 ### T-015 阶段前置条件与任务完成定义
-- Status: InProgress
+- Status: Done
 - Covers: FR-038, FR-039, AC-024-2
 - Design: FLOW-01, IF-014, ADR-008
 - Flow: FLOW-01
@@ -160,7 +160,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联需求无 Open 待澄清项。task.08：Done 任务所关联条目涉及的用例全部 passed、全量检查通过、进度文件有记录。
 
 ### T-016 写操作门禁与 Claude Code 适配器
-- Status: Todo
+- Status: InProgress
 - Covers: AC-012-1, AC-012-2, AC-012-5, AC-037-2, AC-045-3, AC-045-4
 - Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019, IF-025, ADR-003, ADR-006
 - Flow: FLOW-02

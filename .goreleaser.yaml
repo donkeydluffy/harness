@@ -7,6 +7,8 @@ builds:
     binary: harness
     env: [CGO_ENABLED=0]
     flags: [-trimpath]
+    # 版本号注入 MOD-18（AC-049-1）；-s -w 与 goreleaser 的默认值一致
+    ldflags: ["-s -w -X github.com/donkeydluffy/harness/internal/version.injected={{ .Version }}"]
     goos: [darwin, linux, windows]
     goarch: [amd64, arm64]
 

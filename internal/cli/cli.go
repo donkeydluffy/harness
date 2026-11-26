@@ -12,6 +12,7 @@ import (
 	"github.com/donkeydluffy/harness/internal/app"
 	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/version"
 )
 
 // 退出码（AC-N004-2）。
@@ -37,6 +38,7 @@ const usage = `用法：harness <命令> [参数]
   init --lang <语言列表> [--agent <代理列表>] [--ci github|gitlab]
                                    生成项目骨架；已存在且内容不同的文件跳过不覆盖
   gate <代理> <事件>               代理 hook 入口：从标准输入读取 hook 输入，输出门禁判定
+  version                          输出 harness 版本（也可写作 --version）
 `
 
 // Main 执行命令并返回退出码。
@@ -65,6 +67,13 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return initCmd(root, args[1:], stdout, stderr)
 	case "gate":
 		return gateCmd(root, args[1:], os.Stdin, stdout, stderr)
+	case "version", "--version":
+		if len(args) > 1 {
+			fmt.Fprintf(stderr, "harness: version 不接受参数\n\n%s", usage)
+			return ExitInternal
+		}
+		fmt.Fprintln(stdout, "harness", version.Current())
+		return ExitOK
 	case "help", "-h", "--help":
 		fmt.Fprint(stdout, usage)
 		return ExitOK

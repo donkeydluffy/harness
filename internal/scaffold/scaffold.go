@@ -95,6 +95,8 @@ func GitHooksDir(root string) (dir string, ok bool) {
 
 // Generate 写入模板；已存在且内容相同的文件不动，内容不同的跳过并列入 Skipped（AC-001-2）。
 // 选项不合法时不写任何文件（AC-001-1/E1）。git 仓库中同时安装 commit-msg、pre-commit hook（AC-013-3）。
+//
+// harness:IF-020
 func Generate(root string, opt InitOptions) (Result, error) {
 	opt.SelfHosted = selfHosted(root)
 	files, err := Files(opt)

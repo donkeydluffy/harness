@@ -216,3 +216,7 @@
 ### 2026-11-26 T-038
 - 结论：Done。新增 `replacedBy`：取代者为 Active 且 Release 不大于 Current-Release 时，被取代的需求或验收标准按 Removed 判定。trace.01、task.02、test.02 不再要求它被覆盖，trace.03 报告"引用了已被 X 取代的 Y"；新增 prd.12 校验 Replaces 引用存在、Replaced-By 互相对应、被取代者的 Release 小于取代者。开工时发现任务范围漏了 trace_01.go、task_02.go、test_02.go（同属 MOD-05），补进范围后实现。6 个用例的集成测试覆盖取代前后的设计、测试、任务覆盖与三种一致性错误；12 个变异中最初有 4 个存活（B1 中被取代的需求仍有设计覆盖，任务覆盖与整条需求被取代的路径没有测到），补测试后全部被抓到。在临时副本中把 Current-Release 改为 2 预演：trace.03 列出 23 处引用待清理（FR-045 17 处、FR-038 4 处、NFR-008 2 处），trace.01 列出 15 处 Release 2 需求尚无设计覆盖。
 - 遗留：DEBT-014 补充一种赋值形式的误报；登记 DEBT-016（cp 目标含变量时把来源当作目标）。
+
+### 2026-11-26 T-040
+- 结论：新增 MOD-18（internal/version）；`harness version` 与 `--version` 输出版本，发布构建经 .goreleaser.yaml 的 ldflags 注入版本号，源码构建取模块版本（Go 1.24 起为含提交哈希的伪版本，`+dirty` 改为 `-dirty`），没有模块版本时取提交哈希前 12 位；用法与 help 列出 version。IF-020、IF-021、IF-037 补锚点与单元测试。变异测试：去掉 -dirty 转换，单元测试与 AC-049-1/B1 都失败。
+- 遗留：无。

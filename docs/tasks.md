@@ -393,11 +393,11 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 各任务实现新接口时，在实现处加 `// harness:IF-n` 锚点（formats.md 第 8 节），并为接口写测试名含其编号的单元测试（如 `TestUnits_IF_027`）；任务涉及已有模块时，顺带补齐这些模块中接口的锚点与单元测试。T-048、T-049 的规则依赖这些锚点与测试。
 
 ### T-040 版本信息
-- Status: Todo
+- Status: Done
 - Covers: FR-049
 - Design: MOD-18, IF-037, FLOW-07
 - Flow: FLOW-07
-- Scope: internal/version/**, internal/cli/**, .goreleaser.yaml, internal/scaffold/*_test.go, internal/app/version_integration_test.go
+- Scope: internal/version/**, internal/cli/**, .goreleaser.yaml, internal/scaffold/scaffold.go, internal/scaffold/rule.go, internal/scaffold/*_test.go, internal/app/version_integration_test.go
 - Depends: T-039
 
 `harness version` 与 `--version` 输出版本；发布构建经 -ldflags 注入版本号，`go install` 构建取模块版本或提交哈希（含 -dirty）。顺带为 IF-020、IF-021 补锚点与单元测试。

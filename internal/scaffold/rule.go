@@ -14,6 +14,8 @@ import (
 
 // Expected 返回纳入版本库的生成文件的期望内容（IF-021）：claudecode 的 hook 配置必有；
 // CI 配置只比对已存在的那一份（缺少 CI 配置由 ci.01 报告）。git hook 不在版本库中，不比对。
+//
+// harness:IF-021
 func Expected(s *workspace.Snapshot) (map[string][]byte, error) {
 	out := map[string][]byte{}
 	if a, ok := adapter.Get("claudecode"); ok {

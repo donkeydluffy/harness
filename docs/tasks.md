@@ -16,7 +16,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 ## 任务
 
 ### T-001 CLI 骨架与 PRD 编号、必填字段检查
-- Status: InProgress
+- Status: Done
 - Covers: AC-003-1, AC-003-2, AC-003-4, NFR-004
 - Design: FLOW-01, IF-001, IF-002, IF-009, IF-010, IF-011, IF-012, IF-013, IF-014, IF-022, ADR-001, ADR-002, ADR-007
 - Flow: FLOW-01
@@ -26,7 +26,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 端到端骨架（prd.02 同时实现 Release、Current-Release 与 NFR Type 字段校验，AC-003-5 的追溯部分在 T-006 验收）：model 解析器、workspace 加载配置与产物、engine 注册与运行（含样本自检与修复建议必填）、app.Check、`harness check [--json]` 与退出码 0/1/2。完成后 `harness check prd.01 prd.02` 可检查本仓库。engine 附 `TestExample_EXT_03` 示例规则测试。
 
 ### T-002 锁文件、`harness lock` 与需求变更追踪
-- Status: Todo
+- Status: InProgress
 - Covers: FR-004, AC-003-3, AC-019-3
 - Design: FLOW-10, IF-005, IF-006, IF-023, ADR-004
 - Flow: FLOW-01

@@ -124,7 +124,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 - Covers: AC-013-1, AC-013-2, AC-013-4, AC-034-1
 - Design: FLOW-09, IF-007, IF-014, IF-022, ADR-008
 - Flow: FLOW-01
-- Scope: internal/cli/**, internal/app/check.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/rules/builtin/commit_02.go, internal/rules/builtin/testdata/commit.02/**, internal/rules/builtin/commit_03.go, internal/rules/builtin/testdata/commit.03/**, internal/rules/builtin/commit_04.go, internal/rules/builtin/testdata/commit.04/**, internal/app/commit_integration_test.go, internal/app/testdata/commit/**
+- Scope: internal/cli/**, internal/app/check.go, internal/workspace/workspace.go, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/rules/builtin/commit_02.go, internal/rules/builtin/testdata/commit.02/**, internal/rules/builtin/commit_03.go, internal/rules/builtin/testdata/commit.03/**, internal/rules/builtin/commit_04.go, internal/rules/builtin/testdata/commit.04/**, internal/app/commit_integration_test.go, internal/app/testdata/commit/**
 - Depends: T-011
 
 `harness check commits <范围>`；commit.02 豁免产物文件和生成文件。

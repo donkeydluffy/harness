@@ -23,7 +23,11 @@ const (
 const usage = `用法：harness <命令> [参数]
 
 命令：
-  check [规则或前缀...] [--json]   运行检查；无参数时运行全部规则
+  check [规则或前缀...] [--commits <范围>] [--msg-file <文件>] [--json]
+                                   运行检查；无参数时运行全部规则。
+                                   commit 规则默认检查暂存区；--commits 检查范围内每个提交，
+                                   也可写作 check commits origin/main..HEAD；
+                                   --msg-file 传入即将提交的信息（commit-msg hook 使用）
   lock                             全量检查通过后更新 harness.lock
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
 `
@@ -57,10 +61,24 @@ func Main(args []string, stdout, stderr io.Writer) int {
 
 func check(root string, args []string, stdout, stderr io.Writer) int {
 	var opt app.CheckOptions
-	for _, a := range args {
+	for i := 0; i < len(args); i++ {
+		a := args[i]
 		switch {
 		case a == "--json":
 			opt.JSON = true
+		case a == "--commits" || a == "--msg-file":
+			if i+1 >= len(args) {
+				fmt.Fprintf(stderr, "harness check: %s 需要参数\n", a)
+				return ExitInternal
+			}
+			i++
+			if a == "--commits" {
+				opt.Commits = args[i]
+			} else {
+				opt.MessageFile = args[i]
+			}
+		case strings.Contains(a, "..") && len(opt.Rules) > 0 && strings.HasPrefix(opt.Rules[len(opt.Rules)-1], "commit"):
+			opt.Commits = a // check commits <范围>
 		case strings.HasPrefix(a, "-"):
 			fmt.Fprintf(stderr, "harness check: 未知参数 %q\n", a)
 			return ExitInternal

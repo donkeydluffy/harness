@@ -10,7 +10,7 @@
 
 ```go
 // IF-022
-type CheckOptions struct{ Rules []string; Commits string; JSON bool }
+type CheckOptions struct{ Rules []string; Commits, MessageFile string; JSON bool } // MessageFile：commit-msg hook 传入的提交信息文件
 func Check(root string, opt CheckOptions) (engine.Report, error)
 func Trace(root, format string) ([]byte, error) // md / json 覆盖矩阵
 ```

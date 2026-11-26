@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"harness/internal/rules/engine"
@@ -10,9 +11,10 @@ import (
 
 // CheckOptions 是 harness check 的参数（IF-022）。
 type CheckOptions struct {
-	Rules   []string // 规则编号（含点，如 prd.01）或前缀（如 prd、tasks）；空表示全部
-	Commits string
-	JSON    bool
+	Rules       []string // 规则编号（含点，如 prd.01）或前缀（如 prd、tasks）；空表示全部
+	Commits     string   // 提交范围，如 origin/main..HEAD；为空时检查暂存区
+	MessageFile string   // 即将形成的提交的信息文件（commit-msg hook 的参数）
+	JSON        bool
 }
 
 // Check 加载项目快照并运行选中的规则（IF-022）。
@@ -24,7 +26,26 @@ func Check(root string, opt CheckOptions) (engine.Report, error) {
 		return engine.Report{}, fmt.Errorf("没有匹配的规则：%s（可用规则：%s）",
 			strings.Join(unknown, ", "), strings.Join(engine.IDs(), ", "))
 	}
-	return run(root, sel, workspace.LoadOptions{CommitRange: opt.Commits, WithSources: true, WithTests: true})
+	lo := workspace.LoadOptions{CommitRange: opt.Commits, WithSources: true, WithTests: true}
+	if opt.MessageFile != "" {
+		b, err := os.ReadFile(opt.MessageFile)
+		if err != nil {
+			return engine.Report{}, fmt.Errorf("读取提交信息：%w", err)
+		}
+		lo.Message = stripComments(string(b))
+	}
+	return run(root, sel, lo)
+}
+
+// stripComments 去掉提交信息中 git 的注释行（以 # 开头）。
+func stripComments(msg string) string {
+	var keep []string
+	for _, l := range strings.Split(msg, "\n") {
+		if !strings.HasPrefix(l, "#") {
+			keep = append(keep, l)
+		}
+	}
+	return strings.TrimSpace(strings.Join(keep, "\n"))
 }
 
 // docRules 选中只读取产物文档的规则（不需要源码、测试报告、git）。

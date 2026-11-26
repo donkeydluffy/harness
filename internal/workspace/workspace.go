@@ -26,6 +26,7 @@ type Snapshot struct {
 	Repo    vcs.Repo   // 非 git 仓库时为 nil
 	// CommitRange 是要检查的提交范围；为空时依赖 git 的规则检查暂存区（即将形成的提交）。
 	CommitRange string
+	Message     string                // 见 LoadOptions.Message
 	Sources     []*SourceFile         // LoadOptions.WithSources 时加载
 	Tests       []testreport.TestCase // LoadOptions.WithTests 时加载
 	Reports     []string              // 读到的测试报告文件；为空表示没有报告
@@ -36,6 +37,8 @@ type Snapshot struct {
 type LoadOptions struct {
 	WithTests, WithSources bool
 	CommitRange            string
+	// Message 是即将形成的提交的信息（commit-msg hook 传入）；检查暂存区时作为该提交的信息。
+	Message string
 }
 
 // ArtifactGlobs 是作为产物解析的 Markdown 文件，路径相对项目根目录。
@@ -60,7 +63,7 @@ func Load(root string, opt LoadOptions) (*Snapshot, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &Snapshot{Root: root, Config: cfg, Lock: lk, CommitRange: opt.CommitRange}
+	s := &Snapshot{Root: root, Config: cfg, Lock: lk, CommitRange: opt.CommitRange, Message: opt.Message}
 	if r, err := vcs.Open(root); err == nil {
 		s.Repo = r
 	}

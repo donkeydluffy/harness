@@ -1,6 +1,6 @@
 # MOD-09 workspace 详细设计
 
-- Status: Approved
+- Status: Draft
 
 ## 职责
 
@@ -24,7 +24,7 @@ type Snapshot struct {
 	Sources []SourceFile      // 按 sourcePaths 收集，惰性读取内容
 	Diags   []model.Diagnostic
 }
-type LoadOptions struct{ WithTests, WithSources bool; CommitRange string }
+type LoadOptions struct{ WithTests, WithSources bool; CommitRange, Message string } // Message：即将形成的提交的信息，检查暂存区时使用
 
 func Load(root string, opt LoadOptions) (*Snapshot, error)
 ```

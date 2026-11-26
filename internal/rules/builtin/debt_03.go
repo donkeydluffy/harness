@@ -23,8 +23,10 @@ func (debt03) Check(s *workspace.Snapshot) []engine.Violation {
 	where := map[string][]string{}
 	for _, c := range commentLines(s) {
 		for _, e := range entityRefs(s, c.Text) {
-			if e.Kind == "DEBT" && e.Fields["Status"] == "Resolved" {
-				where[e.ID] = append(where[e.ID], fmt.Sprintf("%s:%d", c.File, c.Line))
+			loc := fmt.Sprintf("%s:%d", c.File, c.Line)
+			// 同一行用不同写法（如 DEBT-90 与 DEBT-090）引用同一项时只列一次位置
+			if e.Kind == "DEBT" && e.Fields["Status"] == "Resolved" && !contains(where[e.ID], loc) {
+				where[e.ID] = append(where[e.ID], loc)
 			}
 		}
 	}

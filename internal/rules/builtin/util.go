@@ -412,7 +412,7 @@ func commentLines(s *workspace.Snapshot) []sourceComment {
 
 var entityRefRe = regexp.MustCompile(`\b(DEBT|T)-(\d+)\b`)
 
-// entityRefs 返回文本中引用的 DEBT 与 T 实体，编号按数值归一（DEBT-2 与 DEBT-002 相同）。
+// entityRefs 返回文本中引用的 DEBT 与 T 实体，编号按数值归一（T-3 与 T-003 相同）。
 func entityRefs(s *workspace.Snapshot, text string) []*model.Entity {
 	var out []*model.Entity
 	for _, m := range entityRefRe.FindAllStringSubmatch(text, -1) {

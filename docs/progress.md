@@ -124,3 +124,8 @@
 - 设计澄清（用户确认）：AC-001-1/B1 要求 5 种语言，Release 1 新增 TypeScript/JavaScript、Python、Java/Kotlin、C/C++ 的最小语言包，只提供注释提取、测试分类、测试名，T-019 的范围因此纳入 internal/lang/**。完整的格式化与静态检查配置属于 FR-014（Release 2）。
 - 设计取舍：prd.04（AC-002-3）要求三章各有条目，PRD 骨架带 TERM-001、FR-001、NFR-001 三个格式示例，Release 为 2，不进入当前 Release 的追溯与覆盖检查，澄清需求时替换。MOD-13 列出的 formats 参考与 ADR 模板没有放进骨架：放在 docs/architecture、docs/adr 下会被当作产物解析；改由 T-020 的 skill 说明格式。
 - 遗留：T-021 的 git hook 文件（commit-msg、pre-commit）没有扩展名，与 AC-N005-1/N1 的"全部产物扩展名为 .md、.yaml 或 .json"冲突，届时需确认 git hook 是否算产物。
+
+### 2026-11-26 T-020
+- 结论：Done。六个 skill（clarify、change、architect、plan、implement、test）作为模板内嵌，`harness init` 写入 `.claude/skills/<名称>/SKILL.md`；frontmatter 的 check 字段声明结束前运行的 `harness check` 子命令。静态测试：每个 skill 的 check 选择器都选中已注册规则、内置阶段引用的 skill 都存在；测试 skill 中五种语言的命名示例逐一放进临时项目，用 test.01、test.02 实际提取验证计入覆盖，并以不按约定命名的测试作对照。5 个用例（AC-016-1、AC-016-2、AC-011-5/N1）通过；逐一破坏 skill 内容后对应测试失败。
+- 设计取舍：skill 写入需要改 scaffold.go 与 init 的期望文件清单，T-020 的 Design 因此加上 IF-026、FLOW-07。FR-016 描述中的 UI 规范 skill 属于 FR-015 的范围，不在本任务。
+- 遗留：无。

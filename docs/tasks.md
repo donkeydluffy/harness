@@ -200,7 +200,7 @@ PostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连
 go:embed 模板；`harness init --lang go` 生成产物骨架、harness.json、Claude Code hook 配置；重复执行不覆盖已修改文件并列出跳过的文件。
 
 ### T-020 流程 skill 集
-- Status: InProgress
+- Status: Done
 - Covers: FR-016, AC-011-5, AC-033-5
 - Design: MOD-13, IF-020, IF-026, FLOW-07
 - Flow: FLOW-07
@@ -210,7 +210,7 @@ go:embed 模板；`harness init --lang go` 生成产物骨架、harness.json、C
 clarify、change、architect、plan、implement、test 六个 skill；每个声明结束前运行的 `harness check` 子命令；静态测试校验声明存在、测试命名约定与 test.01 的提取规则一致。
 
 ### T-021 git hook、CI 模板与生成文件一致性
-- Status: Todo
+- Status: InProgress
 - Covers: AC-013-3, AC-043-1, AC-041-2
 - Design: FLOW-07, IF-020, IF-021
 - Flow: FLOW-07

@@ -368,11 +368,11 @@ init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它�
 commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CHG-n` 尾注代替 Task 尾注；Change 尾注引用的 CHG 须在变更日志中存在，不能与 Task 尾注同时出现。
 
 ### T-038 需求取代关系（Replaces / Replaced-By）
-- Status: Todo
+- Status: InProgress
 - Covers: AC-003-6
 - Design: FLOW-01, IF-014, IF-022
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_02.go, internal/rules/builtin/prd_12.go, internal/rules/builtin/testdata/prd.12/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_02.go, internal/rules/builtin/prd_12.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/task_02.go, internal/rules/builtin/test_02.go, internal/rules/builtin/testdata/prd.12/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**
 - Depends: T-037
 
 被取代的条目在取代者的 Release 不大于 Current-Release 时按 Removed 判定：覆盖检查不再要求它，trace.03 报告对它的引用。新增 prd.12 校验 `Replaces` 与 `Replaced-By` 互相对应、引用存在、被取代者的 Release 小于取代者。

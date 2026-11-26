@@ -30,6 +30,10 @@ func (trace03) Check(s *workspace.Snapshot) []engine.Violation {
 					continue // 非编号文字由各自的字段规则检查
 				}
 				t := target(s, r)
+				if by := replacedBy(s, r); by != "" && t != "" {
+					out = append(out, at(e, "%s 的 %s 引用了已被 %s 取代的 %s", e.ID, f, by, r))
+					continue
+				}
 				switch {
 				case t == "":
 					out = append(out, at(e, "%s 的 %s 引用了不存在的 %s", e.ID, f, r))

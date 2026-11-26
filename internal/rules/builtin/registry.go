@@ -17,6 +17,7 @@ func Rules() []engine.Rule {
 		prd09{},
 		prd10{},
 		prd11{},
+		prd12{},
 		term01{},
 		term02{},
 		arch01{},

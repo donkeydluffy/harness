@@ -26,7 +26,7 @@ func (trace01) Check(s *workspace.Snapshot) []engine.Violation {
 	}
 	var out []engine.Violation
 	for _, e := range requirements(s) {
-		if e.Kind == "FR" && e.Fields["Status"] == "Active" && inScope(s, e) && !covered[e.ID] {
+		if e.Kind == "FR" && e.Fields["Status"] == "Active" && inScope(s, e) && replacedBy(s, e.ID) == "" && !covered[e.ID] {
 			out = append(out, at(e, "%s 未被任何设计元素覆盖", e.ID))
 		}
 	}

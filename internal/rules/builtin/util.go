@@ -106,6 +106,17 @@ func inScope(s *workspace.Snapshot, e *model.Entity) bool {
 	return err1 != nil || err2 != nil || rel <= cur
 }
 
+// replacedBy 返回已生效地取代 id（需求或验收标准编号）的需求：取代者为 Active、Release 不大于 Current-Release，
+// 且 Replaces 含 id（AC-003-6）。未被取代或取代尚未生效时返回空串；生效后被取代的条目按 Removed 判定。
+func replacedBy(s *workspace.Snapshot, id string) string {
+	for _, e := range requirements(s) {
+		if e.Fields["Status"] == "Active" && inScope(s, e) && contains(e.List("Replaces"), id) {
+			return e.ID
+		}
+	}
+	return ""
+}
+
 var inlineCodeRe = regexp.MustCompile("`[^`]*`")
 
 // bodyLines 返回实体正文（不含标题、字段行、代码块）的行及行号，行内代码替换为空白。

@@ -25,10 +25,13 @@ func (test02) Fix() string {
 func (test02) Check(s *workspace.Snapshot) []engine.Violation {
 	scope := map[string]bool{}
 	for _, e := range requirements(s) {
-		if e.Fields["Status"] != "Active" || !inScope(s, e) {
+		if e.Fields["Status"] != "Active" || !inScope(s, e) || replacedBy(s, e.ID) != "" {
 			continue
 		}
 		for _, it := range e.Items {
+			if replacedBy(s, it.ID) != "" {
+				continue
+			}
 			for _, c := range it.Children {
 				if !workspace.CaseRemoved(c.Text) {
 					scope[c.ID] = true

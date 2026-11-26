@@ -387,3 +387,90 @@ func TestCheck_AC_N004_2_E1(t *testing.T) {
 		t.Fatalf("期望退出码 2，得到 %d：%s", r.Code, r.Stderr)
 	}
 }
+
+// ---- AC-003-6 需求取代关系 ----
+
+// fr003Replaces 是 Release 2 的 FR-003，取代 replaces 中的条目。
+func fr003Replaces(replaces string) string {
+	return "### FR-003 新做法\n- Status: Active\n- Release: 2\n- Priority: P1\n- Replaces: " + replaces +
+		"\n\n- AC-003-1: 新行为。\n  - AC-003-1/N1: 正常\n  - AC-003-1/E1: 异常\n\n## 4. 非功能需求"
+}
+
+// replacedPRD 返回 FR-003 取代 FR-002 的 PRD；current 为 Current-Release。
+func replacedPRD(t *testing.T, current string) string {
+	return prd(t, "## 4. 非功能需求", fr003Replaces("FR-002"),
+		"- Release: 1\n- Priority: P1\n\n- AC-002-1", "- Release: 1\n- Priority: P1\n- Replaced-By: FR-003\n\n- AC-002-1",
+		"- Current-Release: 1", "- Current-Release: "+current)
+}
+
+func hasRule(c checked, rule, part string) bool {
+	for _, v := range c.vs {
+		if v.Rule == rule && strings.Contains(v.Msg, part) {
+			return true
+		}
+	}
+	return false
+}
+
+func TestCheck_AC_003_6_N1(t *testing.T) {
+	files := traced(t, replacedPRD(t, "1"))
+	wantPass(t, checkPRD(t, files))
+	wantPass(t, checkTrace(t, files)) // FR-002 照常由设计覆盖，FR-003 尚不在范围内
+}
+
+func TestCheck_AC_003_6_B1(t *testing.T) {
+	c := checkTrace(t, traced(t, replacedPRD(t, "2")))
+	wantViolation(t, c, "trace.03", "已被 FR-003 取代的 FR-002")
+	// 按 trace.03 清理引用：设计改为覆盖 FR-003，不再有设计覆盖 FR-002；FR-002 不再要求覆盖，检查通过。
+	wantPass(t, checkTrace(t, traced(t, replacedPRD(t, "2"),
+		"overview.md", "- Covers: FR-002", "- Covers: FR-003",
+		"modules/modules.md", "- Covers: FR-002", "- Covers: FR-003")))
+	// 测试与任务同理：FR-002 的用例没有测试、没有任务关联 FR-002，均不再报告。
+	f := covered()
+	tests := []string{"TestX_AC_001_1_N1", "TestX_AC_001_1_E1", "TestX_AC_003_1_N1", "TestX_AC_003_1_E1", "TestX_AC_N001_1_N1", "TestX_AC_N001_1_E1"}
+	f["docs/PRD.md"] = replacedPRD(t, "2")
+	f["internal/a_integration_test.go"] = goTests(tests...)
+	f[".harness/reports/go.jsonl"] = goReport(allPass(tests...)...)
+	if c := checkTests(t, f); hasRule(c, "test.02", "AC-002-1") {
+		t.Fatalf("已被取代的 FR-002 的用例不应再要求测试：%+v", c.vs)
+	}
+	tasks := taskDoc(task("T-001", "Todo", "FR-001, FR-003", "MOD-01", "internal/api/**", "", ""))
+	if c := checkTasks(t, replacedPRD(t, "2"), tasks); hasRule(c, "task.02", "FR-002") {
+		t.Fatalf("已被取代的 FR-002 不应再要求任务覆盖：%+v", c.vs)
+	}
+}
+
+func TestCheck_AC_003_6_N2(t *testing.T) {
+	src := prd(t, "## 4. 非功能需求", fr003Replaces("AC-001-1"))
+	f := covered()
+	tests := append([]string{"TestX_AC_003_1_N1", "TestX_AC_003_1_E1"}, caseTests[2:]...) // 不含 AC-001-1 的测试
+	f["internal/a_integration_test.go"] = goTests(tests...)
+	f[".harness/reports/go.jsonl"] = goReport(allPass(tests...)...)
+	f["docs/PRD.md"] = src // Current-Release 为 1：AC-001-1 仍要求测试
+	wantViolation(t, checkTests(t, f), "test.02", "AC-001-1/N1")
+	f["docs/PRD.md"] = strings.Replace(src, "- Current-Release: 1", "- Current-Release: 2", 1)
+	wantPass(t, checkTests(t, f))
+	// 任务覆盖同理：只关联 FR-002、FR-003 与 AC-001-1 之外的验收标准时，取代生效前 FR-001 缺 AC-001-1，生效后不再要求。
+	tasks := taskDoc(task("T-001", "Todo", "FR-002, FR-003", "MOD-01", "internal/api/**", "", ""))
+	if c := checkTasks(t, src, tasks); !hasRule(c, "task.02", "AC-001-1") {
+		t.Fatalf("取代生效前 AC-001-1 应要求任务覆盖：%+v", c.vs)
+	}
+	if c := checkTasks(t, f["docs/PRD.md"], tasks); hasRule(c, "task.02", "FR-001") {
+		t.Fatalf("取代生效后 AC-001-1 不应再要求任务覆盖：%+v", c.vs)
+	}
+}
+
+func TestCheck_AC_003_6_E1(t *testing.T) {
+	src := strings.Replace(replacedPRD(t, "1"), "- Replaces: FR-002", "- Replaces: AC-001-1", 1)
+	wantViolation(t, checkPRD(t, traced(t, src)), "prd.12", "FR-002 的 Replaced-By 为 FR-003", "Replaces 不含 FR-002")
+}
+
+func TestCheck_AC_003_6_E2(t *testing.T) {
+	src := strings.Replace(replacedPRD(t, "2"), "- Release: 2\n- Priority: P1\n- Replaces", "- Release: 1\n- Priority: P1\n- Replaces", 1)
+	wantViolation(t, checkPRD(t, traced(t, src)), "prd.12", "Release（1）不小于取代者的 Release（1）")
+}
+
+func TestCheck_AC_003_6_E3(t *testing.T) {
+	src := strings.Replace(replacedPRD(t, "1"), "- Replaces: FR-002", "- Replaces: FR-002, FR-099", 1)
+	wantViolation(t, checkPRD(t, traced(t, src)), "prd.12", "引用了不存在的 FR-099")
+}

@@ -29,12 +29,12 @@ func (task02) Check(s *workspace.Snapshot) []engine.Violation {
 	}
 	var out []engine.Violation
 	for _, e := range requirements(s) {
-		if e.Kind != "FR" || e.Fields["Status"] != "Active" || !inScope(s, e) || covered[e.ID] {
+		if e.Kind != "FR" || e.Fields["Status"] != "Active" || !inScope(s, e) || replacedBy(s, e.ID) != "" || covered[e.ID] {
 			continue
 		}
 		var missing []string
 		for _, it := range e.Items {
-			if strings.HasPrefix(it.ID, "AC-") && !covered[it.ID] {
+			if strings.HasPrefix(it.ID, "AC-") && !covered[it.ID] && replacedBy(s, it.ID) == "" {
 				missing = append(missing, it.ID)
 			}
 		}

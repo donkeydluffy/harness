@@ -54,7 +54,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Depends: T-003
 
 ### T-005 架构产物校验
-- Status: InProgress
+- Status: Done
 - Covers: FR-006, AC-033-2
 - Design: FLOW-01, MOD-03, IF-002, IF-014
 - Flow: FLOW-01
@@ -64,7 +64,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 模块、接口、流程、扩展点必填字段与模块路径不重叠，依赖无环，流程步骤与依赖一致。
 
 ### T-006 需求到设计追溯与覆盖矩阵
-- Status: Todo
+- Status: InProgress
 - Covers: FR-007, AC-003-5
 - Design: FLOW-01, IF-014, IF-022
 - Flow: FLOW-01

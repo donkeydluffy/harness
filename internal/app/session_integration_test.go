@@ -5,8 +5,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-
-	"harness/internal/adapter/claudecode"
 )
 
 // sessionDir 返回全量检查（不含覆盖类规则）通过的项目：PRD 与架构夹具，处于实现阶段。
@@ -17,9 +15,7 @@ func sessionDir(t *testing.T, extra map[string]string) string {
 		files[k] = v
 	}
 	if _, ok := files["harness.json"]; ok {
-		// 有 harness.json 的项目视为已初始化，cfg.02 要求 hook 配置与生成结果一致。
-		p, b := claudecode.Adapter{}.HookConfig("harness")
-		files[p] = string(b)
+		addGenerated(t, files)
 	}
 	dir := writeTree(t, files)
 	if r := runHarness(t, dir, "lock"); r.Code != 0 {

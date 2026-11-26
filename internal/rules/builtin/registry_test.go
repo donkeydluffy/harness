@@ -33,7 +33,7 @@ func TestRulesSamples_IF_014(t *testing.T) {
 			if fi, err := os.Stat(filepath.Join(d, "repo")); err == nil && fi.IsDir() {
 				root = gitSample(t, filepath.Join(d, "repo"))
 			}
-			s, err := workspace.Load(root, workspace.LoadOptions{})
+			s, err := workspace.Load(root, workspace.LoadOptions{WithSources: true, WithTests: true})
 			if err != nil {
 				t.Fatalf("%s: %v", d, err)
 			}
@@ -78,4 +78,3 @@ func gitSample(t *testing.T, repo string) string {
 	}
 	return dir
 }
-

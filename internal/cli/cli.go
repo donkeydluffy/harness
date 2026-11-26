@@ -34,6 +34,7 @@ const usage = `用法：harness <命令> [参数]
   phase list                       列出流程阶段，标出当前阶段
   phase next                       由人在终端推进到下一阶段（退出与进入规则须通过）
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
+  gate <代理> <事件>               代理 hook 入口：从标准输入读取 hook 输入，输出门禁判定
 `
 
 // Main 执行命令并返回退出码。
@@ -58,6 +59,8 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return phaseCmd(root, args[1:], stdout, stderr)
 	case "trace":
 		return traceCmd(root, args[1:], stdout, stderr)
+	case "gate":
+		return gateCmd(root, args[1:], os.Stdin, stdout, stderr)
 	case "help", "-h", "--help":
 		fmt.Fprint(stdout, usage)
 		return ExitOK

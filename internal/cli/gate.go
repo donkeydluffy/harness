@@ -27,6 +27,9 @@ func gateCmd(root string, args []string, stdin io.Reader, stdout, stderr io.Writ
 	if err == nil {
 		var req gate.Request
 		if req, err = a.Decode(args[1], in); err == nil {
+			if req.Root != "" {
+				root = req.Root // 项目根由适配器查找；hook 进程的当前目录可能是仓库的子目录
+			}
 			d = app.Gate(root, req)
 		}
 	}

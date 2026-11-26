@@ -26,6 +26,8 @@ const (
 // Request 是门禁请求（IF-017）。
 type Request struct {
 	Kind      Kind
+	Root      string   // 项目根（绝对路径），由适配器从代理执行工具时的目录向上查找
+	Cwd       string   // 代理执行工具时的目录（绝对路径）；命令中的相对路径从这里开始解析，为空时从项目根开始
 	Paths     []string // 已解析为仓库相对路径；仓库外的路径以 "../" 开头
 	Content   string   // write 时写入后的完整内容（无法得到时为新增片段）
 	Command   string   // command 时的原始命令
@@ -65,7 +67,7 @@ func Decide(s *workspace.Snapshot, req Request) Decision {
 		}
 		return allow()
 	case Command:
-		return decideCommand(s, req.Command)
+		return decideCommand(s, req.Command, req.Cwd)
 	case PostWrite:
 		return postWrite(s, req)
 	case Stop:

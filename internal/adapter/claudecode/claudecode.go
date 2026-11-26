@@ -53,6 +53,7 @@ func (Adapter) Decode(event string, stdin []byte) (gate.Request, error) {
 		cwd, _ = os.Getwd()
 	}
 	root := projectRoot(cwd)
+	req.Root, req.Cwd = root, cwd
 	ti := in.ToolInput
 	switch event {
 	case "SessionStart":

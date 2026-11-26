@@ -342,3 +342,43 @@ func TestGate_CommandFollowsCd(t *testing.T) {
 		t.Fatal("范围外新建的文件应由命令后比对删除")
 	}
 }
+
+// hookIn 在仓库子目录 sub 中触发 hook：hook 进程的当前目录与输入中的 cwd 都是该子目录。
+func hookIn(t *testing.T, dir, sub, event string, in map[string]any) hookOut {
+	t.Helper()
+	wd := filepath.Join(dir, filepath.FromSlash(sub))
+	in["session_id"], in["cwd"] = "s1", wd
+	b, _ := json.Marshal(in)
+	return hookRaw(t, wd, event, b)
+}
+
+// 代理的 shell 停在子目录时，门禁仍以项目根判定：保护文件不能经 ../ 绕过，
+// 相对路径从子目录解析，命令前快照建在项目根的 .harness/ 下，命令后比对覆盖整个仓库（T-039）。
+func TestGate_SubdirectoryUsesProjectRoot(t *testing.T) {
+	dir := gateDir(t, "implementation", activeTasks)
+	pre := func(c string) hookOut { return hookIn(t, dir, "internal/api", "PreToolUse", bashTool(c)) }
+
+	wantDeny(t, pre("echo x > ../../harness.lock"), "gate.protect", "harness.lock")
+	wantAllow(t, pre("touch new.go"))                                      // internal/api/new.go 在范围内
+	wantDeny(t, pre("touch ../../other/c.go"), "gate.write", "other/c.go") // 从子目录解析后在范围外
+	rel := map[string]any{"tool_name": "Write", "tool_input": map[string]any{"file_path": "../../other/w.go", "content": "package other\n"}}
+	wantDeny(t, hookIn(t, dir, "internal/api", "PreToolUse", rel), "gate.write", "other/w.go")
+
+	cmd := bashTool("go generate ./...")
+	wantAllow(t, hookIn(t, dir, "internal/api", "PreToolUse", cmd))
+	if _, err := os.Stat(filepath.Join(dir, ".harness/snap/s1")); err != nil {
+		t.Fatalf("命令前快照应建在项目根的 .harness/ 下：%v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "internal/api/.harness")); !os.IsNotExist(err) {
+		t.Fatal("不应在子目录下创建 .harness/")
+	}
+	write(t, dir, "other/c.go", "x\n")
+	write(t, dir, "harness.lock", "{}\n")
+	hookIn(t, dir, "internal/api", "PostToolUse", cmd)
+	if _, err := os.Stat(filepath.Join(dir, "other/c.go")); !os.IsNotExist(err) {
+		t.Fatal("子目录中执行的命令在范围外新建的文件应被删除")
+	}
+	if b, _ := os.ReadFile(filepath.Join(dir, "harness.lock")); !strings.Contains(string(b), "implementation") {
+		t.Fatalf("锁文件应恢复为命令前内容：%q", b)
+	}
+}

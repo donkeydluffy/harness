@@ -11,7 +11,7 @@ import (
 
 // decideCommand 解析 Bash 命令（ADR-003）：拒绝 harness approve / phase next，
 // 对能静态判定的写入目标逐个按写入判定。无法静态判定的命令放行，由命令后比对（IF-018）兜底。
-func decideCommand(s *workspace.Snapshot, cmd string) Decision {
+func decideCommand(s *workspace.Snapshot, cmd, dir string) Decision {
 	if id, desc := findSecret(cmd); id != "" {
 		return denySecret("命令", id, desc)
 	}
@@ -28,6 +28,9 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 	var d = allow()
 	top := topLevelCds(f)
 	wd := cwd{dir: s.Root}
+	if dir != "" {
+		wd.dir = filepath.Clean(dir)
+	}
 	// write 判定写入目标 p：当前目录无法静态判定时，相对路径交给命令后比对。
 	write := func(p string) bool {
 		if !filepath.IsAbs(p) && wd.unknown {

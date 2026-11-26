@@ -60,3 +60,85 @@ func hasAC(items []*model.Item) bool {
 	}
 	return false
 }
+
+var chapterNumRe = regexp.MustCompile(`^\d+(\.\d+)*\.?\s*`)
+
+// chapterName 去掉章节标题的序号和括注，如 "2. 统一语言（Glossary）" → "统一语言"。
+func chapterName(heading string) string {
+	h := chapterNumRe.ReplaceAllString(strings.TrimSpace(heading), "")
+	if i := strings.IndexAny(h, "（("); i > 0 {
+		h = h[:i]
+	}
+	return strings.TrimSpace(h)
+}
+
+// chapter 返回文档中名为 name 的二级章节的行号范围 [start, end)，start 为标题行。
+func chapter(d *model.Doc, name string) (start, end int, ok bool) {
+	for i, h := range d.Headings {
+		if h.Level != 2 || chapterName(h.Text) != name {
+			continue
+		}
+		end = len(d.Lines) + 1
+		for _, n := range d.Headings[i+1:] {
+			if n.Level <= 2 {
+				end = n.Line
+				break
+			}
+		}
+		return h.Line, end, true
+	}
+	return 0, 0, false
+}
+
+// inScope 判断需求的 Release 是否不大于 PRD 的 Current-Release（AC-003-5）。
+func inScope(s *workspace.Snapshot, e *model.Entity) bool {
+	idx := s.Doc(workspace.PRDIndex)
+	if idx == nil {
+		return true
+	}
+	cur, err1 := strconv.Atoi(idx.Header["Current-Release"])
+	rel, err2 := strconv.Atoi(e.Fields["Release"])
+	return err1 != nil || err2 != nil || rel <= cur
+}
+
+var inlineCodeRe = regexp.MustCompile("`[^`]*`")
+
+// bodyLines 返回实体正文（不含标题、字段行、代码块）的行及行号，行内代码替换为空白。
+func bodyLines(e *model.Entity) (lines []string, nums []int) {
+	inCode := false
+	for i, l := range strings.Split(e.Raw, "\n") {
+		t := strings.TrimSpace(l)
+		if strings.HasPrefix(t, "```") || strings.HasPrefix(t, "~~~") {
+			inCode = !inCode
+			continue
+		}
+		if inCode || i == 0 || (i <= len(e.Order) && strings.HasPrefix(l, "- ")) {
+			continue
+		}
+		lines = append(lines, inlineCodeRe.ReplaceAllStringFunc(l, func(m string) string { return strings.Repeat(" ", len(m)) }))
+		nums = append(nums, e.Line+i)
+	}
+	return lines, nums
+}
+
+// anyEntity 判断行号范围 [start, end) 内是否有指定类型的实体。
+func anyEntity(d *model.Doc, start, end int, kind string) bool {
+	for _, e := range d.Entities {
+		if e.Kind == kind && e.Line > start && e.Line < end {
+			return true
+		}
+	}
+	return false
+}
+
+// anyRow 判断行号范围 [start, end) 内是否有首列以 prefix 开头的表格行。
+func anyRow(d *model.Doc, start, end int, prefix string) bool {
+	for _, t := range d.Tables {
+		for _, r := range t.Rows {
+			if r.Line > start && r.Line < end && len(r.Cells) > 0 && strings.HasPrefix(r.Cells[0], prefix) {
+				return true
+			}
+		}
+	}
+	return false
+}

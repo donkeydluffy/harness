@@ -30,7 +30,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Covers: FR-004, AC-003-3, AC-019-3
 - Design: FLOW-10, IF-005, IF-006, IF-023, ADR-004
 - Flow: FLOW-01
-- Scope: internal/lock/**, internal/workspace/**, internal/cli/**, internal/app/lock.go, internal/rules/builtin/registry.go, internal/rules/builtin/prd_03.go, internal/rules/builtin/testdata/prd.03/**, internal/rules/builtin/prd_08.go, internal/rules/builtin/testdata/prd.08/**, internal/app/lock_integration_test.go, internal/app/testdata/lock/**
+- Scope: internal/lock/**, internal/workspace/**, internal/cli/**, internal/app/lock.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_03.go, internal/rules/builtin/testdata/prd.03/**, internal/rules/builtin/prd_08.go, internal/rules/builtin/testdata/prd.08/**, internal/app/lock_integration_test.go, internal/app/testdata/lock/**
 - Depends: T-001
 
 规范化与哈希、锁文件读写（键排序、逐字节稳定）、`harness lock`（检查通过才写，保留批准与阶段）、prd.03 编号不得消失或复用、prd.08 CHG 与哈希差异一致。
@@ -40,7 +40,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Covers: FR-002, AC-019-1, AC-019-2, FR-040
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/prd_04.go, internal/rules/builtin/testdata/prd.04/**, internal/rules/builtin/prd_05.go, internal/rules/builtin/testdata/prd.05/**, internal/rules/builtin/prd_06.go, internal/rules/builtin/testdata/prd.06/**, internal/rules/builtin/prd_07.go, internal/rules/builtin/testdata/prd.07/**, internal/rules/builtin/prd_09.go, internal/rules/builtin/testdata/prd.09/**, internal/rules/builtin/prd_10.go, internal/rules/builtin/testdata/prd.10/**, internal/app/clarify_integration_test.go, internal/app/testdata/clarify/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_04.go, internal/rules/builtin/testdata/prd.04/**, internal/rules/builtin/prd_05.go, internal/rules/builtin/testdata/prd.05/**, internal/rules/builtin/prd_06.go, internal/rules/builtin/testdata/prd.06/**, internal/rules/builtin/prd_07.go, internal/rules/builtin/testdata/prd.07/**, internal/rules/builtin/prd_09.go, internal/rules/builtin/testdata/prd.09/**, internal/rules/builtin/prd_10.go, internal/rules/builtin/testdata/prd.10/**, internal/app/clarify_integration_test.go, internal/app/testdata/clarify/**
 - Depends: T-002
 
 三章齐全、Open 待澄清项阻止 Approved、澄清记录按轮次且每轮不超过 5 问、用例编号与 N 加 B/E、模糊词（跳过代码格式）、Quantitative NFR 含数值与单位。
@@ -50,7 +50,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Covers: FR-005
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/term_01.go, internal/rules/builtin/testdata/term.01/**, internal/rules/builtin/term_02.go, internal/rules/builtin/testdata/term.02/**, internal/app/term_integration_test.go, internal/app/testdata/term/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/term_01.go, internal/rules/builtin/testdata/term.01/**, internal/rules/builtin/term_02.go, internal/rules/builtin/testdata/term.02/**, internal/app/term_integration_test.go, internal/app/testdata/term/**
 - Depends: T-003
 
 ### T-005 架构产物校验
@@ -58,7 +58,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Covers: FR-006, AC-033-2
 - Design: FLOW-01, MOD-03, IF-002, IF-014
 - Flow: FLOW-01
-- Scope: internal/model/**, internal/rules/builtin/registry.go, internal/rules/builtin/arch_01.go, internal/rules/builtin/testdata/arch.01/**, internal/rules/builtin/arch_02.go, internal/rules/builtin/testdata/arch.02/**, internal/rules/builtin/arch_03.go, internal/rules/builtin/testdata/arch.03/**, internal/app/arch_integration_test.go, internal/app/testdata/arch/**
+- Scope: internal/model/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/arch_01.go, internal/rules/builtin/testdata/arch.01/**, internal/rules/builtin/arch_02.go, internal/rules/builtin/testdata/arch.02/**, internal/rules/builtin/arch_03.go, internal/rules/builtin/testdata/arch.03/**, internal/app/arch_integration_test.go, internal/app/testdata/arch/**
 - Depends: T-004
 
 模块、接口、流程、扩展点必填字段与模块路径不重叠，依赖无环，流程步骤与依赖一致。
@@ -68,7 +68,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Covers: FR-007, AC-003-5
 - Design: FLOW-01, IF-014, IF-022
 - Flow: FLOW-01
-- Scope: internal/cli/**, internal/app/trace.go, internal/rules/builtin/registry.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/testdata/trace.01/**, internal/rules/builtin/trace_02.go, internal/rules/builtin/testdata/trace.02/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/trace_integration_test.go, internal/app/testdata/trace/**
+- Scope: internal/cli/**, internal/app/trace.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/testdata/trace.01/**, internal/rules/builtin/trace_02.go, internal/rules/builtin/testdata/trace.02/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/trace_integration_test.go, internal/app/testdata/trace/**
 - Depends: T-005
 
 trace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型脚本 selfcheck.py。
@@ -78,7 +78,7 @@ trace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型
 - Covers: FR-010
 - Design: FLOW-01, IF-007, IF-009, IF-014
 - Flow: FLOW-01
-- Scope: internal/vcs/**, internal/workspace/**, internal/rules/builtin/registry.go, internal/rules/builtin/adr_01.go, internal/rules/builtin/testdata/adr.01/**, internal/rules/builtin/adr_02.go, internal/rules/builtin/testdata/adr.02/**, internal/rules/builtin/adr_03.go, internal/rules/builtin/testdata/adr.03/**, internal/app/adr_integration_test.go, internal/app/testdata/adr/**
+- Scope: internal/vcs/**, internal/workspace/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/adr_01.go, internal/rules/builtin/testdata/adr.01/**, internal/rules/builtin/adr_02.go, internal/rules/builtin/testdata/adr.02/**, internal/rules/builtin/adr_03.go, internal/rules/builtin/testdata/adr.03/**, internal/app/adr_integration_test.go, internal/app/testdata/adr/**
 - Depends: T-006
 
 vcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03 判断模块增删、依赖变化、扩展点变化是否在同一提交中被 ADR 引用。
@@ -88,7 +88,7 @@ vcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03
 - Covers: FR-020
 - Design: FLOW-01, IF-003, IF-004, IF-008, IF-009, IF-014
 - Flow: FLOW-01
-- Scope: internal/testreport/**, internal/lang/**, internal/workspace/**, internal/rules/builtin/registry.go, internal/rules/builtin/test_01.go, internal/rules/builtin/testdata/test.01/**, internal/rules/builtin/test_02.go, internal/rules/builtin/testdata/test.02/**, internal/app/tests_integration_test.go, internal/app/testdata/tests/**
+- Scope: internal/testreport/**, internal/lang/**, internal/workspace/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/test_01.go, internal/rules/builtin/testdata/test.01/**, internal/rules/builtin/test_02.go, internal/rules/builtin/testdata/test.02/**, internal/app/tests_integration_test.go, internal/app/testdata/tests/**
 - Depends: T-007
 
 JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integration_test.go` 判定为集成测试）；test.01、test.02。lang 附 `TestExample_EXT_01` 示例语言测试。完成后本仓库的测试报告写入 `.harness/reports/`。
@@ -98,7 +98,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 - Covers: FR-031
 - Design: FLOW-01, IF-003, IF-014
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/debt_01.go, internal/rules/builtin/testdata/debt.01/**, internal/rules/builtin/debt_02.go, internal/rules/builtin/testdata/debt.02/**, internal/rules/builtin/debt_03.go, internal/rules/builtin/testdata/debt.03/**, internal/app/debt_integration_test.go, internal/app/testdata/debt/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/debt_01.go, internal/rules/builtin/testdata/debt.01/**, internal/rules/builtin/debt_02.go, internal/rules/builtin/testdata/debt.02/**, internal/rules/builtin/debt_03.go, internal/rules/builtin/testdata/debt.03/**, internal/app/debt_integration_test.go, internal/app/testdata/debt/**
 - Depends: T-008
 
 ### T-010 扩展场景与扩展点规则
@@ -106,7 +106,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 - Covers: AC-033-1, AC-033-3, AC-033-4
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/prd_11.go, internal/rules/builtin/testdata/prd.11/**, internal/rules/builtin/arch_04.go, internal/rules/builtin/testdata/arch.04/**, internal/rules/builtin/arch_05.go, internal/rules/builtin/testdata/arch.05/**, internal/app/ext_integration_test.go, internal/app/testdata/ext/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_11.go, internal/rules/builtin/testdata/prd.11/**, internal/rules/builtin/arch_04.go, internal/rules/builtin/testdata/arch.04/**, internal/rules/builtin/arch_05.go, internal/rules/builtin/testdata/arch.05/**, internal/app/ext_integration_test.go, internal/app/testdata/ext/**
 - Depends: T-009
 
 ### T-011 任务列表检查
@@ -114,7 +114,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 - Covers: AC-011-1, AC-011-2, AC-011-3, AC-011-4, AC-011-6, AC-034-2
 - Design: FLOW-01, IF-014, ADR-008
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/task_01.go, internal/rules/builtin/testdata/task.01/**, internal/rules/builtin/task_02.go, internal/rules/builtin/testdata/task.02/**, internal/rules/builtin/task_03.go, internal/rules/builtin/testdata/task.03/**, internal/rules/builtin/task_04.go, internal/rules/builtin/testdata/task.04/**, internal/rules/builtin/task_05.go, internal/rules/builtin/testdata/task.05/**, internal/rules/builtin/task_06.go, internal/rules/builtin/testdata/task.06/**, internal/app/task_integration_test.go, internal/app/testdata/task/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/task_01.go, internal/rules/builtin/testdata/task.01/**, internal/rules/builtin/task_02.go, internal/rules/builtin/testdata/task.02/**, internal/rules/builtin/task_03.go, internal/rules/builtin/testdata/task.03/**, internal/rules/builtin/task_04.go, internal/rules/builtin/testdata/task.04/**, internal/rules/builtin/task_05.go, internal/rules/builtin/testdata/task.05/**, internal/rules/builtin/task_06.go, internal/rules/builtin/testdata/task.06/**, internal/app/task_integration_test.go, internal/app/testdata/task/**
 - Depends: T-010
 
 task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC 都被关联。完成后本文件由 `harness check task` 校验。
@@ -124,7 +124,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 - Covers: AC-013-1, AC-013-2, AC-013-4, AC-034-1
 - Design: FLOW-09, IF-007, IF-014, IF-022, ADR-008
 - Flow: FLOW-01
-- Scope: internal/cli/**, internal/app/check.go, internal/rules/builtin/registry.go, internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/rules/builtin/commit_02.go, internal/rules/builtin/testdata/commit.02/**, internal/rules/builtin/commit_03.go, internal/rules/builtin/testdata/commit.03/**, internal/rules/builtin/commit_04.go, internal/rules/builtin/testdata/commit.04/**, internal/app/commit_integration_test.go, internal/app/testdata/commit/**
+- Scope: internal/cli/**, internal/app/check.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/rules/builtin/commit_02.go, internal/rules/builtin/testdata/commit.02/**, internal/rules/builtin/commit_03.go, internal/rules/builtin/testdata/commit.03/**, internal/rules/builtin/commit_04.go, internal/rules/builtin/testdata/commit.04/**, internal/app/commit_integration_test.go, internal/app/testdata/commit/**
 - Depends: T-011
 
 `harness check commits <范围>`；commit.02 豁免产物文件和生成文件。
@@ -134,7 +134,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 - Covers: AC-037-1, AC-037-3
 - Design: FLOW-08, IF-005, IF-006, IF-024
 - Flow: FLOW-01
-- Scope: internal/cli/**, internal/app/approve.go, internal/lock/**, internal/rules/builtin/registry.go, internal/rules/builtin/approve_01.go, internal/rules/builtin/testdata/approve.01/**, internal/app/approve_integration_test.go, internal/app/testdata/approve/**
+- Scope: internal/cli/**, internal/app/approve.go, internal/lock/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/approve_01.go, internal/rules/builtin/testdata/approve.01/**, internal/app/approve_integration_test.go, internal/app/testdata/approve/**
 - Depends: T-012
 
 `harness approve <产物>` 要求交互式终端并确认，写入批准人、时间、哈希；approve.01 内容与批准哈希不一致时视为 Draft。完成后用户在终端补录 PRD 与架构的批准。
@@ -154,7 +154,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 - Covers: FR-038, FR-039, AC-024-2
 - Design: FLOW-01, IF-014, ADR-008
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/task_08.go, internal/rules/builtin/testdata/task.08/**, internal/app/dod_integration_test.go, internal/app/testdata/dod/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/task_08.go, internal/rules/builtin/testdata/task.08/**, internal/app/dod_integration_test.go, internal/app/testdata/dod/**
 - Depends: T-014
 
 task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联需求无 Open 待澄清项。task.08：Done 任务所关联条目涉及的用例全部 passed、全量检查通过、进度文件有记录。
@@ -223,7 +223,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Covers: AC-041-1, AC-043-2
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/cfg_01.go, internal/rules/builtin/testdata/cfg.01/**, internal/rules/builtin/ci_01.go, internal/rules/builtin/testdata/ci.01/**, internal/app/cfg_integration_test.go, internal/app/testdata/cfg/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/cfg_01.go, internal/rules/builtin/testdata/cfg.01/**, internal/rules/builtin/ci_01.go, internal/rules/builtin/testdata/ci.01/**, internal/app/cfg_integration_test.go, internal/app/testdata/cfg/**
 - Depends: T-021
 
 ### T-023 扩展场景回归：新增阶段与新增规则

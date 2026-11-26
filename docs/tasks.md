@@ -102,7 +102,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 - Depends: T-008
 
 ### T-010 扩展场景与扩展点规则
-- Status: InProgress
+- Status: Done
 - Covers: AC-033-1, AC-033-3, AC-033-4
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
@@ -110,7 +110,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 - Depends: T-009
 
 ### T-011 任务列表检查
-- Status: Todo
+- Status: InProgress
 - Covers: AC-011-1, AC-011-2, AC-011-3, AC-011-4, AC-011-6, AC-034-2
 - Design: FLOW-01, IF-014, ADR-008
 - Flow: FLOW-01

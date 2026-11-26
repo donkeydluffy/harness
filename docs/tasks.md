@@ -423,7 +423,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 `harness lock` 把 Release 1 的按文件批准迁移为按单位批准，写审计记录；`phase` 字段由 T-054 删除（在此之前门禁仍按阶段判定产物写入）。在本仓库执行迁移后，任务需要按单位批准才能开工。
 
 ### T-043 门禁按批准链判定
-- Status: Todo
+- Status: Done
 - Covers: AC-047-4, AC-047-5, AC-048-2, AC-048-3
 - Design: IF-017, IF-028, IF-025, FLOW-02, FLOW-06
 - Flow: FLOW-02

@@ -240,3 +240,7 @@
 ### 2026-11-26 T-045
 - 结论：MOD-14 为 Go、Python、TypeScript、Java、C/C++ 提供语言配置包（IF-034 `Pack`：源码路径、CI 测试命令、格式化检查与静态检查的命令、输出格式、安装提示）。新增 MOD-16（internal/toolrun）：Lint 对声明且有源文件的语言运行工具（`tools` 覆盖优先），工具缺失时返回带安装提示的 MissingTool，不写报告；问题与源码哈希写入 `.harness/reports/lint.json`。Unit 在 T-049 接入 Go 之前把全部语言记为 Skipped；Smoke 返回退出码与最后 50 行。`harness check lint|unit|smoke` 先运行工具再运行同名区域的规则，工具缺失时退出码 1。lint.01 只读报告（缺失、过期、有问题时失败），cfg.03 校验 tools 的语言与键。为保持"规则只读快照"，lint 报告在 WithTests 时随快照加载。prettier 用 `--list-different` 代替 `--check`，输出才是逐行文件名。变异测试 10 处均被发现。
 - 遗留：Kotlin 文件归在 java 语言下，ktlint 尚未作为独立配置包接入；本仓库 CI 在 T-047 加入 lint 步骤之前没有 lint 报告，T-045 ~ T-047 一起推送。
+
+### 2026-11-26 T-046
+- 结论：项目配置新增 `start`；规则 smoke.01 要求已有 Done 任务的项目声明启动命令与冒烟测试命令，启动命令为 `none` 时须写明原因且不再要求冒烟命令。与 ci.01、cfg.02 一致，只检查存在 `harness.json` 的项目，否则会让没有执行过 init 的测试夹具与用户项目误报。本仓库的 `harness.json` 由人补上 start 与 smoke，登记为 CHG-025。
+- 遗留：无。

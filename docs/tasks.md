@@ -453,7 +453,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 五种语言的语言配置包（IF-034）；toolrun 的 Lint、Unit、Smoke 运行器与报告读写；`harness check lint|unit|smoke`；规则 lint.01、cfg.03。Unit 的覆盖率采集在 T-049 接入 Go。
 
 ### T-046 启动与冒烟测试命令声明
-- Status: Todo
+- Status: Done
 - Covers: AC-055-1
 - Design: IF-010, IF-014, FLOW-01
 - Flow: FLOW-01

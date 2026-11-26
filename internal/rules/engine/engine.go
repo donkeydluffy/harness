@@ -230,3 +230,22 @@ func Verify(r Rule, samples []Sample) error {
 	}
 	return nil
 }
+
+// CoverageRules 是覆盖类规则：要求当前 Release 的全部用例与扩展点都有通过的测试，在 Release 完成前必然失败，
+// 由实现阶段的退出规则保证（用户 2026-11-26 确认）。任务完成定义与会话结束检查中的"全量检查"不含它们。
+var CoverageRules = []string{"test.02", "arch.05"}
+
+// FullCheck 返回"全量检查"的选择器：全部已注册规则，不含 CoverageRules 与 exclude。
+func FullCheck(exclude ...string) Selector {
+	skip := map[string]bool{}
+	for _, id := range append(append([]string{}, CoverageRules...), exclude...) {
+		skip[id] = true
+	}
+	var sel Selector
+	for _, id := range IDs() {
+		if !skip[id] {
+			sel.IDs = append(sel.IDs, id)
+		}
+	}
+	return sel
+}

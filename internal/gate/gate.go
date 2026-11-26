@@ -66,6 +66,12 @@ func Decide(s *workspace.Snapshot, req Request) Decision {
 		return allow()
 	case Command:
 		return decideCommand(s, req.Command)
+	case PostWrite:
+		return postWrite(s, req)
+	case Stop:
+		return stop(s, req)
+	case SessionStart:
+		return sessionStart(s)
 	default:
 		return allow()
 	}

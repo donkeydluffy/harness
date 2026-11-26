@@ -13,7 +13,9 @@ import (
 // 任何内部错误都判定为拒绝（失败即阻断）。
 func Gate(root string, req gate.Request) gate.Decision {
 	registerRules()
-	s, err := workspace.Load(root, workspace.LoadOptions{})
+	// 会话开始与结束运行全量检查，需要源码与测试报告；其余请求用轻量快照。
+	full := req.Kind == gate.Stop || req.Kind == gate.SessionStart
+	s, err := workspace.Load(root, workspace.LoadOptions{WithSources: full, WithTests: full})
 	if err != nil {
 		return gate.Decision{Rule: "gate.error", Reason: "无法加载项目：" + err.Error()}
 	}
@@ -28,7 +30,7 @@ func Gate(root string, req gate.Request) gate.Decision {
 		return d
 	case gate.PostWrite:
 		if req.Command == "" {
-			return gate.Decision{Allow: true}
+			return gate.Decide(s, req)
 		}
 		changes, err := gate.After(root, req.SessionID, gate.AfterAllowed(s, req.Command))
 		if err != nil {

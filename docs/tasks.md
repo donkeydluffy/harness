@@ -184,7 +184,7 @@ gate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危�
 - Covers: AC-012-3, AC-012-4, AC-024-1, AC-024-3
 - Design: FLOW-04, FLOW-05, FLOW-06, IF-012, IF-017, IF-019, IF-025
 - Flow: FLOW-05
-- Scope: internal/gate/**, internal/adapter/**, internal/cli/**, internal/app/gate.go, internal/app/session_integration_test.go, internal/app/testdata/session/**
+- Scope: internal/gate/**, internal/adapter/**, internal/cli/**, internal/rules/engine/engine.go, internal/app/gate.go, internal/app/session_integration_test.go, internal/app/testdata/session/**
 - Depends: T-017
 
 PostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连续阻止 3 次后放行并写进度文件；SessionStart 注入阶段、InProgress 任务、未通过检查、Open 待澄清项、冒烟测试结果。

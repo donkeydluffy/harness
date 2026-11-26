@@ -377,3 +377,13 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 
 被取代的条目在取代者的 Release 不大于 Current-Release 时按 Removed 判定：覆盖检查不再要求它，trace.03 报告对它的引用。新增 prd.12 校验 `Replaces` 与 `Replaced-By` 互相对应、引用存在、被取代者的 Release 小于取代者。
 
+
+### T-039 门禁以项目根判定，命令从代理的当前目录解析（DEBT-015）
+- Status: Todo
+- Covers: AC-012-2, AC-025-4
+- Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019
+- Flow: FLOW-02
+- Scope: internal/cli/gate.go, internal/app/gate.go, internal/gate/**, internal/adapter/**, internal/app/gate_integration_test.go
+- Depends: T-037
+
+适配器在 Request 中填写 Root（从 hook 输入的 cwd 向上查找的项目根）与 Cwd；`harness gate` 以 Root 加载快照、保存命令前快照与会话状态，Root 为空时退回进程当前目录；命令中的相对路径从 Cwd 开始解析。回归测试：shell 停在子目录时，写 `../harness.lock` 被拒绝，命令前快照建在仓库根的 `.harness/` 下。

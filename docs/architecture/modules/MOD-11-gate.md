@@ -13,6 +13,8 @@
 type Kind string // read / write / command / session_start / post_write / stop
 type Request struct {
 	Kind      Kind
+	Root      string   // 项目根（绝对路径），由适配器从代理执行工具时的目录向上查找；快照、会话状态与判定都以它为根
+	Cwd       string   // 代理执行工具时的目录（绝对路径）；command 中的相对路径从这里开始解析
 	Paths     []string // 已解析为仓库相对路径
 	Content   string   // write 时的新内容或补丁
 	Command   string   // command 时的原始命令

@@ -33,3 +33,5 @@ func Get(name string) (Adapter, bool)
 | Stop | stop | 拒绝时 `decision: "block"` |
 
 Decode 失败时判定为拒绝（AC-012-5/E1），hook 配置设置 `onFailure: "block"`。
+
+Decode 填写 Request.Root 与 Cwd：Cwd 取 hook 输入中的 cwd（缺失时为进程当前目录），Root 从 Cwd 向上查找含 `harness.json`、`docs/PRD.md` 或 `.git` 的目录。`harness gate` 以 Root 为根加载快照、保存命令前快照与会话状态，与 hook 进程的当前目录无关；代理的 shell 停在子目录时，判定仍覆盖整个仓库。

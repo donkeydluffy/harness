@@ -220,7 +220,7 @@ clarify、change、architect、plan、implement、test 六个 skill；每个声�
 commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harness check` 和 `harness check commits`；cfg.02（由 scaffold 模块注册）。
 
 ### T-022 门禁配置锁定与 CI 检查步骤
-- Status: InProgress
+- Status: Done
 - Covers: AC-041-1, AC-043-2
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
@@ -228,7 +228,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Depends: T-021
 
 ### T-023 扩展场景回归：新增阶段与新增规则
-- Status: Todo
+- Status: InProgress
 - Covers: NFR-008, NFR-009
 - Design: FLOW-09, EXT-03, EXT-04
 - Scope: internal/app/extdemo_integration_test.go, internal/app/testdata/extdemo/**

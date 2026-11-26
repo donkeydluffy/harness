@@ -135,3 +135,8 @@
 - 设计取舍：cfg.02 只在存在 harness.json 的项目（执行过 init）上运行；本仓库在 T-026 启用前没有 harness.json，提前写入 `.claude/settings.json` 会让门禁在当前会话中生效。git hook 不在版本库中，cfg.02 不比对，CI 环境里才不会误报。T-018 的会话夹具手写了 harness.json，因此补上生成的 hook 配置。
 - 需求解释：AC-N005-1/N1 的".yaml"按"YAML 文本"理解，`.yml` 同样允许；AC-043-1/N1 指定 `harness.yml`，GitLab 也要求 `.gitlab-ci.yml`。git hook 位于 `.git/hooks`，不属于项目产物。
 - 遗留：CI 模板的安装命令依赖 DEBT-001 的模块路径；`.gitlab-ci.yml` 不在 commit 规则的生成文件豁免列表中（builtin 的 generatedFiles），属于 MOD-05，留给后续修改该模块的任务。
+
+### 2026-11-26 T-022
+- 结论：Done。cfg.01：harness.json 的规范化哈希（JSON 解析、去掉 `"//"` 注释项、键排序）相对锁文件变化时，须有锁定之后新增的 CHG（对象写 harness.json）或新增的 ADR（Relates 含 harness.json）；锁文件因此记录 ADR 编号，prd.08 跳过对象为 harness.json 的 CHG。ci.01：CI 配置（GitHub Actions、GitLab CI、CircleCI、Azure、Bitbucket、Jenkinsfile）至少一份含 `harness check`。7 个集成测试（AC-041-1、AC-043-2，另含 ADR 说明配置变化）通过；逐一破坏各判定分支后对应用例失败，AC-043-2/E1 的夹具因此改为提到 harness 但不运行 harness check。
+- 需求解释：AC-041-1/B1 的"只改了注释"按 JSON 中的 `"//"` 注释项理解，空白与键顺序同样不算变化，已写入 formats.md 第 6 节。ci.01 与 cfg.02 一样只检查有 harness.json 的项目，本仓库在 T-026 之前不受影响。
+- 遗留：本仓库的 harness.lock 还没有 ADR 条目，下次 `harness lock` 时补上；formats.md 仍为 Draft，待用户重新批准。

@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
@@ -20,6 +21,9 @@ const (
 	Failed  Status = "failed"
 	Skipped Status = "skipped"
 )
+
+// PackageFailure 是包级失败记录的测试名：包失败但其中没有失败的测试时使用。
+const PackageFailure = "[包级失败：构建、TestMain 或测试外的错误]"
 
 // TestCase 是一个测试的结果（IF-008）。
 type TestCase struct {
@@ -84,6 +88,7 @@ func ParseGoJSON(r io.Reader) ([]TestCase, error) {
 	type event struct{ Action, Package, Test string }
 	idx := map[string]int{}
 	var out []TestCase
+	var failedPkgs []string // 包级结果为 fail 的包，按首次出现的顺序
 	sc := bufio.NewScanner(r)
 	sc.Buffer(make([]byte, 1024*1024), 16*1024*1024)
 	for n := 1; sc.Scan(); n++ {
@@ -107,6 +112,9 @@ func ParseGoJSON(r io.Reader) ([]TestCase, error) {
 			continue
 		}
 		if e.Test == "" {
+			if st == Failed && !slices.Contains(failedPkgs, e.Package) {
+				failedPkgs = append(failedPkgs, e.Package)
+			}
 			continue // 包级结果
 		}
 		key := e.Package + "\x00" + e.Test
@@ -116,6 +124,17 @@ func ParseGoJSON(r io.Reader) ([]TestCase, error) {
 		}
 		idx[key] = len(out)
 		out = append(out, TestCase{Name: e.Test, Suite: e.Package, Status: st})
+	}
+	// 包失败而其中没有失败的测试（构建失败、TestMain 失败、测试外的 panic、超时）：
+	// 包里的测试不会出现在报告中，记一条包级失败，避免检查静默通过。
+	for _, pkg := range failedPkgs {
+		testFailed := false
+		for _, tc := range out {
+			testFailed = testFailed || (tc.Suite == pkg && tc.Status == Failed)
+		}
+		if !testFailed {
+			out = append(out, TestCase{Name: PackageFailure, Suite: pkg, Status: Failed})
+		}
 	}
 	return out, sc.Err()
 }

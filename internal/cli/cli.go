@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/donkeydluffy/harness/internal/app"
@@ -26,6 +27,7 @@ const usage = `用法：harness <命令> [参数]
 
 命令：
   check [规则或前缀...] [--commits <范围>] [--msg-file <文件>] [--json]
+  check lint|unit|smoke [--json]   运行外部工具写报告后检查
                                    运行检查；无参数时运行全部规则。
                                    commit 规则默认检查暂存区；--commits 检查范围内每个提交，
                                    也可写作 check commits origin/main..HEAD；
@@ -109,6 +111,19 @@ func check(root string, args []string, stdout, stderr io.Writer) int {
 		default:
 			opt.Rules = append(opt.Rules, a)
 		}
+	}
+	if len(opt.Rules) == 1 && opt.Commits == "" && slices.Contains(app.ToolKinds, opt.Rules[0]) {
+		rep, err := app.Run(root, opt.Rules[0])
+		var mt *app.MissingTool
+		if errors.As(err, &mt) {
+			fmt.Fprintf(stderr, "harness check %s: %s 的工具 %s 未安装，请先安装：%s\n", opt.Rules[0], mt.Language, mt.Command, mt.Hint)
+			return ExitViolated
+		}
+		if err != nil {
+			fmt.Fprintln(stderr, "harness check: 内部错误：", err)
+			return ExitInternal
+		}
+		return printReport(rep, opt.JSON, stdout, stderr)
 	}
 	rep, err := app.Check(root, opt)
 	if err != nil {

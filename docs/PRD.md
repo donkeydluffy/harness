@@ -913,6 +913,52 @@ harness 自身的开发受 harness 管理。
   - AC-049-2/N1: `harness help` 的输出包含 version
   - AC-049-2/E1: 执行未知命令，错误输出的用法提示包含 version
 
+### FR-050 机械改动任务
+- Status: Active
+- Release: 2
+- Priority: P1
+- Replaces: AC-011-3, AC-011-6, AC-013-4
+
+模块改名这类机械改动会改到全部模块、几百行 import，却不对应任何调用流程。给它一个受约束的通道：免于模块范围与行数限制，但提交只能做声明过的路径替换，由规则逐行校验。
+
+- AC-050-1: 任务可声明 `Kind: mechanical` 与一条或多条 `Rewrite: <旧路径前缀> -> <新路径前缀>`，并在 Relates 中引用说明改动原因的 ADR；Design 字段可为空。缺少 Rewrite 或 ADR 时失败。
+  - AC-050-1/N1: 任务声明 `Kind: mechanical`、`Rewrite: harness -> github.com/donkeydluffy/harness` 并引用 ADR-009，通过
+  - AC-050-1/E1: 机械改动任务没有 Rewrite，失败
+  - AC-050-1/E2: 机械改动任务没有引用 ADR，失败
+- AC-050-2: 非机械改动任务的约束不变：文件范围须落在关联模块的路径内；跨模块的任务须引用一个调用流程，且涉及的模块都在该流程中；单个提交改动的行数（不含产物文件和生成文件）不超过配置上限（默认 400）。机械改动任务免于这三项。
+  - AC-050-2/N1: 普通任务的文件范围全部在关联模块内，通过
+  - AC-050-2/E1: 普通任务的文件范围包含关联模块之外的文件，失败
+  - AC-050-2/E2: 普通任务跨 2 个模块且没有引用调用流程，失败
+  - AC-050-2/E3: 普通任务的提交改动 401 行，失败并给出行数和上限
+  - AC-050-2/B1: 机械改动任务的文件范围跨 14 个模块且没有引用调用流程，通过
+  - AC-050-2/B2: 机械改动任务的提交改动 900 行 import，通过
+- AC-050-3: 机械改动任务的提交只能改动 import 语句中的路径与模块声明行（如 go.mod 的 module 行），且每处改动都是把某条 Rewrite 的旧前缀替换为新前缀；改动其他行、新增或删除源文件时失败，产物文件与生成文件仍豁免。import 语句的识别由语言配置包提供（FR-014），Release 2 内置 Go。
+  - AC-050-3/N1: 提交把 40 个文件中的 `"harness/internal/` 改为 `"github.com/donkeydluffy/harness/internal/`，并改 go.mod 的 module 行，通过
+  - AC-050-3/E1: 提交在改 import 之外改动了一行函数体，失败并给出文件与行号
+  - AC-050-3/E2: 提交中的 import 改动不符合任何 Rewrite（替换成了别的前缀），失败
+  - AC-050-3/E3: 提交新增了一个源文件，失败
+  - AC-050-3/B1: 提交同时改动了 `docs/` 下的产物文件，通过
+
+### FR-051 CI 固定 harness 版本
+- Status: Active
+- Release: 2
+- Priority: P1
+
+用户项目的 CI 使用与生成文件一致的 harness 版本，不随 `@latest` 漂移，也不要求安装 Go 工具链。
+
+- AC-051-1: `harness init` 生成的 CI 配置下载生成时所用 harness 版本的发布包（按 CI 运行平台选择归档），用发布附带的 checksums.txt 校验后使用；CI 中不需要 Go 工具链。
+  - AC-051-1/N1: 用 0.2.0 版本生成 GitHub Actions 配置，其中下载 `harness_0.2.0_linux_amd64.tar.gz` 并校验
+  - AC-051-1/N2: 用 0.2.0 版本生成 GitLab CI 配置，同样固定为 0.2.0 并校验
+  - AC-051-1/E1: 下载的归档与 checksums.txt 不符，CI 中安装步骤失败，后续检查不运行
+- AC-051-2: 生成时 harness 没有发布版本号（`dev` 或带 `-dirty`）且项目不是 harness 自身仓库时，`harness init` 退出码非 0、不写入任何文件，并提示改用发布版或用 `--ci-version <版本>` 指定；harness 自身仓库仍在 CI 中从当前提交的源码构建。
+  - AC-051-2/N1: 从源码构建的 harness 执行 `harness init --lang go --ci-version 0.2.0`，CI 配置固定为 0.2.0
+  - AC-051-2/E1: 从源码构建的 harness 执行 `harness init --lang go`，退出码非 0，目录中没有新文件，提示中包含 `--ci-version`
+  - AC-051-2/B1: 在 harness 自身仓库中用从源码构建的 harness 执行 init，照常生成从源码构建的 CI 配置
+- AC-051-3: cfg.02 校验 CI 配置时，以配置中固定的版本为准生成期望内容；本地 harness 是发布版且版本与 CI 固定版本不同时，cfg.02 报告两个版本并提示重新运行 `harness init` 生成 CI 配置；本地 harness 没有发布版本号时不比较版本。
+  - AC-051-3/N1: 本地 0.2.0，CI 固定 0.2.0，内容一致，通过
+  - AC-051-3/E1: 本地升级到 0.3.0，CI 仍固定 0.2.0，cfg.02 报告"CI 固定 0.2.0，本地 0.3.0"并提示重新生成
+  - AC-051-3/B1: 本地为从源码构建的 harness，CI 固定 0.2.0 且其余内容一致，通过
+
 ## 4. 非功能需求
 
 ### NFR-001 确定性
@@ -1154,6 +1200,11 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 ### 2026-11-26 第 18 轮
 - Q: 怎么确认当前使用的 harness 版本？ A: 新增 `harness version` 与 `--version`（FR-049，Release 2）。
 - Q: 代码对应不到设计或需求时怎么处理？ A: 已有 AC-008-2（不属于任何模块的源文件报告为未归属）与 AC-009-4、AC-009-5、FR-018（代码中的接口须与设计签名一致、锚点有效），均为 Release 2，澄清时补用例，不另加需求。删除阶段时 MOD-10 只覆盖已被取代的需求而被 trace.03 报告，删去 MOD-10 后 `internal/phase` 成为未归属文件，由 AC-008-2 要求删除代码。
+### 2026-11-26 第 19 轮
+- Q: 跨全部模块的机械改动（如模块改名）给什么合规通道？ A: 任务声明 `Kind: mechanical` 与 Rewrite，免于模块范围、调用流程与行数限制（FR-050，取代 AC-011-3、AC-011-6、AC-013-4 并重述其余约束）。
+- Q: 机械改动的提交允许改哪些行？ A: 只限 import 路径与模块声明行，且须符合声明的 Rewrite；import 语法由语言配置包提供，新语言随 NFR-006 的扩展场景加入，不另预留扩展。
+- Q: 用户项目的 CI 怎么安装 harness？ A: 下载生成时版本的发布包并用 checksums.txt 校验，不需要 Go 工具链（FR-051）。
+- Q: 生成 CI 的 harness 没有发布版本号时怎么办？ A: init 拒绝并提示改用发布版或 `--ci-version`；harness 自身仓库照旧从源码构建。
 
 ## 8. 变更日志
 
@@ -1190,3 +1241,4 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 | CHG-019 | 2026-11-26 | 修改 | FR-003 | 新增 AC-003-6：需求取代关系（Replaces / Replaced-By），按 Release 生效 |
 | CHG-019 | 2026-11-26 | 修改 | FR-038, FR-045, NFR-008, FR-047, FR-048 | 标注取代关系：FR-047 取代 FR-038、AC-037-3、AC-024-1，FR-048 取代 FR-045、NFR-008 |
 | CHG-020 | 2026-11-26 | 新增 | FR-049 | 版本信息（第 18 轮，Release 2） |
+| CHG-021 | 2026-11-26 | 新增 | FR-050, FR-051 | 机械改动任务、CI 固定 harness 版本（第 19 轮，Release 2；DEBT-007、DEBT-010） |

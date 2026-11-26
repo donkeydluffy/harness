@@ -64,7 +64,7 @@ func Approve(root, artifact string, t Terminal) error {
 		return err
 	}
 	l := s.Lock
-	l.Approvals = append(l.Approvals, lock.Approval{Artifact: rel, Hash: hash, By: t.Identity(), At: now()})
+	l.Legacy = append(l.Legacy, lock.Approval{Artifact: rel, Hash: hash, By: t.Identity(), At: now()})
 	return l.Write(filepath.Join(root, lock.File))
 }
 

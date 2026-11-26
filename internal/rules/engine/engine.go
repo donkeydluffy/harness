@@ -46,6 +46,7 @@ type Violation struct {
 	Line int    `json:"line"`
 	Msg  string `json:"msg"`
 	Fix  string `json:"fix"`
+	Warn bool   `json:"warn,omitempty"` // 告警：输出但不计入违规、不影响退出码（AC-030-4、AC-047-1/E1）
 }
 
 var (
@@ -93,6 +94,7 @@ type Selector struct {
 // Report 是一次运行的结果（IF-012）。
 type Report struct {
 	Violations []Violation `json:"violations"`
+	Warnings   []Violation `json:"warnings,omitempty"` // Warn 为 true 的违规，与 Violations 同样排序
 	Ran        []string    `json:"ran"`
 	Errors     []error     `json:"-"` // 规则内部错误，与违规分开报告（退出码 2）
 }
@@ -139,8 +141,10 @@ func (sel Selector) Unknown() []string {
 	return out
 }
 
-// Run 运行选中的规则，输出按文件、行号、规则编号排序（IF-012）。
+// Run 运行选中的规则，输出按文件、行号、规则编号排序（IF-012）。告警放入 Warnings，不计入 Violations。
 // 违规缺少修复建议时用规则的 Fix() 补齐；规则 panic 记入 Errors。
+//
+// harness:IF-012
 func Run(s *workspace.Snapshot, sel Selector) Report {
 	var rep Report
 	for _, id := range IDs() {
@@ -154,10 +158,25 @@ func Run(s *workspace.Snapshot, sel Selector) Report {
 			rep.Errors = append(rep.Errors, err)
 			continue
 		}
-		rep.Violations = append(rep.Violations, vs...)
+		for _, v := range vs {
+			if v.Warn {
+				rep.Warnings = append(rep.Warnings, v)
+			} else {
+				rep.Violations = append(rep.Violations, v)
+			}
+		}
 	}
-	sort.SliceStable(rep.Violations, func(i, j int) bool {
-		a, b := rep.Violations[i], rep.Violations[j]
+	sortViolations(rep.Violations)
+	sortViolations(rep.Warnings)
+	if rep.Violations == nil {
+		rep.Violations = []Violation{}
+	}
+	return rep
+}
+
+func sortViolations(vs []Violation) {
+	sort.SliceStable(vs, func(i, j int) bool {
+		a, b := vs[i], vs[j]
 		if a.File != b.File {
 			return a.File < b.File
 		}
@@ -169,10 +188,6 @@ func Run(s *workspace.Snapshot, sel Selector) Report {
 		}
 		return a.Msg < b.Msg
 	})
-	if rep.Violations == nil {
-		rep.Violations = []Violation{}
-	}
-	return rep
 }
 
 func runOne(r Rule, s *workspace.Snapshot) (vs []Violation, err error) {

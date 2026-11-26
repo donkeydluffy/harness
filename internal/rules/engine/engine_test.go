@@ -99,3 +99,21 @@ func TestVerifyRejects_IF_013(t *testing.T) {
 		t.Fatal("want error: empty fix")
 	}
 }
+
+type warnRule struct{ exampleRule }
+
+func (warnRule) Check(*workspace.Snapshot) []Violation {
+	return []Violation{{File: "b.md", Line: 2, Msg: "告警", Warn: true}, {File: "a.md", Line: 1, Msg: "违规"}, {File: "a.md", Line: 3, Msg: "告警", Warn: true}}
+}
+
+// 告警放入 Warnings，不计入 Violations，各自排序。
+func TestRunWarnings_IF_012(t *testing.T) {
+	Register(warnRule{exampleRule{id: "example.06", fix: "x"}})
+	rep := Run(snap(t, ""), Selector{IDs: []string{"example.06"}})
+	if len(rep.Violations) != 1 || rep.Violations[0].Warn {
+		t.Fatalf("violations: %+v", rep.Violations)
+	}
+	if len(rep.Warnings) != 2 || rep.Warnings[0].File != "a.md" || rep.Warnings[1].File != "b.md" {
+		t.Fatalf("warnings: %+v", rep.Warnings)
+	}
+}

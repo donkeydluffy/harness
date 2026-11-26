@@ -403,7 +403,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 `harness version` 与 `--version` 输出版本；发布构建经 -ldflags 注入版本号，`go install` 构建取模块版本或提交哈希（含 -dirty）。顺带为 IF-020、IF-021 补锚点与单元测试。
 
 ### T-041 按单位批准
-- Status: Todo
+- Status: InProgress
 - Covers: AC-047-1, AC-047-2, AC-047-3
 - Design: MOD-15, IF-027, IF-028, IF-029, IF-006, IF-011, IF-024, FLOW-08
 - Flow: FLOW-08

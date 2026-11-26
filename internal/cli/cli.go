@@ -171,7 +171,14 @@ func printReport(rep engine.Report, asJSON bool, stdout, stderr io.Writer) int {
 		for _, v := range rep.Violations {
 			fmt.Fprintf(stdout, "%s:%d: [%s] %s\n  修复：%s\n", v.File, v.Line, v.Rule, v.Msg, v.Fix)
 		}
-		fmt.Fprintf(stdout, "%d 条违规，运行 %d 条规则\n", len(rep.Violations), len(rep.Ran))
+		for _, v := range rep.Warnings {
+			fmt.Fprintf(stdout, "%s:%d: [%s] 告警：%s\n  修复：%s\n", v.File, v.Line, v.Rule, v.Msg, v.Fix)
+		}
+		if len(rep.Warnings) > 0 {
+			fmt.Fprintf(stdout, "%d 条违规，%d 条告警，运行 %d 条规则\n", len(rep.Violations), len(rep.Warnings), len(rep.Ran))
+		} else {
+			fmt.Fprintf(stdout, "%d 条违规，运行 %d 条规则\n", len(rep.Violations), len(rep.Ran))
+		}
 	}
 	if len(rep.Violations) > 0 {
 		return ExitViolated

@@ -50,16 +50,36 @@ func Hash(text string) string {
 	return "sha256:" + hex.EncodeToString(sum[:])
 }
 
-// Lock 是 harness.lock 的内容（IF-006）。
+// Lock 是 harness.lock 的内容（IF-006）。Version 为 2 时按批准单位记录批准（Units，ADR-009）；
+// 为 1 时是 Release 1 的按文件批准（Legacy）与当前阶段（Phase）。
+//
+// harness:IF-006
 type Lock struct {
-	Version   int                        `json:"version"`
-	Phase     string                     `json:"phase"`
-	Items     map[string]string          `json:"items"`
-	Approvals []Approval                 `json:"approvals"`
-	Audit     map[string]json.RawMessage `json:"audit"`
+	Version int                        `json:"version"`
+	Phase   string                     `json:"phase"`
+	Items   map[string]string          `json:"items"`
+	Units   map[string]UnitApproval    `json:"units,omitempty"`
+	Legacy  []Approval                 `json:"approvals"`
+	Audit   map[string]json.RawMessage `json:"audit"`
 }
 
-// Approval 是一次人工批准的记录。
+// UnitApproval 是一个批准单位的批准记录（AC-047-1）：批准时的规范化内容与哈希、批准人、时间，
+// 以及批准时各上游单位的哈希。
+type UnitApproval struct {
+	Hash     string            `json:"hash"`
+	Text     string            `json:"text"`
+	By       string            `json:"by"`
+	At       time.Time         `json:"at"`
+	Upstream map[string]string `json:"upstream"`
+}
+
+// UnitVersion 是按批准单位记录批准的锁文件版本。
+const UnitVersion = 2
+
+// ByUnit 判断锁文件是否按批准单位记录批准。
+func (l *Lock) ByUnit() bool { return l.Version >= UnitVersion }
+
+// Approval 是 Release 1 的一次按文件批准记录。
 type Approval struct {
 	Artifact string    `json:"artifact"`
 	Hash     string    `json:"hash"`
@@ -69,7 +89,7 @@ type Approval struct {
 
 // New 返回空锁文件。
 func New() *Lock {
-	return &Lock{Version: 1, Items: map[string]string{}, Approvals: []Approval{}, Audit: map[string]json.RawMessage{}}
+	return &Lock{Version: 1, Items: map[string]string{}, Legacy: []Approval{}, Audit: map[string]json.RawMessage{}}
 }
 
 // Read 读取锁文件；文件不存在时返回空 Lock 而非错误（IF-006）。
@@ -88,8 +108,11 @@ func Read(path string) (*Lock, error) {
 	if l.Items == nil {
 		l.Items = map[string]string{}
 	}
-	if l.Approvals == nil {
-		l.Approvals = []Approval{}
+	if l.Legacy == nil {
+		l.Legacy = []Approval{}
+	}
+	if l.Units == nil && l.ByUnit() {
+		l.Units = map[string]UnitApproval{}
 	}
 	if l.Audit == nil {
 		l.Audit = map[string]json.RawMessage{}
@@ -137,9 +160,9 @@ func (l *Lock) Write(path string) error {
 
 // Approved 判断产物的当前内容是否有有效批准：最近一次批准的哈希与当前哈希一致（IF-006）。
 func (l *Lock) Approved(artifact, currentHash string) bool {
-	for i := len(l.Approvals) - 1; i >= 0; i-- {
-		if l.Approvals[i].Artifact == artifact {
-			return l.Approvals[i].Hash == currentHash
+	for i := len(l.Legacy) - 1; i >= 0; i-- {
+		if l.Legacy[i].Artifact == artifact {
+			return l.Legacy[i].Hash == currentHash
 		}
 	}
 	return false
@@ -147,9 +170,9 @@ func (l *Lock) Approved(artifact, currentHash string) bool {
 
 // LastApproval 返回产物最近一次批准记录，没有时返回 nil。
 func (l *Lock) LastApproval(artifact string) *Approval {
-	for i := len(l.Approvals) - 1; i >= 0; i-- {
-		if l.Approvals[i].Artifact == artifact {
-			return &l.Approvals[i]
+	for i := len(l.Legacy) - 1; i >= 0; i-- {
+		if l.Legacy[i].Artifact == artifact {
+			return &l.Legacy[i]
 		}
 	}
 	return nil

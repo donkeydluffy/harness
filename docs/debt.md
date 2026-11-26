@@ -40,13 +40,22 @@
 门禁在 `.harness/snap/`、`.harness/session/` 下保存快照和会话计数，属于运行时状态，不应提交；`harness init` 没有把它们加进 `.gitignore`，本仓库目前只能靠提交时不加这两个目录。应由 init 写入（或追加）`.gitignore` 条目，并把 `.gitignore` 的这部分计入生成文件。
 
 ### DEBT-006 secret.entropy 把含大写与数字的长路径误判为密钥
-- Status: Open
+- Status: Resolved
 - Module: MOD-11
 
 `internal/gate/security.go` 的 `tokenRe` 包含 `/`，整条绝对路径（如 `/private/tmp/claude-501/-Users-…-Desktop-…/<uuid>/…`）成为一个 token，同时含大小写字母和数字，熵超过 4.3，命令被拒绝。T-027 期间读取 scratchpad 文件的命令因此被拦。修复方向：以 `/`、`./`、`~/` 开头的 token 按路径处理，或按 `/` 分段后再判断熵；需补一条路径不误报、base64 密钥仍命中的用例。
+
+已解决（388f331，T-028）：以 `/`、`./`、`~/` 开头的 token 按路径处理；含多个 `/` 的 base64 密钥仍命中。
 
 ### DEBT-007 跨全部模块的机械改动没有合规路径
 - Status: Open
 - Module: MOD-05
 
 task.05 要求文件范围跨模块的任务引用覆盖这些模块的调用流程，task.03 要求范围在关联模块内，commit.03 限制单个提交 400 行。模块路径改名（DEBT-001）这类只改 import 的机械改动跨全部 14 个模块、约 400 行，不对应任何调用流程。T-027 期间由人在终端运行脚本并以 `--no-verify` 提交（fd3898e）。Release 2 应给机械改动一个受约束的通道，例如任务声明 `Kind: mechanical` 时免于 task.05，但提交只能改动 import 路径，由规则校验。
+
+### DEBT-008 失败的非用例测试不被任何规则报告
+- Status: Open
+- Module: MOD-05
+
+test.02 只看用例编号的测试，arch.05 只看扩展点编号的测试；名字含 IF 编号或不含编号的测试失败时，`harness check` 与 task.08 都通过。T-028 提交时 `TestParseRepoArtifacts_IF_001` 失败而检查全部通过。应增加一条规则：测试报告中存在失败的测试时报告（或把它纳入完成定义），并给出失败的测试名。
+

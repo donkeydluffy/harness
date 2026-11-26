@@ -158,3 +158,8 @@
 - 设计澄清（用户确认，第 15 轮）：hook 调用 PATH 上的 `harness`；`harness init` 写入的 skill 纳入生成文件（TERM-026），`.gitlab-ci.yml` 一并加入豁免。
 - 更正：T-025 标为 Done 时性能测试的一条注释含未登记的 TODO 字样，task.08 随即报出，已在 4ce2ff8 修正。
 - 遗留：门禁 hook 在 Claude Code 重新加载配置后生效；CI 配置的安装步骤依赖 DEBT-001 的模块路径，T-027 处理。
+
+### 2026-11-26 T-028
+- 结论：Done。T-027 期间门禁在 `d=$(mktemp -d)` 这类只含赋值的命令上 panic：CallExpr 的 Args 为空，`args[1:]` 越界，进程以退出码 2 结束，Claude Code 把它当作拒绝。改为跳过无参数的调用，赋值里命令替换的写入照常判定。secret.entropy 不再把以 `/`、`./`、`~/` 开头的路径当作密钥（DEBT-006），含多个 `/` 的 AWS 示例 secret 仍命中。两个回归测试通过，各自的变异都被抓到。
+- 更正：提交 388f331 时测试报告里有一条失败（`TestParseRepoArtifacts_IF_001` 断言任务数为 27，新增 T-028 后变为 28），提交前没有核对失败数；由 T-029 修正。
+- 遗留：没有规则要求非用例测试（如 IF 编号的单元测试）通过，`harness check` 因此没有报告这条失败，见 DEBT-008。

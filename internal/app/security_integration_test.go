@@ -135,7 +135,7 @@ func TestGate_AC_025_4_E3(t *testing.T) {
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool(`echo '{"dangerousCommands": []}' > harness.json`)), "gate.protect", "harness.json")
 }
 
-// 含大小写与数字的长路径不当作高熵密钥；含 / 的 base64 密钥仍命中（T-028，DEBT-006）。
+// 含大小写与数字的长路径不当作高熵密钥；含 / 的 base64 密钥仍命中（T-028）。
 func TestGate_EntropyIgnoresPaths(t *testing.T) {
 	dir := secDir(t)
 	p := "/private/tmp/claude-501/-Users-alice-Desktop-proj/a913c174-9c27-4f97-b4b8-c6854aba3779/out.txt"

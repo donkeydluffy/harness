@@ -230,3 +230,34 @@ func TestPendingIn_IF_029(t *testing.T) {
 		t.Errorf("批准记录应含上游哈希：%+v", rec["T-001"])
 	}
 }
+
+func TestSummarize_IF_028(t *testing.T) {
+	dir := demo(t)
+	if sum := Summarize(load(t, dir)); sum.Skill != "clarify" || !sum.NoApproved || sum.Unapproved == 0 {
+		t.Fatalf("没有批准时应建议 clarify：%+v", sum)
+	}
+	approveAll(t, dir)
+	if sum := Summarize(load(t, dir)); sum.Skill != "architect" || sum.NoApproved {
+		t.Fatalf("FR-002 未被设计覆盖时应建议 architect：%+v", sum)
+	}
+	edit(t, dir, "docs/architecture/overview.md", "- Coverage: 80\n", "- Coverage: 80\n\n### MOD-02 cancel\n- Status: Active\n- Paths: internal/cancel/**\n- Public: internal/cancel/cancel.go\n- Depends:\n- Interfaces:\n- Covers: FR-002\n- Core: false\n- Coverage: 80\n")
+	approveAll(t, dir)
+	if sum := Summarize(load(t, dir)); sum.Skill != "plan" || strings.Join(sum.Ready, ",") != "T-001" {
+		t.Fatalf("FR-002 未被任务覆盖时应建议 plan，T-001 可开工：%+v", sum)
+	}
+	edit(t, dir, "docs/tasks.md", "- Depends:\n", "- Depends:\n\n### T-002 取消\n- Status: Todo\n- Covers: AC-002-1\n- Design: MOD-02\n- Scope: internal/cancel/**\n- Depends:\n")
+	approveAll(t, dir)
+	if sum := Summarize(load(t, dir)); sum.Skill != "implement" || strings.Join(sum.Ready, ",") != "T-001,T-002" || sum.Unapproved+sum.Stale != 0 {
+		t.Fatalf("全部批准时应建议 implement：%+v", sum)
+	}
+	edit(t, dir, "docs/PRD.md", "## 变更日志", "## 待澄清项\n\n### OQ-001 下单是否限额\n- Status: Open\n- Relates: FR-001\n\n## 变更日志")
+	approveAll(t, dir)
+	if sum := Summarize(load(t, dir)); strings.Join(sum.Ready, ",") != "T-002" || strings.Join(sum.OpenQuestions, ",") != "OQ-001" {
+		t.Fatalf("关联 Open 待澄清项的 T-001 不可开工：%+v", sum)
+	}
+	edit(t, dir, "docs/PRD.md", "取消成功。", "取消成功并退款。")
+	edit(t, dir, "docs/tasks.md", "### T-001 下单\n- Status: Todo", "### T-001 下单\n- Status: InProgress")
+	if sum := Summarize(load(t, dir)); len(sum.Ready) != 0 || sum.Skill != "clarify" || sum.Stale == 0 || strings.Join(sum.InProgress, ",") != "T-001" {
+		t.Fatalf("FR-002 修改后 T-002 不可开工，应建议 clarify：%+v", sum)
+	}
+}

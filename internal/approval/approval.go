@@ -8,6 +8,7 @@ import (
 	"path"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -387,4 +388,131 @@ func Migrate(s *workspace.Snapshot) (map[string]lock.UnitApproval, json.RawMessa
 	}
 	raw, _ := json.Marshal(m)
 	return out, raw
+}
+
+// Summary 是会话开始注入的批准状态摘要（IF-028，AC-048-3）。
+type Summary struct {
+	Unapproved, Stale int
+	Ready, InProgress []string // 可开工的任务、进行中的任务
+	OpenQuestions     []string
+	Skill             string // clarify / architect / plan / implement；没有可做的事时为空
+	NoApproved        bool   // 没有已批准的需求
+}
+
+// layer 返回单位所在的层：需求、设计、任务。
+func layer(u Unit) string {
+	switch {
+	case u.Kind == Design || u.Kind == ADR || strings.HasPrefix(u.File, "docs/architecture/") || strings.HasPrefix(u.File, "docs/adr/"):
+		return "design"
+	case u.Kind == Task || u.File == "docs/tasks.md":
+		return "task"
+	}
+	return "requirement"
+}
+
+// Summarize 汇总批准状态并给出建议的 skill：有未批准或失效的需求时为 clarify；需求已批准而设计未批准
+// 或未覆盖当前 Release 的需求时为 architect；设计已批准而任务未批准或未覆盖时为 plan；有可开工或进行中的任务时为 implement。
+func Summarize(s *workspace.Snapshot) Summary {
+	states := Evaluate(s)
+	var sum Summary
+	pending := map[string]bool{}
+	covered := map[string]map[string]bool{"design": {}, "task": {}}
+	approvedReq := false
+	for _, st := range states {
+		l := layer(st.Unit)
+		switch st.State {
+		case Unapproved:
+			sum.Unapproved++
+			pending[l] = true
+		case Stale:
+			sum.Stale++
+			pending[l] = true
+		case Approved:
+			if st.Unit.Kind == Requirement {
+				approvedReq = true
+			}
+		}
+		if covered[l] != nil {
+			for _, up := range st.Unit.Upstream {
+				covered[l][up] = true
+			}
+		}
+	}
+	open := map[string]bool{}
+	for _, oq := range s.Project.ByKind["OQ"] {
+		if oq.Fields["Status"] == "Open" {
+			sum.OpenQuestions = append(sum.OpenQuestions, oq.ID)
+			for _, r := range oq.List("Relates") {
+				open[r] = true
+			}
+		}
+	}
+	for _, u := range Units(s) {
+		if u.Kind != Task {
+			continue
+		}
+		switch s.Project.ByID[u.ID].Fields["Status"] {
+		case "InProgress":
+			sum.InProgress = append(sum.InProgress, u.ID)
+		case "Todo":
+			if ready(Chain(s, u.ID), open) {
+				sum.Ready = append(sum.Ready, u.ID)
+			}
+		}
+	}
+	sort.Strings(sum.Ready)
+	sort.Strings(sum.InProgress)
+	sort.Strings(sum.OpenQuestions)
+	current := currentRequirements(s)
+	switch {
+	case !approvedReq || pending["requirement"]:
+		sum.Skill, sum.NoApproved = "clarify", !approvedReq
+	case pending["design"] || !all(current, covered["design"]):
+		sum.Skill = "architect"
+	case pending["task"] || !all(current, covered["task"]):
+		sum.Skill = "plan"
+	case len(sum.Ready) > 0 || len(sum.InProgress) > 0:
+		sum.Skill = "implement"
+	}
+	return sum
+}
+
+// ready 判断批准链全部有效且链上的需求没有 Open 的待澄清项。
+func ready(chain []Status, open map[string]bool) bool {
+	for _, st := range chain {
+		if st.State != Approved || open[st.Unit.ID] {
+			return false
+		}
+	}
+	return true
+}
+
+// currentRequirements 返回 Active 且 Release 不大于 Current-Release 的需求编号。
+func currentRequirements(s *workspace.Snapshot) []string {
+	idx := s.Doc(workspace.PRDIndex)
+	if idx == nil {
+		return nil
+	}
+	cur, err := strconv.Atoi(idx.Header["Current-Release"])
+	if err != nil {
+		return nil
+	}
+	var out []string
+	for _, k := range []string{"FR", "NFR"} {
+		for _, e := range s.Project.ByKind[k] {
+			if r, err := strconv.Atoi(e.Fields["Release"]); err == nil && r <= cur && e.Fields["Status"] == "Active" {
+				out = append(out, e.ID)
+			}
+		}
+	}
+	return out
+}
+
+func all(ids []string, set map[string]bool) bool {
+	for _, id := range ids {
+		if !set[id] {
+			return false
+		}
+	}
+	return true
 }

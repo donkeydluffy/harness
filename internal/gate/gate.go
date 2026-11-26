@@ -6,6 +6,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/donkeydluffy/harness/internal/approval"
 	"github.com/donkeydluffy/harness/internal/model"
 	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/workspace"
@@ -127,7 +128,11 @@ func approvesStatus(s *workspace.Snapshot, p, content string) bool {
 }
 
 // decideArtifact：docs/ 下的写入须在当前阶段的可写路径内（gate.artifact）。
+// 锁文件为第 2 版时 docs/ 任何时候可写（AC-048-2），批准状态由批准链体现。
 func decideArtifact(s *workspace.Snapshot, p string) Decision {
+	if s.Lock.ByUnit() {
+		return allow()
+	}
 	phases, err := phase.Load(s)
 	if err != nil {
 		return deny("gate.artifact", "阶段定义有误，无法判定 %s 是否可写：%v", p, err)
@@ -142,17 +147,34 @@ func decideArtifact(s *workspace.Snapshot, p string) Decision {
 	return deny("gate.artifact", "当前阶段 %s 不允许写入 %s；可写路径：%s", cur.Name, p, strings.Join(cur.Writable, ", "))
 }
 
-// decideSource：源码写入须有 InProgress 任务且路径在其范围内（gate.write）。
+// decideSource：源码写入须有 InProgress 任务且路径在其范围内（gate.write）；锁文件为第 2 版时
+// 该任务的批准链还须全部有效（AC-047-4）。
 func decideSource(s *workspace.Snapshot, p string) Decision {
 	var active []string
+	var broken *Decision
 	for _, t := range tasks(s) {
 		if t.Fields["Status"] != "InProgress" {
 			continue
 		}
 		active = append(active, t.ID)
-		if workspace.MatchAny(t.List("Scope"), p) {
+		if !workspace.MatchAny(t.List("Scope"), p) {
+			continue
+		}
+		if !s.Lock.ByUnit() {
 			return allow()
 		}
+		bad := brokenChain(s, t.ID)
+		if len(bad) == 0 {
+			return allow()
+		}
+		if broken == nil {
+			d := deny("gate.write", "%s 的批准链无效，不能修改其范围内的源码 %s：%s；由人在终端执行 harness approve 重新批准后再继续",
+				t.ID, p, strings.Join(bad, "；"))
+			broken = &d
+		}
+	}
+	if broken != nil {
+		return *broken
 	}
 	if len(active) == 0 {
 		return deny("gate.write", "没有 InProgress 任务，不能修改源码 %s；先在 docs/tasks.md 中把要做的任务改为 InProgress", p)
@@ -211,3 +233,17 @@ func AfterAllowed(s *workspace.Snapshot, cmd string) func(string) bool {
 
 // Allowed 判断代理对路径 p 的写入是否放行；命令后比对（IF-018 After）用它决定哪些改动保留。
 func Allowed(s *workspace.Snapshot, p string) bool { return decideWrite(s, p, "").Allow }
+
+// brokenChain 返回任务批准链中未批准与失效的单位及原因。
+func brokenChain(s *workspace.Snapshot, id string) []string {
+	var out []string
+	for _, st := range approval.Chain(s, id) {
+		switch st.State {
+		case approval.Unapproved:
+			out = append(out, st.Unit.ID+" 未批准")
+		case approval.Stale:
+			out = append(out, st.Unit.ID+" 批准已失效（"+strings.Join(st.Cause, ", ")+" 已变化）")
+		}
+	}
+	return out
+}

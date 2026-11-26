@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/donkeydluffy/harness/internal/approval"
 	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
 	"github.com/donkeydluffy/harness/internal/workspace"
@@ -191,26 +192,11 @@ func sessionStart(s *workspace.Snapshot) Decision {
 			parts = append(parts, "上次会话遗留：\n"+sec)
 		}
 	}
-	name := "未知"
-	if phases, err := phase.Load(s); err == nil {
-		if cur, err := phase.Current(s, phases); err == nil {
-			name = cur.Name
-			if t, ok := phaseTitles[name]; ok {
-				name = t
-			}
-		}
+	if s.Lock.ByUnit() {
+		parts = append(parts, summaryLines(approval.Summarize(s))...)
+	} else {
+		parts = append(parts, phaseLine(s))
 	}
-	var active []string
-	for _, t := range tasks(s) {
-		if t.Fields["Status"] == "InProgress" {
-			active = append(active, t.ID)
-		}
-	}
-	line := "阶段：" + name + "，无进行中任务"
-	if len(active) > 0 {
-		line = "阶段：" + name + "，进行中任务：" + strings.Join(active, "、")
-	}
-	parts = append(parts, line)
 	rep := engine.Run(s, engine.FullCheck())
 	if n := len(rep.Violations) + len(rep.Errors); n > 0 {
 		parts = append(parts, fmt.Sprintf("未通过的检查：%d 条（运行 harness check 查看）", n))
@@ -251,4 +237,49 @@ func runSmoke(root, cmd string) string {
 		lines = lines[len(lines)-50:]
 	}
 	return fmt.Sprintf("冒烟失败（%v），输出最后 %d 行：\n%s", err, len(lines), strings.Join(lines, "\n"))
+}
+
+// phaseLine 是锁文件为第 1 版时的阶段与进行中任务。
+func phaseLine(s *workspace.Snapshot) string {
+	name := "未知"
+	if phases, err := phase.Load(s); err == nil {
+		if cur, err := phase.Current(s, phases); err == nil {
+			name = cur.Name
+			if t, ok := phaseTitles[name]; ok {
+				name = t
+			}
+		}
+	}
+	var active []string
+	for _, t := range tasks(s) {
+		if t.Fields["Status"] == "InProgress" {
+			active = append(active, t.ID)
+		}
+	}
+	line := "阶段：" + name + "，无进行中任务"
+	if len(active) > 0 {
+		line = "阶段：" + name + "，进行中任务：" + strings.Join(active, "、")
+	}
+	return line
+}
+
+// summaryLines 是锁文件为第 2 版时的批准状态摘要与建议的 skill（AC-048-3）。
+func summaryLines(sum approval.Summary) []string {
+	none := func(l []string) string {
+		if len(l) == 0 {
+			return "无"
+		}
+		return strings.Join(l, "、")
+	}
+	out := []string{
+		fmt.Sprintf("批准状态：%d 个单位未批准，%d 个批准已失效", sum.Unapproved, sum.Stale),
+		"可开工任务：" + none(sum.Ready) + "；进行中任务：" + none(sum.InProgress),
+	}
+	switch {
+	case sum.NoApproved:
+		out = append(out, "无已批准的需求，建议 clarify")
+	case sum.Skill != "":
+		out = append(out, "建议使用 skill："+sum.Skill)
+	}
+	return out
 }

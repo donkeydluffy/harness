@@ -113,3 +113,8 @@
 - 结论：Done。gate.sensitive（读写与 Bash 参数、输入重定向命中 sensitivePaths，sensitiveAllow 豁免）、gate.secret（规则 secret.aws、secret.pem、secret.gcp、secret.github、secret.entropy，只检查新增行与命令文本）、gate.command（dangerousCommands 模式按词顺序匹配，--force-with-lease 不误判；rm 递归删除仓库外、~ 开头或含变量的路径）。17 个集成测试（FR-025）通过；逐一破坏各判定分支后对应用例失败。十六进制排除分支被证明多余（提交哈希熵不超过 4 比特且通常全小写），已删除。
 - 设计取舍：整条命令只调用一次 harness（如 `harness lock`）时，命令后比对允许它改写锁文件、harness.json 与 hook 配置；夹带其他命令或 harness 只是参数时仍恢复。app/gate.go 因此纳入本任务范围。
 - 遗留：危险命令按文本模式匹配，经变量或脚本间接执行的命令拦不住，靠命令后比对兜底（仅限仓库内文件）。
+
+### 2026-11-26 T-018
+- 结论：Done。写入产物后按文件选择规则前缀（PRD → prd、term；架构 → arch、trace、term；ADR → adr；任务 → task；技术债 → debt）运行文档规则并反馈；会话结束运行全量检查（engine.FullCheck，不含覆盖类规则），连续阻止 stopMaxBlocks 次后放行，未通过项写入 docs/progress.md 的"## 未完成"段，检查通过时清除；会话开始注入未完成项（最先）、阶段、进行中任务、未通过检查数、Open 待澄清项与冒烟结果（失败时最后 50 行）。12 个集成测试（AC-012-3、AC-012-4、AC-024-1、AC-024-3）通过；逐一破坏各判定分支（含两处计数清零）后对应用例失败。
+- 设计取舍：会话结束检查与会话开始注入沿用 task.08 的解释（全量检查不含 test.02、arch.05），否则 Release 1 完成前每次会话都会被阻止 3 次。写后检查只运行不依赖测试报告与版本库的规则。
+- 遗留：DEBT-003（task.08 仍重复维护排除列表）；Bash 命令改动产物后不运行写后检查，由会话结束检查兜底。

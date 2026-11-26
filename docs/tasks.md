@@ -180,7 +180,7 @@ gate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解
 gate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危险命令可配置。
 
 ### T-018 写后检查、会话结束检查与会话开始注入
-- Status: InProgress
+- Status: Done
 - Covers: AC-012-3, AC-012-4, AC-024-1, AC-024-3
 - Design: FLOW-04, FLOW-05, FLOW-06, IF-012, IF-017, IF-019, IF-025
 - Flow: FLOW-05
@@ -190,7 +190,7 @@ gate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危�
 PostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连续阻止 3 次后放行并写进度文件；SessionStart 注入阶段、InProgress 任务、未通过检查、Open 待澄清项、冒烟测试结果。
 
 ### T-019 项目初始化与产物模板
-- Status: Todo
+- Status: InProgress
 - Covers: FR-001, AC-N002-2, NFR-005
 - Design: FLOW-07, IF-020, IF-021, IF-026
 - Flow: FLOW-07

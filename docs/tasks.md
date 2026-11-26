@@ -202,8 +202,9 @@ go:embed 模板；`harness init --lang go` 生成产物骨架、harness.json、C
 ### T-020 流程 skill 集
 - Status: InProgress
 - Covers: FR-016, AC-011-5, AC-033-5
-- Design: MOD-13, IF-020
-- Scope: internal/scaffold/templates/skills/**, internal/scaffold/skills_integration_test.go
+- Design: MOD-13, IF-020, IF-026, FLOW-07
+- Flow: FLOW-07
+- Scope: internal/scaffold/templates/skills/**, internal/scaffold/scaffold.go, internal/scaffold/skills_integration_test.go, internal/app/init_integration_test.go
 - Depends: T-019
 
 clarify、change、architect、plan、implement、test 六个 skill；每个声明结束前运行的 `harness check` 子命令；静态测试校验声明存在、测试命名约定与 test.01 的提取规则一致。

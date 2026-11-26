@@ -38,7 +38,9 @@ func initDir(t *testing.T, langs string) string {
 
 // goInitFiles 是 harness init --lang go 生成的全部文件；内嵌模板缺失时与之不符（AC-N002-2/E1）。
 var goInitFiles = []string{
-	".claude/settings.json", "docs/PRD.md", "docs/architecture/overview.md", "docs/debt.md",
+	".claude/settings.json", ".claude/skills/architect/SKILL.md", ".claude/skills/change/SKILL.md",
+	".claude/skills/clarify/SKILL.md", ".claude/skills/implement/SKILL.md", ".claude/skills/plan/SKILL.md",
+	".claude/skills/test/SKILL.md", "docs/PRD.md", "docs/architecture/overview.md", "docs/debt.md",
 	"docs/lang/go.md", "docs/progress.md", "docs/tasks.md", "harness.json",
 }
 

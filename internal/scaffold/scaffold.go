@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -108,6 +109,9 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 	if err := copyTree(out, "templates/artifacts"); err != nil {
 		return nil, err
 	}
+	if err := copyTreeTo(out, "templates/skills", ".claude/skills"); err != nil {
+		return nil, err
+	}
 	cfg := struct {
 		Languages   []string `json:"languages"`
 		SourcePaths []string `json:"sourcePaths"`
@@ -151,7 +155,10 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 }
 
 // copyTree 把内嵌目录 dir 下的文件按相对路径放入 out。
-func copyTree(out map[string][]byte, dir string) error {
+func copyTree(out map[string][]byte, dir string) error { return copyTreeTo(out, dir, "") }
+
+// copyTreeTo 把内嵌目录 dir 下的文件放到项目的 to 目录下（to 为空时为项目根目录）。
+func copyTreeTo(out map[string][]byte, dir, to string) error {
 	return fs.WalkDir(templates, dir, func(p string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return err
@@ -160,7 +167,7 @@ func copyTree(out map[string][]byte, dir string) error {
 		if err != nil {
 			return err
 		}
-		out[strings.TrimPrefix(p, dir+"/")] = b
+		out[path.Join(to, strings.TrimPrefix(p, dir+"/"))] = b
 		return nil
 	})
 }

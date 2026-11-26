@@ -84,7 +84,7 @@ trace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型
 vcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03 判断模块增删、依赖变化、扩展点变化是否在同一提交中被 ADR 引用。
 
 ### T-008 测试报告解析、Go 语言包与集成测试追溯
-- Status: InProgress
+- Status: Done
 - Covers: FR-020
 - Design: FLOW-01, IF-003, IF-004, IF-008, IF-009, IF-014
 - Flow: FLOW-01
@@ -94,7 +94,7 @@ vcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03
 JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integration_test.go` 判定为集成测试）；test.01、test.02。lang 附 `TestExample_EXT_01` 示例语言测试。完成后本仓库的测试报告写入 `.harness/reports/`。
 
 ### T-009 技术债登记检查
-- Status: Todo
+- Status: InProgress
 - Covers: FR-031
 - Design: FLOW-01, IF-003, IF-014
 - Flow: FLOW-01

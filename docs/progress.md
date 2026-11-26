@@ -46,3 +46,8 @@
 - 设计澄清：MOD-05 中"输入缺失"的口径改为"指定了提交范围却不是 git 仓库、或需要测试报告却没有报告"；未指定范围时 git 规则检查暂存区。否则任何非 git 目录的全量检查都会失败，与 AC-001-1 冲突。MOD-05 因此回到 Draft，待确认。
 - 规则样本：registry_test 支持 `repo/01`、`repo/02`、`repo/staged` 形式的 git 历史样本。
 - 遗留：DEBT-002 中 ADR 文件的诊断已由 adr.01 报告。
+
+### 2026-11-26 T-008
+- 结论：Done。lang（注册表、Go 语言包，演示 EXT-01）、testreport（JUnit、go test -json）、workspace 加载源码与测试报告、test.01、test.02。13 个用例（FR-020）集成测试通过；让 test.02 把单元测试计入覆盖后 AC-020-4/E1 失败，让 test.01 忽略不存在的用例后 AC-020-1/E1 失败。
+- 设计澄清：`harness lock` 原为"全量检查通过后"写锁文件，加入 test.02 后需求阶段无法锁定 PRD。engine 增加可选接口 `Needer`，需要源码、测试报告或 git 的规则声明输入，lock 只运行其余规则。MOD-02、MOD-04 因此回到 Draft，待确认。
+- 自检：`go test -json ./... > .harness/reports/go.jsonl` 后全量检查有 192 条 test.02 违规，全部属于后续任务的需求；T-001 至 T-008 关联的用例都有通过的集成测试。`.harness/reports/` 加入 .gitignore。

@@ -256,3 +256,55 @@ func TestGate_AssignmentOnlyCommand(t *testing.T) {
 	wantAllow(t, hook(t, dir, "PreToolUse", bashTool("X=1 Y=2")))
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("d=$(touch other/b.go)")), "gate.write", "other/b.go")
 }
+
+// 代理可按 cfg.02 的修复办法删除可重新生成的生成文件，再单独运行 harness init 写回（T-031，DEBT-009）。
+func TestGate_RegenerateGeneratedFile(t *testing.T) {
+	dir := gateDir(t, "implementation", activeTasks)
+	write(t, dir, ".github/workflows/harness.yml", "旧内容\n")
+	write(t, dir, ".claude/settings.json", "{}\n")
+
+	// 只删除生成文件：命令前放行，命令后保留删除。
+	rm := bashTool("rm -f .github/workflows/harness.yml")
+	wantAllow(t, hook(t, dir, "PreToolUse", rm))
+	os.Remove(filepath.Join(dir, ".github/workflows/harness.yml"))
+	os.Remove(filepath.Join(dir, ".claude/settings.json"))
+	hook(t, dir, "PostToolUse", rm)
+	if _, err := os.Stat(filepath.Join(dir, ".github/workflows/harness.yml")); !os.IsNotExist(err) {
+		t.Fatal("CI 配置的删除被恢复")
+	}
+
+	// 单独一次 harness init 写回：命令后保留写回的内容。
+	initCmd := bashTool("harness init --lang go")
+	wantAllow(t, hook(t, dir, "PreToolUse", initCmd))
+	write(t, dir, ".github/workflows/harness.yml", "新内容\n")
+	write(t, dir, "other/b.go", "被 init 改动\n")
+	hook(t, dir, "PostToolUse", initCmd)
+	if b, _ := os.ReadFile(filepath.Join(dir, ".github/workflows/harness.yml")); string(b) != "新内容\n" {
+		t.Fatalf("harness init 写回的 CI 配置被恢复：%q", b)
+	}
+	if b, _ := os.ReadFile(filepath.Join(dir, "other/b.go")); string(b) != "package other\n" {
+		t.Fatalf("范围外的其他改动应恢复：%q", b)
+	}
+
+	// 其余形状仍按原规则判定。
+	for _, c := range []string{
+		"rm .claude/settings.json",                    // hook 配置只能由人修改（AC-025-4）
+		"rm harness.json",                             // 项目配置删除后会丢失
+		"rm harness.lock",                             // 批准记录
+		"rm .claude/settings.json && echo x",          // 复合命令
+		"rm -r .claude/settings.json",                 // 其他选项
+		"rm .github/workflows/harness.yml other/b.go", // 混入范围外文件
+	} {
+		if h := hook(t, dir, "PreToolUse", bashTool(c)); !h.Deny {
+			t.Errorf("%q 应拒绝：%s", c, h.Raw)
+		}
+	}
+	// 通配符无法静态判定：命令前放行，命令后恢复被删除的生成文件（FLOW-03）。
+	glob := bashTool("rm .claude/*.json")
+	wantAllow(t, hook(t, dir, "PreToolUse", glob))
+	os.Remove(filepath.Join(dir, ".claude/settings.json"))
+	hook(t, dir, "PostToolUse", glob)
+	if _, err := os.Stat(filepath.Join(dir, ".claude/settings.json")); err != nil {
+		t.Fatal("通配符删除的生成文件应恢复")
+	}
+}

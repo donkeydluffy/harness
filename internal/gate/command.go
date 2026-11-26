@@ -18,6 +18,9 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 	if pat := dangerous(s, cmd); pat != "" {
 		return deny("gate.command", "命令命中危险命令模式 %q（harness.json 的 dangerousCommands）", pat)
 	}
+	if regenRemovals(s, cmd) != nil {
+		return allow() // 删除可重新生成的生成文件，随后由单独一次 harness init 写回
+	}
 	f, err := syntax.NewParser().Parse(strings.NewReader(cmd), "")
 	if err != nil {
 		return allow() // 语法无法解析时同样交给命令后比对
@@ -142,6 +145,43 @@ func onlyHarness(cmd string) bool {
 		}
 	}
 	return false
+}
+
+// regenRemovals 返回整条命令只是 rm 可重新生成的生成文件时被删除的文件（仓库相对路径）；
+// 命令含其他内容、其他路径或通配符时返回 nil（DEBT-009）。
+func regenRemovals(s *workspace.Snapshot, cmd string) map[string]bool {
+	f, err := syntax.NewParser().Parse(strings.NewReader(cmd), "")
+	if err != nil || len(f.Stmts) != 1 || f.Stmts[0].Redirs != nil {
+		return nil
+	}
+	call, ok := f.Stmts[0].Cmd.(*syntax.CallExpr)
+	if !ok || len(call.Assigns) > 0 || len(call.Args) < 2 {
+		return nil
+	}
+	if name, ok := literal(call.Args[0]); !ok || name != "rm" {
+		return nil
+	}
+	out := map[string]bool{}
+	for _, w := range call.Args[1:] {
+		a, ok := literal(w)
+		switch {
+		case !ok:
+			return nil
+		case a == "-f":
+			continue
+		case strings.HasPrefix(a, "-"):
+			return nil // -r 等其他选项不在允许范围内
+		}
+		p := Resolve(s.Root, s.Root, a)
+		if !contains(workspace.RegeneratedFiles, p) {
+			return nil
+		}
+		out[p] = true
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
 }
 
 // writeTargets 返回常见写文件命令的路径参数。

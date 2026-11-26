@@ -306,7 +306,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 - Covers: AC-012-2
 - Design: FLOW-02
 - Flow: FLOW-02
-- Scope: internal/gate/**, internal/app/gate_integration_test.go
+- Scope: internal/gate/**, internal/workspace/generated.go, internal/app/gate_integration_test.go
 - Depends: T-030
 
 代理可按 cfg.02 的修复办法删除生成文件，再由单独一次 `harness init` 写回；写入其他内容仍按范围判定。

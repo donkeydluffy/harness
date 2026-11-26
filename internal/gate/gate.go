@@ -201,8 +201,9 @@ func Clean(p string) string { return path.Clean(strings.TrimPrefix(p, "./")) }
 // 允许它改写锁文件、项目配置与 hook 配置；其余路径按 Allowed 判定。
 func AfterAllowed(s *workspace.Snapshot, cmd string) func(string) bool {
 	harness := onlyHarness(cmd)
+	removed := regenRemovals(s, cmd)
 	return func(p string) bool {
-		return (harness && contains(protectedFiles, p)) || Allowed(s, p)
+		return (harness && (contains(protectedFiles, p) || contains(workspace.RegeneratedFiles, p))) || removed[p] || Allowed(s, p)
 	}
 }
 

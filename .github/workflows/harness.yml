@@ -12,7 +12,7 @@ jobs:
         with:
           go-version: stable
       - name: 安装 harness
-        run: go install github.com/donkeydluffy/harness/cmd/harness@latest
+        run: go install ./cmd/harness
       - name: 测试（go）
         run: mkdir -p .harness/reports && go test -json ./... > .harness/reports/go.jsonl
       - name: harness check

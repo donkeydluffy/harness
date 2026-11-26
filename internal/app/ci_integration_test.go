@@ -154,3 +154,30 @@ func TestInit_CIRunsTests(t *testing.T) {
 		t.Fatalf("GitLab CI 应先运行 Go 测试再运行 harness check：\n%s", gl)
 	}
 }
+
+// 目标项目就是 harness 自身时，CI 从当前提交的源码构建 harness；其他项目安装发布版本（T-027）。
+func TestInit_CISelfHostedBuildsFromSource(t *testing.T) {
+	self := t.TempDir()
+	os.WriteFile(filepath.Join(self, "go.mod"), []byte("module github.com/donkeydluffy/harness\n\ngo 1.27\n"), 0o644)
+	if r := runHarness(t, self, "init", "--lang", "go"); r.Code != 0 {
+		t.Fatal(r.Stderr)
+	}
+	b, _ := os.ReadFile(filepath.Join(self, ".github/workflows/harness.yml"))
+	if !strings.Contains(string(b), "run: go install ./cmd/harness\n") {
+		t.Fatalf("harness 自身应从源码构建：\n%s", b)
+	}
+	wantPass(t, checkJSON(t, self, "cfg.02"))
+	other := t.TempDir()
+	os.WriteFile(filepath.Join(other, "go.mod"), []byte("module example.com/app\n"), 0o644)
+	if r := runHarness(t, other, "init", "--lang", "go"); r.Code != 0 {
+		t.Fatal(r.Stderr)
+	}
+	b, _ = os.ReadFile(filepath.Join(other, ".github/workflows/harness.yml"))
+	if !strings.Contains(string(b), "run: go install github.com/donkeydluffy/harness/cmd/harness@latest\n") {
+		t.Fatalf("其他项目应安装发布版本：\n%s", b)
+	}
+	wantPass(t, checkJSON(t, other, "cfg.02"))
+	// 对照：自身仓库的 CI 若安装发布版本，cfg.02 报告不一致。
+	os.WriteFile(filepath.Join(self, ".github/workflows/harness.yml"), b, 0o644)
+	wantViolation(t, checkJSON(t, self, "cfg.02"), "cfg.02", "harness.yml")
+}

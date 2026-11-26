@@ -65,3 +65,9 @@ test.02 只看用例编号的测试，arch.05 只看扩展点编号的测试；�
 - Module: MOD-11
 
 commit.02/commit.03 豁免生成文件（TERM-026），门禁却按源码路径判定 `.github/workflows/harness.yml` 这类不属于任何模块的生成文件，拒绝 `rm` 后再 `harness init`。cfg.02 的修复办法因此只能由人执行（T-027 模板变化后即如此）。应让门禁允许删除生成文件，再由单独的 `harness init` 写回，写回内容由 cfg.02 校验。
+
+### DEBT-010 用户项目的 CI 安装 @latest，与生成文件的 harness 版本可能不一致
+- Status: Open
+- Module: MOD-13
+
+生成的 CI 配置用 `go install …/cmd/harness@latest`，而生成文件来自本地那个版本的模板。harness 发布了改动模板的新版本后，用户项目的 CI 会因 cfg.02 失败，本地却通过；代理缓存还会让 `@latest` 落后于最新提交（T-027 中本仓库的 CI 装到了旧提交）。本仓库已改为从源码构建（`SelfHosted`）；用户项目应把版本固定为生成时的 harness 版本（取自构建信息），升级 harness 后由 cfg.02 提示重新生成。

@@ -29,6 +29,23 @@ type InitOptions struct {
 	Agents    []string // 为空时为 claudecode
 	CI        string
 	Binary    string // hook 配置中调用的 harness 命令，为空时为 harness
+	// SelfHosted 表示目标项目就是 harness 自身（go.mod 的模块路径为 modulePath）：
+	// CI 从当前提交的源码构建 harness，生成文件与同一提交的模板一致。
+	SelfHosted bool
+}
+
+// selfHosted 判断 root 下 go.mod 的模块路径是否为 harness 自身。
+func selfHosted(root string) bool {
+	b, err := os.ReadFile(filepath.Join(root, "go.mod"))
+	if err != nil {
+		return false
+	}
+	for _, line := range strings.Split(string(b), "\n") {
+		if f := strings.Fields(line); len(f) == 2 && f[0] == "module" {
+			return f[1] == modulePath
+		}
+	}
+	return false
 }
 
 // Result 是 init 的结果（IF-020）：Written 为新写入的文件，Skipped 为已存在且内容不同而未覆盖的文件。
@@ -76,6 +93,7 @@ func GitHooksDir(root string) (dir string, ok bool) {
 // Generate 写入模板；已存在且内容相同的文件不动，内容不同的跳过并列入 Skipped（AC-001-2）。
 // 选项不合法时不写任何文件（AC-001-1/E1）。git 仓库中同时安装 commit-msg、pre-commit hook（AC-013-3）。
 func Generate(root string, opt InitOptions) (Result, error) {
+	opt.SelfHosted = selfHosted(root)
 	files, err := Files(opt)
 	if err != nil {
 		return Result{}, err
@@ -258,13 +276,18 @@ func testSteps(ci string, tests []langTest) string {
 	return b.String()
 }
 
-// render 替换模板中的 {{binary}} 与 {{module}}。
+// render 替换模板中的 {{binary}}、{{install}}（CI 安装 harness 的命令）与 {{module}}。
 func render(b []byte, opt InitOptions) []byte {
 	binary := opt.Binary
 	if binary == "" {
 		binary = "harness"
 	}
+	install := "go install " + modulePath + "/cmd/harness@latest"
+	if opt.SelfHosted {
+		install = "go install ./cmd/harness"
+	}
 	s := strings.ReplaceAll(string(b), "{{binary}}", binary)
+	s = strings.ReplaceAll(s, "{{install}}", install)
 	return []byte(strings.ReplaceAll(s, "{{module}}", modulePath))
 }
 

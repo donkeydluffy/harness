@@ -24,7 +24,7 @@ func Expected(s *workspace.Snapshot) (map[string][]byte, error) {
 		if _, err := os.Stat(filepath.Join(s.Root, filepath.FromSlash(p))); err != nil {
 			continue
 		}
-		b, err := CIConfig(ci, s.Config.Languages)
+		b, err := ciConfig(ci, langTests(s.Config.Languages), InitOptions{SelfHosted: selfHosted(s.Root)})
 		if err != nil {
 			return nil, err
 		}

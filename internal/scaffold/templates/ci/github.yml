@@ -12,7 +12,7 @@ jobs:
         with:
           go-version: stable
       - name: 安装 harness
-        run: go install {{module}}/cmd/harness@latest
+        run: {{install}}
 {{testSteps}}      - name: harness check
         run: harness check
       - name: harness check commits

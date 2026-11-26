@@ -2,12 +2,15 @@ package builtin
 
 import (
 	"fmt"
+	"path"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"harness/internal/lang"
 	"harness/internal/model"
 	"harness/internal/rules/engine"
+	"harness/internal/testreport"
 	"harness/internal/vcs"
 	"harness/internal/workspace"
 )
@@ -310,4 +313,71 @@ func parseAt(path string, src []byte) *model.Doc {
 	}
 	d, _ := model.ParseMarkdown(path, src)
 	return d
+}
+
+var caseTokenRe = regexp.MustCompile(`AC_(N?\d+)_(\d+)_([NBE])(\d+)`)
+
+// caseRefs 从测试名中提取引用的用例编号：AC_001_1_N1 → AC-001-1/N1（formats.md 第 5 节）。
+func caseRefs(name string) []string {
+	var out []string
+	for _, m := range caseTokenRe.FindAllStringSubmatch(name, -1) {
+		out = append(out, "AC-"+m[1]+"-"+m[2]+"/"+m[3]+m[4])
+	}
+	return out
+}
+
+// staticTest 是源码中静态声明的测试。
+type staticTest struct {
+	Name, File string
+	Line       int
+	Kind       lang.TestKind
+}
+
+// staticTests 返回测试文件中声明的全部测试。
+func staticTests(s *workspace.Snapshot) []staticTest {
+	var out []staticTest
+	for _, f := range s.Sources {
+		if f.Kind == lang.NotTest {
+			continue
+		}
+		src, err := f.Content()
+		if err != nil {
+			continue
+		}
+		for _, n := range f.Lang.TestNames(src) {
+			out = append(out, staticTest{Name: n, File: f.Path, Line: lineOf(src, n), Kind: f.Kind})
+		}
+	}
+	return out
+}
+
+// lineOf 返回 name 首次出现的行号，找不到时为 1。
+func lineOf(src []byte, name string) int {
+	i := strings.Index(string(src), name)
+	if i < 0 {
+		return 1
+	}
+	return strings.Count(string(src[:i]), "\n") + 1
+}
+
+// reportKind 判断报告中的测试属于哪类测试文件：按顶层测试名匹配静态声明，
+// 同名声明有多个时用报告中的包路径（Suite）与文件目录比对。找不到时为 NotTest。
+func reportKind(tc testreport.TestCase, tests []staticTest) (staticTest, bool) {
+	top, _, _ := strings.Cut(tc.Name, "/")
+	var cands []staticTest
+	for _, st := range tests {
+		if st.Name == top && (tc.File == "" || tc.File == st.File) {
+			cands = append(cands, st)
+		}
+	}
+	if len(cands) == 1 {
+		return cands[0], true
+	}
+	for _, c := range cands {
+		dir := path.Dir(c.File)
+		if tc.Suite == dir || strings.HasSuffix(tc.Suite, "/"+dir) {
+			return c, true
+		}
+	}
+	return staticTest{}, false
 }

@@ -9,10 +9,12 @@ import (
 	"testing"
 )
 
-// lockedRepo 写入 PRD 并执行 harness lock，返回目录。
-func lockedRepo(t *testing.T, prdText string) string {
+// lockedRepo 写入 PRD 与架构夹具并执行 harness lock，返回目录。
+func lockedRepo(t *testing.T, prdText string, archEdits ...string) string {
 	t.Helper()
-	dir := writeTree(t, map[string]string{"docs/PRD.md": prdText})
+	files := arch(t, archEdits...)
+	files["docs/PRD.md"] = prdText
+	dir := writeTree(t, files)
 	if r := runHarness(t, dir, "lock"); r.Code != 0 {
 		t.Fatalf("harness lock 失败：%s%s", r.Stdout, r.Stderr)
 	}
@@ -53,7 +55,7 @@ func addCHG(t *testing.T, dir string, rows ...string) {
 const (
 	fr002Desc    = "- AC-002-1: 记录问答。"
 	fr002Changed = "- AC-002-1: 记录每轮问答。"
-	fr020        = "### FR-020 新需求\n- Status: Active\n- Release: 1\n- Priority: P2\n\n- AC-020-1: 新增。\n  - AC-020-1/N1: 正常\n  - AC-020-1/E1: 异常\n\n## 4. 非功能需求"
+	fr020        = "### FR-020 新需求\n- Status: Active\n- Release: 2\n- Priority: P2\n\n- AC-020-1: 新增。\n  - AC-020-1/N1: 正常\n  - AC-020-1/E1: 异常\n\n## 4. 非功能需求"
 )
 
 // ---- AC-004-1 变更必须登记 ----
@@ -62,26 +64,26 @@ func TestCheck_AC_004_1_N1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, fr002Desc, fr002Changed)
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-002 | 措辞 |")
-	wantPass(t, checkJSON(t, dir))
+	wantPass(t, checkJSON(t, dir, "prd"))
 }
 
 func TestCheck_AC_004_1_E1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, fr002Desc, fr002Changed)
-	wantViolation(t, checkJSON(t, dir), "prd.08", "FR-002", "没有引用它的新 CHG")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.08", "FR-002", "没有引用它的新 CHG")
 }
 
 func TestCheck_AC_004_1_B1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, "### FR-002 澄清\n", "### FR-002 澄清   \n")
-	wantPass(t, checkJSON(t, dir))
+	wantPass(t, checkJSON(t, dir, "prd"))
 }
 
 func TestCheck_AC_004_1_E2(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, fr002Desc, fr002Changed)
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-001 | 写错对象 |")
-	c := checkJSON(t, dir)
+	c := checkJSON(t, dir, "prd")
 	wantViolation(t, c, "prd.08", "FR-002", "没有引用它的新 CHG")
 	wantViolation(t, c, "prd.08", "FR-001 内容未变")
 }
@@ -92,20 +94,20 @@ func TestCheck_AC_004_2_N1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, "## 4. 非功能需求", fr020)
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 新增 | FR-020 | 新需求 |")
-	wantPass(t, checkJSON(t, dir))
+	wantPass(t, checkJSON(t, dir, "prd"))
 }
 
 func TestCheck_AC_004_2_E1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, "### FR-002 澄清\n- Status: Active", "### FR-002 澄清\n- Status: Removed")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-002 | 实为删除 |")
-	wantViolation(t, checkJSON(t, dir), "prd.08", "FR-002", "应为删除")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.08", "FR-002", "应为删除")
 }
 
 func TestCheck_AC_004_2_E2(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 删除 | FR-001 | 未删 |")
-	wantViolation(t, checkJSON(t, dir), "prd.08", "声明删除 FR-001", "内容未变")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.08", "声明删除 FR-001", "内容未变")
 }
 
 func TestCheck_AC_004_2_B1(t *testing.T) {
@@ -114,7 +116,7 @@ func TestCheck_AC_004_2_B1(t *testing.T) {
 	addCHG(t, dir,
 		"| CHG-002 | 2026-11-26 | 新增 | FR-020 | 新需求 |",
 		"| CHG-002 | 2026-11-26 | 修改 | FR-002 | 措辞 |")
-	wantPass(t, checkJSON(t, dir))
+	wantPass(t, checkJSON(t, dir, "prd"))
 }
 
 // ---- AC-004-3 harness lock ----
@@ -160,7 +162,9 @@ func TestLock_AC_004_3_E1(t *testing.T) {
 }
 
 func TestLock_AC_004_3_B1(t *testing.T) {
-	dir := writeTree(t, map[string]string{"docs/PRD.md": basePRD})
+	files := arch(t)
+	files["docs/PRD.md"] = basePRD
+	dir := writeTree(t, files)
 	if _, err := os.Stat(filepath.Join(dir, "harness.lock")); err == nil {
 		t.Fatal("夹具不应有锁文件")
 	}
@@ -181,21 +185,22 @@ func TestCheck_AC_003_3_N1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, "### FR-002 澄清\n- Status: Active", "### FR-002 澄清\n- Status: Removed")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 删除 | FR-002 | 不再需要 |")
-	wantPass(t, checkJSON(t, dir))
+	wantPass(t, checkJSON(t, dir, "prd"))
 }
 
 func TestCheck_AC_003_3_E1(t *testing.T) {
 	src := prd(t, "## 4. 非功能需求", fr020)
 	dir := lockedRepo(t, src)
 	edit(t, dir, fr020, "## 4. 非功能需求")
-	wantViolation(t, checkJSON(t, dir), "prd.03", "FR-020 从文档中消失")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.03", "FR-020 从文档中消失")
 }
 
 func TestCheck_AC_003_3_E2(t *testing.T) {
-	dir := lockedRepo(t, prd(t, "### FR-002 澄清\n- Status: Active", "### FR-002 澄清\n- Status: Removed"))
+	dir := lockedRepo(t, prd(t, "### FR-002 澄清\n- Status: Active", "### FR-002 澄清\n- Status: Removed"),
+		"overview.md", "- Covers: FR-002\n", "- Covers: FR-001\n", "modules/modules.md", "- Covers: FR-002\n", "- Covers: FR-001\n")
 	edit(t, dir, "### FR-002 澄清\n- Status: Removed", "### FR-002 新的需求\n- Status: Active")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 新增 | FR-002 | 复用编号 |")
-	wantViolation(t, checkJSON(t, dir), "prd.03", "FR-002 已 Removed，编号不能复用")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.03", "FR-002 已 Removed，编号不能复用")
 }
 
 // ---- AC-019-3 用例编号只增不删 ----
@@ -204,19 +209,19 @@ func TestCheck_AC_019_3_N1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, "  - AC-001-1/E1: 只读目录\n", "  - AC-001-1/E1: 只读目录\n  - AC-001-1/B2: 目录含隐藏文件\n")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-001 | 补充用例 |")
-	wantPass(t, checkJSON(t, dir))
+	wantPass(t, checkJSON(t, dir, "prd"))
 }
 
 func TestCheck_AC_019_3_E1(t *testing.T) {
 	dir := lockedRepo(t, basePRD)
 	edit(t, dir, "  - AC-001-1/E1: 只读目录\n", "")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-001 | 删用例 |")
-	wantViolation(t, checkJSON(t, dir), "prd.03", "AC-001-1/E1 从文档中消失")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.03", "AC-001-1/E1 从文档中消失")
 }
 
 func TestCheck_AC_019_3_E2(t *testing.T) {
 	dir := lockedRepo(t, prd(t, "  - AC-001-1/E1: 只读目录", "  - AC-001-1/E1: Removed：不再考虑只读目录\n  - AC-001-1/B1: 路径含空格"))
 	edit(t, dir, "  - AC-001-1/E1: Removed：不再考虑只读目录", "  - AC-001-1/E1: 磁盘已满")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-001 | 复用用例编号 |")
-	wantViolation(t, checkJSON(t, dir), "prd.03", "AC-001-1/E1 已 Removed")
+	wantViolation(t, checkJSON(t, dir, "prd"), "prd.03", "AC-001-1/E1 已 Removed")
 }

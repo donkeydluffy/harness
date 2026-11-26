@@ -308,3 +308,37 @@ func TestGate_RegenerateGeneratedFile(t *testing.T) {
 		t.Fatal("通配符删除的生成文件应恢复")
 	}
 }
+
+// 解析命令时跟随顶层的字面量 cd；目录无法静态判定时相对路径交给命令后比对，递归删除拒绝（T-035）。
+func TestGate_CommandFollowsCd(t *testing.T) {
+	dir := gateDir(t, "implementation", activeTasks)
+	pre := func(c string) hookOut { return hook(t, dir, "PreToolUse", bashTool(c)) }
+
+	wantAllow(t, pre("cd internal/api && touch new.go"))                   // 范围内：internal/api/new.go
+	wantAllow(t, pre("cd internal; cd api; mkdir -p sub"))                 // 多次 cd 累积
+	wantDeny(t, pre("cd other && touch c.go"), "gate.write", "other/c.go") // 范围外
+	wantDeny(t, pre("cd internal/api && touch ../../other/c.go"), "other/c.go")
+	wantDeny(t, pre("cd /tmp && rm -rf foo"), "gate.command", "foo")                       // 仓库外的递归删除
+	wantDeny(t, pre("cd \"$X\" && rm -rf foo"), "gate.command", "无法静态判定")                  // 目录无法判定时拒绝递归删除
+	wantDeny(t, pre("cd \"$X\" && touch "+filepath.Join(dir, "other/c.go")), "other/c.go") // 绝对路径照常判定
+
+	// 无法判定当前目录：相对路径的写入命令前放行，由命令后比对恢复范围外的改动。
+	for _, c := range []string{
+		"cd \"$X\" && touch c.go",
+		"(cd internal/api) && touch c.go", // 子 shell 中的 cd 不影响外层，保守视为无法判定
+		"cd internal/api || exit; touch c.go",
+		"cd - && touch c.go",
+		"cd && touch c.go",
+	} {
+		wantAllow(t, pre(c))
+		// 同样的目录下递归删除相对路径：无法静态判定，拒绝。
+		wantDeny(t, pre(strings.Replace(c, "touch c.go", "rm -rf sub", 1)), "gate.command", "无法静态判定")
+	}
+	cmd := bashTool("cd \"$X\" && touch c.go")
+	wantAllow(t, hook(t, dir, "PreToolUse", cmd))
+	write(t, dir, "c.go", "x\n")
+	hook(t, dir, "PostToolUse", cmd)
+	if _, err := os.Stat(filepath.Join(dir, "c.go")); !os.IsNotExist(err) {
+		t.Fatal("范围外新建的文件应由命令后比对删除")
+	}
+}

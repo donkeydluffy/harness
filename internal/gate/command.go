@@ -26,19 +26,29 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 		return allow() // 语法无法解析时同样交给命令后比对
 	}
 	var d = allow()
+	top := topLevelCds(f)
+	wd := cwd{dir: s.Root}
+	// write 判定写入目标 p：当前目录无法静态判定时，相对路径交给命令后比对。
+	write := func(p string) bool {
+		if !filepath.IsAbs(p) && wd.unknown {
+			return true
+		}
+		d = decideWrite(s, Resolve(s.Root, wd.dir, p), "")
+		return d.Allow
+	}
 	syntax.Walk(f, func(n syntax.Node) bool {
 		if !d.Allow {
 			return false
 		}
 		switch n := n.(type) {
 		case *syntax.Redirect:
-			if p, ok := literal(n.Word); ok && sensitive(s, Resolve(s.Root, s.Root, p)) {
-				d = denySensitive(Resolve(s.Root, s.Root, p))
+			if p, ok := literal(n.Word); ok && sensitive(s, Resolve(s.Root, wd.dir, p)) {
+				d = denySensitive(Resolve(s.Root, wd.dir, p))
 				return false
 			}
 			if n.Op == syntax.RdrOut || n.Op == syntax.AppOut || n.Op == syntax.RdrAll || n.Op == syntax.AppAll || n.Op == syntax.ClbOut {
-				if p, ok := literal(n.Word); ok {
-					d = decideWrite(s, Resolve(s.Root, s.Root, p), "")
+				if p, ok := literal(n.Word); ok && !write(p) {
+					return false
 				}
 			}
 		case *syntax.CallExpr:
@@ -46,22 +56,26 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 			if len(args) == 0 {
 				return true // 只有变量赋值（如 d=$(mktemp -d)），赋值中的命令替换由 Walk 继续访问
 			}
+			if args[0] == "cd" {
+				wd = wd.cd(n, top[n])
+				return true
+			}
 			if humanOnly(args) {
 				d = deny("gate.protect", "harness approve 与 harness phase next 只能由人在终端执行")
 				return false
 			}
-			if what, ok := recursiveRemoveOutside(s.Root, n); ok {
+			if what, ok := recursiveRemoveOutside(s.Root, wd, n); ok {
 				d = deny("gate.command", "递归删除仓库外或无法静态判定的路径：%s", what)
 				return false
 			}
 			for _, a := range args[1:] {
-				if a != "" && !strings.HasPrefix(a, "-") && sensitive(s, Resolve(s.Root, s.Root, a)) {
-					d = denySensitive(Resolve(s.Root, s.Root, a))
+				if a != "" && !strings.HasPrefix(a, "-") && sensitive(s, Resolve(s.Root, wd.dir, a)) {
+					d = denySensitive(Resolve(s.Root, wd.dir, a))
 					return false
 				}
 			}
 			for _, p := range writeTargets(args) {
-				if d = decideWrite(s, Resolve(s.Root, s.Root, p), ""); !d.Allow {
+				if !write(p) {
 					return false
 				}
 			}
@@ -69,6 +83,54 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 		return true
 	})
 	return d
+}
+
+// cwd 是解析命令时的当前目录：dir 为绝对路径；unknown 表示之后的相对路径无法静态判定。
+type cwd struct {
+	dir     string
+	unknown bool
+}
+
+// cd 返回执行 cd 之后的当前目录。只有顺序执行（; 与 &&）的顶层 cd 且目标是字面量时跟随；
+// 子 shell、管道、命令替换、|| 中的 cd，以及 cd -、无参数的 cd、含变量的目标，都使之后的相对路径无法判定。
+func (c cwd) cd(call *syntax.CallExpr, topLevel bool) cwd {
+	if !topLevel || len(call.Args) != 2 {
+		return cwd{c.dir, true}
+	}
+	target, ok := literal(call.Args[1])
+	if !ok || target == "-" || strings.HasPrefix(target, "~") {
+		return cwd{c.dir, true}
+	}
+	if !filepath.IsAbs(target) {
+		target = filepath.Join(c.dir, target)
+	}
+	return cwd{filepath.Clean(target), c.unknown && !filepath.IsAbs(call.Args[1].Lit())}
+}
+
+// topLevelCds 返回顺序执行的顶层语句中的 cd 调用：语句列表与 && 链上、不在后台运行、没有重定向。
+func topLevelCds(f *syntax.File) map[*syntax.CallExpr]bool {
+	out := map[*syntax.CallExpr]bool{}
+	var visit func(st *syntax.Stmt)
+	visit = func(st *syntax.Stmt) {
+		if st == nil || st.Background || st.Negated || len(st.Redirs) > 0 {
+			return
+		}
+		switch c := st.Cmd.(type) {
+		case *syntax.BinaryCmd:
+			if c.Op == syntax.AndStmt {
+				visit(c.X)
+				visit(c.Y)
+			}
+		case *syntax.CallExpr:
+			if len(c.Args) > 0 && c.Args[0].Lit() == "cd" {
+				out[c] = true
+			}
+		}
+	}
+	for _, st := range f.Stmts {
+		visit(st)
+	}
+	return out
 }
 
 // literal 返回只由字面量组成的词；含变量、命令替换、通配符时 ok 为 false。

@@ -140,7 +140,7 @@ func dangerous(s *workspace.Snapshot, cmd string) string {
 }
 
 // recursiveRemoveOutside 判断 rm 递归删除仓库外路径或无法静态判定的路径。
-func recursiveRemoveOutside(root string, call *syntax.CallExpr) (string, bool) {
+func recursiveRemoveOutside(root string, wd cwd, call *syntax.CallExpr) (string, bool) {
 	args := words(call.Args)
 	if len(args) == 0 || filepath.Base(args[0]) != "rm" {
 		return "", false
@@ -162,14 +162,19 @@ func recursiveRemoveOutside(root string, call *syntax.CallExpr) (string, bool) {
 			if lit == "" {
 				return "无法静态判定的路径", true
 			}
-			if r := Resolve(root, root, path.Dir(lit)); r == ".." || strings.HasPrefix(r, "../") {
+			if !path.IsAbs(lit) && wd.unknown {
+				return "无法静态判定的目录中的 " + lit, true
+			}
+			if r := Resolve(root, wd.dir, path.Dir(lit)); r == ".." || strings.HasPrefix(r, "../") {
 				return lit, true
 			}
 		case strings.HasPrefix(a, "-"):
 		case strings.HasPrefix(a, "~"):
 			return a, true
+		case !path.IsAbs(a) && wd.unknown:
+			return "无法静态判定的目录中的 " + a, true
 		default:
-			if r := Resolve(root, root, a); r == ".." || strings.HasPrefix(r, "../") || r == "." {
+			if r := Resolve(root, wd.dir, a); r == ".." || strings.HasPrefix(r, "../") || r == "." {
 				return a, true
 			}
 		}

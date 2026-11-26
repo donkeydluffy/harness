@@ -381,3 +381,42 @@ func reportKind(tc testreport.TestCase, tests []staticTest) (staticTest, bool) {
 	}
 	return staticTest{}, false
 }
+
+// sourceComment 是源码中的一行注释。
+type sourceComment struct {
+	File, Text string
+	Line       int
+}
+
+// commentLines 按行返回全部源码文件的注释；块注释拆成多行，行号逐行递增。
+func commentLines(s *workspace.Snapshot) []sourceComment {
+	var out []sourceComment
+	for _, f := range s.Sources {
+		src, err := f.Content()
+		if err != nil {
+			continue
+		}
+		for _, c := range f.Lang.Comments(src) {
+			for i, l := range strings.Split(c.Text, "\n") {
+				out = append(out, sourceComment{File: f.Path, Text: l, Line: c.Line + i})
+			}
+		}
+	}
+	return out
+}
+
+var entityRefRe = regexp.MustCompile(`\b(DEBT|T)-(\d+)\b`)
+
+// entityRefs 返回文本中引用的 DEBT 与 T 实体，编号按数值归一（DEBT-2 与 DEBT-002 相同）。
+func entityRefs(s *workspace.Snapshot, text string) []*model.Entity {
+	var out []*model.Entity
+	for _, m := range entityRefRe.FindAllStringSubmatch(text, -1) {
+		n, _ := strconv.Atoi(m[2])
+		for _, e := range s.Project.ByKind[m[1]] {
+			if num, err := strconv.Atoi(strings.TrimPrefix(e.ID, m[1]+"-")); err == nil && num == n {
+				out = append(out, e)
+			}
+		}
+	}
+	return out
+}

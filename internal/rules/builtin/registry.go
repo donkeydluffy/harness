@@ -29,5 +29,8 @@ func Rules() []engine.Rule {
 		adr03{},
 		test01{},
 		test02{},
+		debt01{},
+		debt02{},
+		debt03{},
 	}
 }

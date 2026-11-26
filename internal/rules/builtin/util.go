@@ -288,7 +288,11 @@ func changeSets(s *workspace.Snapshot) ([]changeSet, *engine.Violation) {
 		if len(files) == 0 {
 			return nil, nil
 		}
-		return []changeSet{{Name: "暂存区", Files: files, Before: show("HEAD"), After: show("")}}, nil
+		cs := changeSet{Name: "暂存区", Files: files, Before: show("HEAD"), After: show("")}
+		if s.Message != "" {
+			cs.Commit = &vcs.Commit{Message: s.Message, Trailers: vcs.ParseTrailers(s.Message)}
+		}
+		return []changeSet{cs}, nil
 	}
 	commits, err := s.Repo.Commits(s.CommitRange)
 	if err != nil {
@@ -528,4 +532,32 @@ func scopeOwners(s *workspace.Snapshot, p string) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// generatedFiles 是 harness 命令写入项目的生成文件（TERM-026），提交范围与行数检查豁免。
+var generatedFiles = []string{"harness.json", "harness.lock", ".claude/settings.json", "CODEOWNERS", ".github/CODEOWNERS", ".github/workflows/harness.yml"}
+
+// exemptFile 判断文件是否为产物文件（docs/ 下）或生成文件。
+func exemptFile(p string) bool {
+	return strings.HasPrefix(p, "docs/") || contains(generatedFiles, p)
+}
+
+// commitTask 返回提交的 Task 尾注对应的任务；尾注缺失、重复或任务不存在时返回 nil。
+func commitTask(s *workspace.Snapshot, cs changeSet) *model.Entity {
+	if cs.Commit == nil || len(cs.Commit.Trailers["Task"]) != 1 {
+		return nil
+	}
+	for _, e := range entityRefs(s, cs.Commit.Trailers["Task"][0]) { // T-3 与 T-003 相同
+		if e.Kind == "T" {
+			return e
+		}
+	}
+	return nil
+}
+
+func commitViolation(cs changeSet, file, format string, args ...any) engine.Violation {
+	if file == "" {
+		file = "."
+	}
+	return engine.Violation{File: file, Line: 1, Msg: cs.Name + "：" + fmt.Sprintf(format, args...)}
 }

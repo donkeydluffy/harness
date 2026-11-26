@@ -1,6 +1,6 @@
 # 调用流程
 
-- Status: Approved
+- Status: Draft
 
 每个流程的 Steps 按调用顺序列出"调用方模块 -> 被调用接口"（格式见 `docs/architecture/formats.md` 第 4 节）。
 
@@ -50,7 +50,7 @@ cli 取当前版本放入 InitOptions；scaffold 按语言配置包生成配置�
 
 ### FLOW-08 人工批准
 - Covers: FR-037, FR-047, FR-054
-- Steps: MOD-01 -> IF-024, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-016, MOD-02 -> IF-005, MOD-02 -> IF-006
+- Steps: MOD-01 -> IF-024, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-016, MOD-02 -> IF-005, MOD-02 -> IF-006
 
 app 先确认交互式终端，列出范围内待批准的单位与差异，运行批准前检查（单位所在文件的结构规则、上游已批准、登记在该单位类型上的自定义规则），人确认后写入按单位的批准记录。Release 1 的 phase next 随 MOD-10 删除。
 
@@ -68,7 +68,7 @@ Release 2：锁文件为 Release 1 格式时经 IF-029 Migrate 迁移为按单�
 
 ### FLOW-11 外部工具报告
 - Covers: FR-014, FR-021, FR-055
-- Steps: MOD-01 -> IF-038, MOD-02 -> IF-009, MOD-02 -> IF-030, MOD-02 -> IF-031, MOD-02 -> IF-032, MOD-16 -> IF-034, MOD-16 -> IF-035, MOD-16 -> IF-033, MOD-02 -> IF-012
+- Steps: MOD-01 -> IF-038, MOD-02 -> IF-009, MOD-02 -> IF-030, MOD-02 -> IF-031, MOD-02 -> IF-032, MOD-16 -> IF-034, MOD-16 -> IF-035, MOD-16 -> IF-033, MOD-02 -> IF-014, MOD-02 -> IF-012
 
 `harness check lint|unit|smoke`：app 按 kind 调用 toolrun；toolrun 按语言配置包（或项目覆盖）运行工具、Go 用 IF-035 采集覆盖率，写报告；app 重新加载快照，运行同名区域的规则。
 

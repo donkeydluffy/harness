@@ -387,3 +387,167 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 - Depends: T-037
 
 适配器在 Request 中填写 Root（从 hook 输入的 cwd 向上查找的项目根）与 Cwd；`harness gate` 以 Root 加载快照、保存命令前快照与会话状态，Root 为空时退回进程当前目录；命令中的相对路径从 Cwd 开始解析。回归测试：shell 停在子目录时，写 `../harness.lock` 被拒绝，命令前快照建在仓库根的 `.harness/` 下。
+
+## Release 2
+
+各任务实现新接口时，在实现处加 `// harness:IF-n` 锚点（formats.md 第 8 节），并为接口写测试名含其编号的单元测试（如 `TestUnits_IF_027`）；任务涉及已有模块时，顺带补齐这些模块中接口的锚点与单元测试。T-048、T-049 的规则依赖这些锚点与测试。
+
+### T-040 版本信息
+- Status: Todo
+- Covers: FR-049
+- Design: MOD-18, IF-037, FLOW-07
+- Flow: FLOW-07
+- Scope: internal/version/**, internal/cli/**, .goreleaser.yaml, internal/scaffold/*_test.go, internal/app/version_integration_test.go
+- Depends: T-039
+
+`harness version` 与 `--version` 输出版本；发布构建经 -ldflags 注入版本号，`go install` 构建取模块版本或提交哈希（含 -dirty）。顺带为 IF-020、IF-021 补锚点与单元测试。
+
+### T-041 按单位批准
+- Status: Todo
+- Covers: AC-047-1, AC-047-2, AC-047-3
+- Design: MOD-15, IF-027, IF-028, IF-029, IF-006, IF-011, IF-024, FLOW-08
+- Flow: FLOW-08
+- Scope: internal/approval/**, internal/lock/**, internal/rules/engine/**, internal/rules/builtin/approve_01.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/approve.01/**, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/registry.go, internal/app/**, internal/cli/**
+- Depends: T-040
+
+批准单位与哈希、批准链与状态（IF-027、IF-028），锁文件第 2 版的 `units`，`harness approve <路径、prd 或单位编号>` 显示差异并按单位记录。engine 的告警（Violation.Warn，不影响退出码）在此加入；approve.01 在锁文件为第 2 版时按单位列出未批准与失效项（告警），task.07 在第 2 版时按批准链判定。
+
+### T-042 锁文件迁移
+- Status: Todo
+- Covers: AC-047-6
+- Design: IF-029, IF-006, IF-023, FLOW-10
+- Flow: FLOW-10
+- Scope: internal/approval/**, internal/lock/**, internal/app/**
+- Depends: T-041
+
+`harness lock` 把 Release 1 的按文件批准迁移为按单位批准，写审计记录，删除 `phase` 字段。在本仓库执行迁移后，任务需要按单位批准才能开工。
+
+### T-043 门禁按批准链判定
+- Status: Todo
+- Covers: AC-047-4, AC-047-5, AC-048-2, AC-048-3
+- Design: IF-017, IF-028, IF-025, FLOW-02, FLOW-06
+- Flow: FLOW-02
+- Scope: internal/gate/**, internal/adapter/**, internal/approval/**, internal/phase/**, internal/app/**
+- Depends: T-042
+
+锁文件为第 2 版时：`docs/` 任何时候可写（去掉 gate.artifact），源码写入检查 InProgress 任务的批准链，会话开始注入批准状态摘要与建议的 skill。顺带为 IF-015 ~ IF-019、IF-025 补锚点与单元测试。
+
+### T-044 声明式自定义规则
+- Status: Todo
+- Covers: FR-054
+- Design: MOD-17, IF-036, IF-013, IF-024, FLOW-08
+- Flow: FLOW-08
+- Scope: internal/rules/custom/**, internal/workspace/**, internal/lock/**, internal/app/**
+- Depends: T-043
+
+按 `harness.json` 的 rules 构造 required、enum、ref、forbid 四类规则；校验编号前缀、样本与批准单位类型；样本目录纳入锁文件；`approveFor` 的规则在批准该类单位时运行。
+
+### T-045 外部工具运行器与 lint
+- Status: Todo
+- Covers: AC-014-2, AC-014-3, AC-014-4, AC-014-5
+- Design: MOD-16, IF-030, IF-031, IF-032, IF-033, IF-034, IF-038, FLOW-11
+- Flow: FLOW-11
+- Scope: internal/toolrun/**, internal/lang/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/lint_01.go, internal/rules/builtin/cfg_03.go, internal/rules/builtin/testdata/lint.01/**, internal/rules/builtin/testdata/cfg.03/**, internal/rules/builtin/registry.go
+- Depends: T-044
+
+五种语言的语言配置包（IF-034）；toolrun 的 Lint、Unit、Smoke 运行器与报告读写；`harness check lint|unit|smoke`；规则 lint.01、cfg.03。Unit 的覆盖率采集在 T-049 接入 Go。
+
+### T-046 启动与冒烟测试命令声明
+- Status: Todo
+- Covers: AC-055-1
+- Design: IF-010, IF-014, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/workspace/**, internal/rules/builtin/smoke_01.go, internal/rules/builtin/testdata/smoke.01/**, internal/rules/builtin/registry.go, internal/app/**
+- Depends: T-045
+
+项目配置的 `start` 字段（`none: <原因>`）与规则 smoke.01；本仓库的 `harness.json` 补上 start（由人修改并登记 CHG）。
+
+### T-047 init 与 CI：语言配置包、工具配置文件、固定版本
+- Status: Todo
+- Covers: AC-014-1, AC-014-6, AC-014-7, AC-055-2, FR-051
+- Design: IF-020, IF-021, IF-026, IF-034, IF-037, FLOW-07
+- Flow: FLOW-07
+- Scope: internal/scaffold/**, internal/lang/**, internal/app/**, internal/cli/**
+- Depends: T-046
+
+init 改用 IF-034 的语言配置包，缺失时生成工具配置文件；CI 模板依次运行 lint、unit、smoke、check、check commits；用户项目下载固定版本的发布归档并校验，没有发布版本号时拒绝（`--ci-version`）；cfg.02 按 CI 固定版本比对并提示升级。本仓库的 CI 配置用 `harness init` 重新生成。
+
+### T-048 Go 接口锚点与签名快照
+- Status: Todo
+- Covers: FR-052
+- Design: IF-035, IF-039, IF-014, FLOW-01, FLOW-12
+- Flow: FLOW-01
+- Scope: internal/lang/**, internal/app/**, internal/cli/**, internal/workspace/**, internal/lock/**, internal/model/**, internal/rules/engine/**, internal/rules/builtin/**, internal/rules/custom/**, internal/vcs/**, internal/testreport/**, internal/approval/**
+- Depends: T-047
+
+Go Analyzer 的 Imports、Anchors、Resolve；`harness snapshot` 写 `docs/architecture/interfaces.txt`；规则 if.01 ~ if.04；锁文件的 `snapshot:IF-n`。补齐 FLOW-01 各模块的锚点。详细设计与代码签名不一致的接口，改设计或改代码，改设计时需人重新批准。
+
+### T-049 单元测试追溯
+- Status: Todo
+- Covers: FR-021
+- Design: IF-031, IF-033, IF-035, IF-014, FLOW-11
+- Flow: FLOW-11
+- Scope: internal/lang/**, internal/toolrun/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/unit_0*.go, internal/rules/builtin/testdata/unit.0*/**, internal/rules/builtin/registry.go
+- Depends: T-048
+
+Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆盖率；规则 unit.01 ~ unit.03。补齐 IF-004、IF-022 ~ IF-026 的单元测试；模块覆盖率低于阈值时补测试。
+
+### T-050 Go 模块依赖与封装
+- Status: Todo
+- Covers: FR-053, FR-035
+- Design: IF-035, IF-014, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/lang/**, internal/rules/builtin/deps_0*.go, internal/rules/builtin/testdata/deps.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**
+- Depends: T-049
+
+规则 deps.01 ~ deps.04：跨模块 import 须在 Depends 中且指向 Public，sourcePaths 内的源文件须有归属，Depends 中的模块须被使用。
+
+### T-051 机械改动任务
+- Status: Todo
+- Covers: FR-050
+- Design: IF-035, IF-014, FLOW-09
+- Flow: FLOW-09
+- Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**
+- Depends: T-050
+
+`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。
+
+### T-052 文档引用检查
+- Status: Todo
+- Covers: FR-030
+- Design: IF-012, IF-014, IF-022, IF-009, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/doc_0*.go, internal/rules/builtin/testdata/doc.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/workspace/**, internal/app/**, internal/cli/**
+- Depends: T-051
+
+规则 doc.02 ~ doc.05：受检 Markdown 行内代码中的路径、`harness` 子命令、编号引用，以及详细设计可能过期的告警；cli 把子命令名传入 CheckOptions。修正本仓库文档中被报告的过期引用。
+
+### T-053 抑制注释登记
+- Status: Todo
+- Covers: FR-042
+- Design: IF-003, IF-014, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/supp_01.go, internal/rules/builtin/testdata/supp.01/**, internal/rules/builtin/registry.go, internal/app/**
+- Depends: T-052
+
+规则 supp.01：抑制注释同一行须引用 Open 的 DEBT。
+
+### T-054 删除阶段（门禁、命令）
+- Status: Todo
+- Covers: AC-048-1
+- Design: IF-017, IF-024, FLOW-02
+- Flow: FLOW-02
+- Scope: internal/gate/**, internal/app/**, internal/cli/**, internal/phase/**
+- Depends: T-053
+
+去掉门禁、app、cli 中的阶段逻辑与 Release 1 的按文件批准分支；`harness phase` 提示已删除。
+
+### T-055 删除阶段模块，Release 2 生效
+- Status: Todo
+- Covers: FR-048
+- Design: MOD-10, EXT-04, IF-020, FLOW-07
+- Flow: FLOW-07
+- Scope: internal/phase/**, internal/scaffold/**, internal/app/**, internal/cli/**
+- Depends: T-054
+
+删除 `internal/phase/`、scaffold 中的阶段用法与 skill 中的阶段说明；设计中 MOD-10、EXT-04 改为 Removed，去掉对 MOD-10 的依赖与 IF-015、IF-016 的流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。

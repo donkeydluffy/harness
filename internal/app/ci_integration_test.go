@@ -12,7 +12,7 @@ import (
 func initGit(t *testing.T) string {
 	t.Helper()
 	dir := gitRepo(t, map[string]string{"README.md": "x\n"})
-	if r := runHarness(t, dir, "init", "--lang", "go"); r.Code != 0 {
+	if r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0"); r.Code != 0 {
 		t.Fatalf("init：%s%s", r.Stdout, r.Stderr)
 	}
 	return dir
@@ -67,7 +67,7 @@ func TestCheck_AC_013_3_E1(t *testing.T) {
 
 func TestInit_AC_013_3_B1(t *testing.T) {
 	dir := t.TempDir()
-	r := runHarness(t, dir, "init", "--lang", "go")
+	r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0")
 	if r.Code != 0 || !strings.Contains(r.Stdout, "跳过 git hook 安装") {
 		t.Fatalf("%d %s", r.Code, r.Stdout)
 	}
@@ -87,7 +87,7 @@ func TestInit_AC_043_1_N1(t *testing.T) {
 
 func TestInit_AC_043_1_N2(t *testing.T) {
 	dir := t.TempDir()
-	if r := runHarness(t, dir, "init", "--lang", "go", "--ci", "gitlab"); r.Code != 0 {
+	if r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0", "--ci", "gitlab"); r.Code != 0 {
 		t.Fatal(r.Stderr)
 	}
 	b, err := os.ReadFile(filepath.Join(dir, ".gitlab-ci.yml"))
@@ -102,7 +102,7 @@ func TestInit_AC_043_1_N2(t *testing.T) {
 
 func TestInit_AC_043_1_E1(t *testing.T) {
 	dir := t.TempDir()
-	r := runHarness(t, dir, "init", "--lang", "go", "--ci", "jenkins")
+	r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0", "--ci", "jenkins")
 	if r.Code == 0 || !strings.Contains(r.Stderr, "github, gitlab") || len(listFiles(t, dir)) != 0 {
 		t.Fatalf("%d %s", r.Code, r.Stderr)
 	}
@@ -146,7 +146,7 @@ func TestInit_CIRunsTests(t *testing.T) {
 		t.Fatalf("Python 没有通用测试命令，应只留注释：\n%s", s)
 	}
 	dir := t.TempDir()
-	if r := runHarness(t, dir, "init", "--lang", "go", "--ci", "gitlab"); r.Code != 0 {
+	if r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0", "--ci", "gitlab"); r.Code != 0 {
 		t.Fatal(r.Stderr)
 	}
 	gl, _ := os.ReadFile(filepath.Join(dir, ".gitlab-ci.yml"))
@@ -159,7 +159,7 @@ func TestInit_CIRunsTests(t *testing.T) {
 func TestInit_CISelfHostedBuildsFromSource(t *testing.T) {
 	self := t.TempDir()
 	os.WriteFile(filepath.Join(self, "go.mod"), []byte("module github.com/donkeydluffy/harness\n\ngo 1.27\n"), 0o644)
-	if r := runHarness(t, self, "init", "--lang", "go"); r.Code != 0 {
+	if r := runHarness(t, self, "init", "--lang", "go", "--ci-version", "0.2.0"); r.Code != 0 {
 		t.Fatal(r.Stderr)
 	}
 	b, _ := os.ReadFile(filepath.Join(self, ".github/workflows/harness.yml"))
@@ -169,11 +169,11 @@ func TestInit_CISelfHostedBuildsFromSource(t *testing.T) {
 	wantPass(t, checkJSON(t, self, "cfg.02"))
 	other := t.TempDir()
 	os.WriteFile(filepath.Join(other, "go.mod"), []byte("module example.com/app\n"), 0o644)
-	if r := runHarness(t, other, "init", "--lang", "go"); r.Code != 0 {
+	if r := runHarness(t, other, "init", "--lang", "go", "--ci-version", "0.2.0"); r.Code != 0 {
 		t.Fatal(r.Stderr)
 	}
 	b, _ = os.ReadFile(filepath.Join(other, ".github/workflows/harness.yml"))
-	if !strings.Contains(string(b), "run: go install github.com/donkeydluffy/harness/cmd/harness@latest\n") {
+	if !strings.Contains(string(b), "releases/download/v0.2.0/harness_0.2.0_linux_amd64.tar.gz") || strings.Contains(string(b), "go install") {
 		t.Fatalf("其他项目应安装发布版本：\n%s", b)
 	}
 	wantPass(t, checkJSON(t, other, "cfg.02"))

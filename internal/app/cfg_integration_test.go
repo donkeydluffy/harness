@@ -22,7 +22,7 @@ func addGenerated(t *testing.T, files map[string]string) {
 	// CI 配置的测试步骤随 harness.json 的 languages 变化，按夹具声明的语言生成。
 	var cfg struct{ Languages []string }
 	json.Unmarshal([]byte(files["harness.json"]), &cfg)
-	ci, err := scaffold.CIConfig("github", cfg.Languages)
+	ci, err := scaffold.CIConfig("github", cfg.Languages, "0.2.0")
 	if err != nil {
 		t.Fatal(err)
 	}

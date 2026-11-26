@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"testing"
@@ -30,7 +31,7 @@ func listFiles(t *testing.T, dir string) []string {
 func initDir(t *testing.T, langs string) string {
 	t.Helper()
 	dir := t.TempDir()
-	if r := runHarness(t, dir, "init", "--lang", langs); r.Code != 0 {
+	if r := runHarness(t, dir, "init", "--lang", langs, "--ci-version", "0.2.0"); r.Code != 0 {
 		t.Fatalf("init：%d %s%s", r.Code, r.Stdout, r.Stderr)
 	}
 	return dir
@@ -64,7 +65,7 @@ func TestInit_AC_001_1_B1(t *testing.T) {
 
 func TestInit_AC_001_1_E1(t *testing.T) {
 	dir := t.TempDir()
-	r := runHarness(t, dir, "init", "--lang", "go,rust")
+	r := runHarness(t, dir, "init", "--lang", "go,rust", "--ci-version", "0.2.0")
 	if r.Code == 0 || !strings.Contains(r.Stderr, "rust") || !strings.Contains(r.Stderr, "cpp, go, java, python, typescript") {
 		t.Fatalf("%d %s", r.Code, r.Stderr)
 	}
@@ -79,7 +80,7 @@ func TestInit_AC_001_2_N1(t *testing.T) {
 	dir := initDir(t, "go")
 	p := filepath.Join(dir, "docs/PRD.md")
 	os.WriteFile(p, []byte("# 我的 PRD\n"), 0o644)
-	r := runHarness(t, dir, "init", "--lang", "go")
+	r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0")
 	if b, _ := os.ReadFile(p); string(b) != "# 我的 PRD\n" || r.Code != 0 || !strings.Contains(r.Stdout, "跳过 docs/PRD.md") {
 		t.Fatalf("%d %s 内容：%s", r.Code, r.Stdout, b)
 	}
@@ -88,7 +89,7 @@ func TestInit_AC_001_2_N1(t *testing.T) {
 func TestInit_AC_001_2_B1(t *testing.T) {
 	dir := initDir(t, "go")
 	os.Remove(filepath.Join(dir, "docs/tasks.md"))
-	r := runHarness(t, dir, "init", "--lang", "go")
+	r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0")
 	if r.Code != 0 || !strings.HasPrefix(r.Stdout, "写入 docs/tasks.md\n") || !strings.Contains(r.Stdout, "写入 1 个文件，跳过 0 个") {
 		t.Fatalf("应只补回被删除的文件：%s", r.Stdout)
 	}
@@ -101,7 +102,7 @@ func TestInit_AC_001_2_E1(t *testing.T) {
 	dir := t.TempDir()
 	os.Chmod(dir, 0o555)
 	defer os.Chmod(dir, 0o755)
-	r := runHarness(t, dir, "init", "--lang", "go")
+	r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0")
 	if r.Code == 0 || !strings.Contains(r.Stderr, dir) {
 		t.Fatalf("%d %s", r.Code, r.Stderr)
 	}
@@ -115,7 +116,7 @@ func TestInit_AC_N002_2_N1(t *testing.T) {
 	b, _ := os.ReadFile(harnessBin)
 	os.WriteFile(bin, b, 0o755)
 	dir := t.TempDir()
-	cmd := exec.Command(bin, "init", "--lang", "go")
+	cmd := exec.Command(bin, "init", "--lang", "go", "--ci-version", "0.2.0")
 	cmd.Dir, cmd.Env = dir, []string{"HOME=" + t.TempDir()}
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("%v %s", err, out)
@@ -137,6 +138,9 @@ func TestInit_AC_N005_1_N1(t *testing.T) {
 	for _, f := range listFiles(t, initDir(t, "go,typescript,python,java,cpp")) {
 		if strings.HasPrefix(f, ".harness/") {
 			continue // 门禁运行时目录（被忽略、不提交），不是产物
+		}
+		if slices.Contains([]string{"ruff.toml", ".prettierrc", "eslint.config.js", ".clang-format"}, f) {
+			continue // 工具配置文件归项目所有，不是产物（AC-014-6）
 		}
 		switch filepath.Ext(f) {
 		case ".md", ".yaml", ".yml", ".json": // .yml 同为 YAML；GitHub Actions 与 GitLab CI 的约定文件名用 .yml
@@ -201,7 +205,7 @@ func TestInit_IgnoresGateRuntimeDirs(t *testing.T) {
 	}
 	// 已有项目重新运行 init 补上该文件。
 	os.Remove(filepath.Join(dir, ".harness/.gitignore"))
-	if r := runHarness(t, dir, "init", "--lang", "go"); r.Code != 0 || !strings.Contains(r.Stdout, "写入 .harness/.gitignore") {
+	if r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0"); r.Code != 0 || !strings.Contains(r.Stdout, "写入 .harness/.gitignore") {
 		t.Fatalf("%d %s", r.Code, r.Stdout)
 	}
 }

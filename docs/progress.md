@@ -152,3 +152,9 @@
 ### 2026-11-26 T-025
 - 结论：Done。样例仓库 5000 个 Go 源文件、200 个任务：PreToolUse 门禁 40 次（含进程启动）p95 约 15ms；全量检查约 0.4s，并用最后一个源文件里不合规的 TODO 确认全部源文件被扫描；50020 行 PRD 的 `harness check prd` 约 55ms。AC-N003-1/E1 用构造的耗时序列验证 p95 计算与超阈值判失败。4 个用例（NFR-003）通过（本机 Apple Silicon，数字随机器变化，阈值留有一个数量级以上余量）。
 - 遗留：无。
+
+### 2026-11-26 T-026
+- 结论：Done。用户在终端安装 harness（`go install ./cmd/harness`）、重新批准 PRD、formats.md、MOD-10，并把阶段推进到 implementation；随后对本仓库执行 `harness init --lang go`，写入 harness.json、`.claude/settings.json`、六个 skill、GitHub Actions 配置、`docs/lang/go.md` 与 git hook（已有产物全部跳过），CHG-016 说明了 harness.json 的新增，`harness lock` 通过。之后的两次提交都经过本地 commit-msg 与 pre-commit hook。5 个测试（FR-017，另含生成文件豁免）通过；AC-017-1/N1 对仓库根目录运行除依赖测试报告与暂存区之外的全部规则，因为测试运行时报告文件正在被重写。
+- 设计澄清（用户确认，第 15 轮）：hook 调用 PATH 上的 `harness`；`harness init` 写入的 skill 纳入生成文件（TERM-026），`.gitlab-ci.yml` 一并加入豁免。
+- 更正：T-025 标为 Done 时性能测试的一条注释含未登记的 TODO 字样，task.08 随即报出，已在 4ce2ff8 修正。
+- 遗留：门禁 hook 在 Claude Code 重新加载配置后生效；CI 配置的安装步骤依赖 DEBT-001 的模块路径，T-027 处理。

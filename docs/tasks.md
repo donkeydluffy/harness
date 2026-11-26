@@ -255,7 +255,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 生成 5000 个源文件、200 个任务的样例仓库；PreToolUse 门禁 p95 < 200ms，全量检查 < 10s，50000 行 PRD 的 `harness check prd` < 2s。
 
 ### T-026 自举：本仓库启用 harness
-- Status: InProgress
+- Status: Done
 - Covers: FR-017
 - Design: FLOW-01, FLOW-07
 - Scope: internal/rules/builtin/util.go, internal/app/bootstrap_integration_test.go, internal/app/testdata/bootstrap/**
@@ -264,7 +264,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 对本仓库执行 `harness init`，提交生成文件与锁文件，启用 hook 与 CI；集成测试对仓库根目录运行 `harness check` 并校验 hook 配置存在。
 
 ### T-027 跨平台构建与发布
-- Status: Todo
+- Status: InProgress
 - Covers: AC-N002-1, AC-N002-3
 - Design: MOD-01, ADR-001
 - Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml

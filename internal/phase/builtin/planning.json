@@ -1,0 +1,22 @@
+{
+  "name": "planning",
+  "entry": [],
+  "exit": [
+    "task.01",
+    "task.02",
+    "task.03",
+    "task.04",
+    "task.05",
+    "task.06"
+  ],
+  "writable": [
+    "docs/PRD.md",
+    "docs/prd/**",
+    "docs/research/**",
+    "docs/architecture/**",
+    "docs/adr/**",
+    "docs/tasks.md",
+    "docs/debt.md"
+  ],
+  "skill": "plan"
+}

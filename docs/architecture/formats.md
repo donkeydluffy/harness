@@ -1,6 +1,6 @@
 # 产物格式规范
 
-- Status: Approved
+- Status: Draft
 - Updated: 2026-11-26
 - Relates: ADR-002, MOD-03
 
@@ -104,6 +104,13 @@
 ```
 
 整个文件的规范化哈希记入锁文件（规则 `cfg.01`）。
+
+`phases` 中每项是以下两种之一（规则 `phase.01` 校验）：
+
+- 新增阶段：`{"name": "release", "after": "implementation", "entry": [], "exit": ["prd.*"], "writable": ["docs/release/**"], "skill": "release"}`。`name` 不得与已有阶段同名；`entry`、`exit`、`writable`、`skill` 必须出现，`entry` 可以为空列表。
+- 修改已有阶段：`{"name": "architecture", "addExit": ["x.lint"], "removeExit": ["adr.*"], "adr": "ADR-009"}`。只允许 `addEntry`、`addExit`、`removeEntry`、`removeExit`；有移除项时 `adr` 必须引用存在的 ADR。
+
+规则引用写规则编号、`区域.*`（该区域全部规则）或 `*`（全部规则）。内置阶段文件 `internal/phase/builtin/<阶段>.json` 使用与"新增阶段"相同的字段（不含 `after`），顺序由 `order.json` 决定。当前阶段记录在 `harness.lock` 的 `phase` 字段，为空时是第一个阶段。
 
 ## 7. 锁文件 `harness.lock`
 

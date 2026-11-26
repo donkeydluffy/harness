@@ -1,6 +1,6 @@
 # MOD-10 phase 详细设计
 
-- Status: Approved
+- Status: Draft
 
 ## 接口
 
@@ -21,6 +21,10 @@ type Phase struct {
 }
 // Load 合并内置阶段（internal/phase/builtin/*.json，顺序见 order.json）与 harness.json 的 phases。
 func Load(s *workspace.Snapshot) ([]Phase, error)
+// Selector 把规则引用（编号、区域.*、*）转换为引擎选择器；列表为空时 ok 为 false。
+func Selector(refs []string) (sel engine.Selector, ok bool)
+// Rule 返回本模块注册的规则 phase.01，由 app 启动时注册。
+func Rule() engine.Rule
 ```
 
 ### IF-016 Current

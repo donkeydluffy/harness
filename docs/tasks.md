@@ -140,14 +140,14 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 `harness approve <产物>` 要求交互式终端并确认，写入批准人、时间、哈希；approve.01 内容与批准哈希不一致时视为 Draft。完成后用户在终端补录 PRD 与架构的批准。
 
 ### T-014 流程阶段定义与推进
-- Status: Todo
-- Covers: AC-045-1, AC-045-2, AC-045-3
+- Status: InProgress
+- Covers: AC-045-1, AC-045-2
 - Design: FLOW-08, IF-015, IF-016, IF-024, ADR-005
 - Flow: FLOW-08
 - Scope: internal/phase/**, internal/lock/**, internal/cli/**, internal/app/phase.go, internal/app/app.go, internal/app/phase_integration_test.go, internal/app/testdata/phase/**
 - Depends: T-013
 
-内置四个阶段 JSON、项目配置合并、phase.01（由 phase 模块注册）、`harness phase next`（交互式终端、退出与进入规则通过）。phase 附 `TestExample_EXT_04` 示例阶段测试。
+内置四个阶段 JSON、项目配置合并、phase.01（由 phase 模块注册）、`harness phase list|next`（交互式终端、退出与进入规则通过）。AC-045-3 的 `phase next` 在本任务实现并写测试，但其 E3（门禁拒绝代理改阶段）依赖门禁，整条 AC 由 T-016 关联。phase 附 `TestExample_EXT_04` 示例阶段测试。
 
 ### T-015 阶段前置条件与任务完成定义
 - Status: Todo
@@ -161,7 +161,7 @@ task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联
 
 ### T-016 写操作门禁与 Claude Code 适配器
 - Status: Todo
-- Covers: AC-012-1, AC-012-2, AC-012-5, AC-037-2, AC-045-4
+- Covers: AC-012-1, AC-012-2, AC-012-5, AC-037-2, AC-045-3, AC-045-4
 - Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019, IF-025, ADR-003, ADR-006
 - Flow: FLOW-02
 - Scope: go.mod, go.sum, internal/gate/**, internal/adapter/**, internal/cli/**, internal/app/gate.go, internal/app/gate_integration_test.go, internal/app/testdata/gate/**

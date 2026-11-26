@@ -1,0 +1,18 @@
+{
+  "name": "architecture",
+  "entry": [],
+  "exit": [
+    "arch.*",
+    "trace.*",
+    "adr.*",
+    "approve.01"
+  ],
+  "writable": [
+    "docs/PRD.md",
+    "docs/prd/**",
+    "docs/research/**",
+    "docs/architecture/**",
+    "docs/adr/**"
+  ],
+  "skill": "architect"
+}

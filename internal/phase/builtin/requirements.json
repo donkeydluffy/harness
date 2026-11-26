@@ -1,0 +1,15 @@
+{
+  "name": "requirements",
+  "entry": [],
+  "exit": [
+    "prd.*",
+    "term.01",
+    "approve.01"
+  ],
+  "writable": [
+    "docs/PRD.md",
+    "docs/prd/**",
+    "docs/research/**"
+  ],
+  "skill": "clarify"
+}

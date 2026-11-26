@@ -144,3 +144,13 @@ func (l *Lock) Approved(artifact, currentHash string) bool {
 	}
 	return false
 }
+
+// LastApproval 返回产物最近一次批准记录，没有时返回 nil。
+func (l *Lock) LastApproval(artifact string) *Approval {
+	for i := len(l.Approvals) - 1; i >= 0; i-- {
+		if l.Approvals[i].Artifact == artifact {
+			return &l.Approvals[i]
+		}
+	}
+	return nil
+}

@@ -130,11 +130,11 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 `harness check commits <范围>`；commit.02 豁免产物文件和生成文件。
 
 ### T-013 人工批准与批准有效性
-- Status: Todo
+- Status: InProgress
 - Covers: AC-037-1, AC-037-3
 - Design: FLOW-08, IF-005, IF-006, IF-024
 - Flow: FLOW-01
-- Scope: internal/cli/**, internal/app/approve.go, internal/lock/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/approve_01.go, internal/rules/builtin/testdata/approve.01/**, internal/app/approve_integration_test.go, internal/app/testdata/approve/**
+- Scope: internal/cli/**, internal/app/approve.go, internal/workspace/approval.go, internal/lock/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/approve_01.go, internal/rules/builtin/testdata/approve.01/**, internal/app/approve_integration_test.go, internal/app/testdata/approve/**
 - Depends: T-012
 
 `harness approve <产物>` 要求交互式终端并确认，写入批准人、时间、哈希；approve.01 内容与批准哈希不一致时视为 Draft。完成后用户在终端补录 PRD 与架构的批准。

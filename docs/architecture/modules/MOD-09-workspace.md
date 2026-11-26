@@ -27,6 +27,10 @@ type Snapshot struct {
 type LoadOptions struct{ WithTests, WithSources bool; CommitRange, Message string } // Message：即将形成的提交的信息，检查暂存区时使用
 
 func Load(root string, opt LoadOptions) (*Snapshot, error)
+// 批准（FR-037）：可批准的产物、批准覆盖的文档、批准哈希（不含文件头 Status 行）。
+func Approvable(rel string) bool
+func (s *Snapshot) ApprovalDocs(rel string) []*model.Doc
+func (s *Snapshot) ApprovalHash(rel string) string
 ```
 
 ### IF-010 Config

@@ -1,0 +1,39 @@
+# 发布配置（AC-N002-1、AC-N002-3）：打 v* tag 后由 .github/workflows/release.yml 运行。
+version: 2
+project_name: harness
+
+builds:
+  - main: ./cmd/harness
+    binary: harness
+    env: [CGO_ENABLED=0]
+    flags: [-trimpath]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+release:
+  draft: true # 校验通过后由工作流发布
+
+brews:
+  - name: harness
+    repository:
+      owner: donkeydluffy
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
+    homepage: https://github.com/donkeydluffy/harness
+    description: 用确定性规则约束 AI 编程流程的检查工具
+    install: |
+      bin.install "harness"
+    test: |
+      system "#{bin}/harness", "help"

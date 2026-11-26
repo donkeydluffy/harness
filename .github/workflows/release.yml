@@ -1,0 +1,59 @@
+# 打 v* tag 后发布（AC-N002-1、AC-N002-3）：交叉编译 6 个平台、生成校验和与 Homebrew formula，
+# 先发布为草稿，校验资产与 formula 版本通过后才公开；任一步失败则发布流程失败。
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go test ./...
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          version: v2.20.3
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+      - name: 下载草稿资产与 formula
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" -D assets
+          GH_TOKEN="$TAP_TOKEN" gh api -H "Accept: application/vnd.github.raw" \
+            repos/donkeydluffy/homebrew-tap/contents/Formula/harness.rb > harness.rb
+      - name: 校验资产
+        shell: bash
+        run: |
+          set -- assets "$GITHUB_REF_NAME" harness.rb
+          # verify-begin：参数 1 资产目录，2 tag，3 formula 文件
+          set -euo pipefail
+          dir=$1 tag=$2 formula=$3
+          n=0
+          for os in darwin linux windows; do
+            for arch in amd64 arm64; do
+              ext=tar.gz; [ "$os" = windows ] && ext=zip
+              f="$dir/harness_${tag#v}_${os}_${arch}.$ext"
+              [ -f "$f" ] || { echo "缺少 $os/$arch 的归档：$f"; exit 1; }
+              grep -q " $(basename "$f")\$" "$dir/checksums.txt" || { echo "checksums.txt 没有 $(basename "$f")"; exit 1; }
+              n=$((n+1))
+            done
+          done
+          (cd "$dir" && shasum -a 256 -c checksums.txt) || { echo "校验和与文件不一致"; exit 1; }
+          grep -q "version \"${tag#v}\"" "$formula" || { echo "formula 版本与 tag $tag 不一致"; exit 1; }
+          echo "$n 个平台的归档与校验和一致，formula 版本 ${tag#v}"
+          # verify-end
+      - name: 公开发布
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --draft=false

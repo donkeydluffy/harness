@@ -1,0 +1,172 @@
+package app_test
+
+import (
+	"bufio"
+	"encoding/json"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"testing"
+	"time"
+)
+
+// inTerminal 在伪终端中运行 harness（借助系统 script 命令），看到 prompt 后输入 answer。
+// 返回全部输出与退出码。没有 script 命令的平台跳过。
+func inTerminal(t *testing.T, dir, prompt, answer string, args ...string) (string, int) {
+	t.Helper()
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin", "freebsd":
+		cmd = exec.Command("script", append([]string{"-q", "/dev/null", harnessBin}, args...)...)
+	case "linux":
+		cmd = exec.Command("script", "-qec", harnessBin+" "+strings.Join(args, " "), "/dev/null")
+	default:
+		t.Skip("需要 script 命令提供伪终端")
+	}
+	if _, err := exec.LookPath("script"); err != nil {
+		t.Skip("需要 script 命令提供伪终端")
+	}
+	cmd.Dir = dir
+	in, _ := cmd.StdinPipe()
+	out, _ := cmd.StdoutPipe()
+	cmd.Stderr = cmd.Stdout
+	if err := cmd.Start(); err != nil {
+		t.Fatal(err)
+	}
+	var b strings.Builder
+	done := make(chan struct{})
+	go func() {
+		r := bufio.NewReader(out)
+		sent := prompt == ""
+		for {
+			c, err := r.ReadByte()
+			if err != nil {
+				close(done)
+				return
+			}
+			b.WriteByte(c)
+			if !sent && strings.Contains(b.String(), prompt) {
+				io.WriteString(in, answer+"\n")
+				sent = true
+			}
+		}
+	}()
+	select {
+	case <-done:
+	case <-time.After(20 * time.Second):
+		cmd.Process.Kill()
+		t.Fatalf("超时，输出：%s", b.String())
+	}
+	err := cmd.Wait()
+	in.Close()
+	code := 0
+	if ee, ok := err.(*exec.ExitError); ok {
+		code = ee.ExitCode()
+	}
+	return b.String(), code
+}
+
+const confirmPrompt = "输入 y 确认："
+
+func approvals(t *testing.T, dir string) []map[string]string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join(dir, "harness.lock"))
+	if err != nil {
+		return nil
+	}
+	var l struct{ Approvals []map[string]string }
+	json.Unmarshal(b, &l)
+	return l.Approvals
+}
+
+func readFile(t *testing.T, dir, rel string) string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join(dir, rel))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+// approvedRepo 返回 PRD 已由人批准的仓库。
+func approvedRepo(t *testing.T) string {
+	t.Helper()
+	dir := lockedRepo(t, basePRD)
+	out, code := inTerminal(t, dir, confirmPrompt, "y", "approve", "prd")
+	if code != 0 {
+		t.Fatalf("批准失败：%d %s", code, out)
+	}
+	return dir
+}
+
+// ---- AC-037-1 只能由人在终端批准 ----
+
+func TestApprove_AC_037_1_N1(t *testing.T) {
+	dir := approvedRepo(t)
+	if !strings.Contains(readFile(t, dir, "docs/PRD.md"), "- Status: Approved\n") {
+		t.Fatal("PRD 状态未变为 Approved")
+	}
+	a := approvals(t, dir)
+	if len(a) != 1 || a[0]["artifact"] != "docs/PRD.md" || !strings.HasPrefix(a[0]["hash"], "sha256:") || a[0]["by"] == "" || a[0]["at"] == "" {
+		t.Fatalf("批准记录：%v", a)
+	}
+}
+
+func TestApprove_AC_037_1_E1(t *testing.T) {
+	dir := lockedRepo(t, basePRD)
+	r := runHarness(t, dir, "approve", "prd") // 标准输入不是终端
+	if r.Code == 0 || !strings.Contains(r.Stderr, "交互式终端") {
+		t.Fatalf("非交互环境应拒绝：%d %s", r.Code, r.Stderr)
+	}
+	if len(approvals(t, dir)) != 0 || strings.Contains(readFile(t, dir, "docs/PRD.md"), "Status: Approved") {
+		t.Fatal("拒绝后不应写入批准")
+	}
+}
+
+func TestApprove_AC_037_1_B1(t *testing.T) {
+	dir := lockedRepo(t, basePRD)
+	prdBefore, lockBefore := readFile(t, dir, "docs/PRD.md"), readFile(t, dir, "harness.lock")
+	out, code := inTerminal(t, dir, confirmPrompt, "n", "approve", "prd")
+	if code == 0 || !strings.Contains(out, "未确认") {
+		t.Fatalf("输入 n 应不批准：%d %s", code, out)
+	}
+	if readFile(t, dir, "docs/PRD.md") != prdBefore || readFile(t, dir, "harness.lock") != lockBefore {
+		t.Fatal("输入 n 后 PRD 或锁文件被修改")
+	}
+}
+
+func TestApprove_AC_037_1_E2(t *testing.T) {
+	dir := lockedRepo(t, basePRD)
+	edit(t, dir, "- Type: Constraint\n", "")
+	out, code := inTerminal(t, dir, "", "", "approve", "prd")
+	if code != 1 || !strings.Contains(out, "prd.02") || !strings.Contains(out, "拒绝批准") {
+		t.Fatalf("有检查失败项时应拒绝：%d %s", code, out)
+	}
+	if len(approvals(t, dir)) != 0 {
+		t.Fatal("拒绝后不应写入批准")
+	}
+}
+
+// ---- AC-037-3 批准哈希与失效 ----
+
+func TestCheck_AC_037_3_N1(t *testing.T) {
+	wantPass(t, checkJSON(t, approvedRepo(t), "approve"))
+}
+
+func TestCheck_AC_037_3_E1(t *testing.T) {
+	dir := approvedRepo(t)
+	edit(t, dir, "- AC-001-1: 生成骨架。", "- AC-001-1: 生成骨架与配置。")
+	v := wantViolation(t, checkJSON(t, dir, "approve"), "approve.01", "批准已失效", "视为 Draft")
+	if v.File != "docs/PRD.md" {
+		t.Fatalf("位置：%s", v.File)
+	}
+}
+
+func TestCheck_AC_037_3_B1(t *testing.T) {
+	dir := approvedRepo(t)
+	edit(t, dir, "## 3. 功能需求\n", "## 3. 功能需求   \n\n\n", "- AC-001-1: 生成骨架。\n", "- AC-001-1: 生成骨架。\t\n")
+	wantPass(t, checkJSON(t, dir, "approve"))
+}

@@ -94,7 +94,7 @@ vcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03
 JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integration_test.go` 判定为集成测试）；test.01、test.02。lang 附 `TestExample_EXT_01` 示例语言测试。完成后本仓库的测试报告写入 `.harness/reports/`。
 
 ### T-009 技术债登记检查
-- Status: InProgress
+- Status: Done
 - Covers: FR-031
 - Design: FLOW-01, IF-003, IF-014
 - Flow: FLOW-01
@@ -102,7 +102,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 - Depends: T-008
 
 ### T-010 扩展场景与扩展点规则
-- Status: Todo
+- Status: InProgress
 - Covers: AC-033-1, AC-033-3, AC-033-4
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01

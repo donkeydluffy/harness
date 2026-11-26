@@ -51,3 +51,8 @@
 - 结论：Done。lang（注册表、Go 语言包，演示 EXT-01）、testreport（JUnit、go test -json）、workspace 加载源码与测试报告、test.01、test.02。13 个用例（FR-020）集成测试通过；让 test.02 把单元测试计入覆盖后 AC-020-4/E1 失败，让 test.01 忽略不存在的用例后 AC-020-1/E1 失败。
 - 设计澄清：`harness lock` 原为"全量检查通过后"写锁文件，加入 test.02 后需求阶段无法锁定 PRD。engine 增加可选接口 `Needer`，需要源码、测试报告或 git 的规则声明输入，lock 只运行其余规则。MOD-02、MOD-04 因此回到 Draft，待确认。
 - 自检：`go test -json ./... > .harness/reports/go.jsonl` 后全量检查有 192 条 test.02 违规，全部属于后续任务的需求；T-001 至 T-008 关联的用例都有通过的集成测试。`.harness/reports/` 加入 .gitignore。
+
+### 2026-11-26 T-009
+- 结论：Done。debt.01、debt.02、debt.03，注释按行拆分后检查，编号按数值归一（`DEBT-2` 与 `DEBT-002` 相同）。10 个用例（FR-031）集成测试通过；分别破坏三条规则的判定后 AC-031-1/E1、AC-031-2/E2、AC-031-3/E1 失败。
+- 实现取舍：debt.03 只看注释中的引用，测试夹具字符串里出现的编号不算引用，否则这类测试会让技术债永远无法关闭。
+- 用例说明：AC-031-2/B1 原文是 `# FIXME T-5`，Release 1 只内置 Go 语言包，集成测试用 `// FIXME T-5` 验证同一行为。

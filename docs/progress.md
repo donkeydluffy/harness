@@ -188,3 +188,7 @@
 ### 2026-11-26 T-033
 - 结论：Done。原计划在项目根目录的 `.gitignore` 追加条目，但 `.gitignore` 不属于任何模块，代理运行 init 写它会被门禁恢复、提交会被 commit.02 拒绝；改为 init 写入 `.harness/.gitignore`（`snap/`、`session/`、`.gitignore`），门禁本就放行 `.harness/` 下的写入，文件忽略自身因而不需要提交。测试确认快照、会话目录与该文件都不出现在 `git status`，测试报告照常出现，根目录 `.gitignore` 不被创建；去掉 `session/` 的变异被抓到。AC-N005-1 约束的是产物，`.harness/` 是运行时目录，测试跳过它（与"git hook 不是产物"的判断一致）。本仓库已重新运行 init，`git status` 不再显示 `.harness/`。
 - 遗留：无。
+
+### 2026-11-26 T-034
+- 结论：Done。`ParseGoJSON` 记录包级结果为 fail 的包；包内没有失败的测试时（构建失败、TestMain 失败、测试外的 panic、超时）追加一条名为 `PackageFailure` 的失败记录。包因其中的测试失败而失败时不重复记录。单元测试覆盖构建失败、测试全过但包失败、测试失败、通过四种情况，两个变异都被抓到；在本仓库报告中追加一条构建失败记录后，test.03 报告了它。
+- 遗留：写测试时 secret.entropy 把较长的测试名判为密钥，登记 DEBT-013。

@@ -413,7 +413,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 批准单位与哈希、批准链与状态（IF-027、IF-028），锁文件第 2 版的 `units`，`harness approve <路径、prd 或单位编号>` 显示差异并按单位记录。engine 的告警（Violation.Warn，不影响退出码）在此加入；approve.01 在锁文件为第 2 版时按单位列出未批准与失效项（告警），task.07 在第 2 版时按批准链判定。
 
 ### T-042 锁文件迁移
-- Status: InProgress
+- Status: Done
 - Covers: AC-047-6
 - Design: IF-029, IF-006, IF-023, FLOW-10
 - Flow: FLOW-10

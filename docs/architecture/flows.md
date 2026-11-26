@@ -1,14 +1,14 @@
 # 调用流程
 
-- Status: Approved
+- Status: Draft
 
 每个流程的 Steps 按调用顺序列出"调用方模块 -> 被调用接口"（格式见 `docs/architecture/formats.md` 第 4 节）。
 
 ### FLOW-01 全量检查
 - Covers: FR-003, FR-007, FR-011, FR-017
-- Steps: MOD-01 -> IF-022, MOD-02 -> IF-009, MOD-09 -> IF-010, MOD-09 -> IF-001, MOD-09 -> IF-002, MOD-09 -> IF-006, MOD-09 -> IF-008, MOD-02 -> IF-014, MOD-02 -> IF-012
+- Steps: MOD-01 -> IF-022, MOD-02 -> IF-009, MOD-09 -> IF-010, MOD-09 -> IF-004, MOD-09 -> IF-001, MOD-09 -> IF-002, MOD-09 -> IF-006, MOD-09 -> IF-007, MOD-09 -> IF-008, MOD-02 -> IF-014, MOD-02 -> IF-012, MOD-05 -> IF-003
 
-cli 调用 app.Check；app 加载快照（配置、产物、锁文件、测试报告），注册内置规则后运行引擎，cli 按格式输出并设置退出码。
+cli 调用 app.Check；app 加载快照（配置、语言注册表、产物、锁文件、git 仓库、测试报告），注册内置规则后运行引擎；规则通过语言接口提取注释和测试名；cli 按格式输出并设置退出码。
 
 ### FLOW-02 写操作门禁
 - Covers: FR-012, FR-025, FR-037, FR-045

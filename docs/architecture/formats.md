@@ -1,7 +1,7 @@
 # 产物格式规范
 
-- Status: Approved
-- Updated: 2026-11-25
+- Status: Draft
+- Updated: 2026-11-26
 - Relates: ADR-002, MOD-03
 
 所有产物都是 Markdown，由 MOD-03 的同一个解析器读取。机器只读取本文件定义的结构，其余文字自由书写。
@@ -57,7 +57,7 @@
 | FLOW | Covers, Steps | Steps 为 `MOD-a -> IF-xxx` 的有序列表，见第 4 节 |
 | EXT | Status, Interface, Paths, Closed, Relates | Relates 必须是 Scenario 类 NFR |
 | ADR | Status, Relates；正文含 `## 背景`、`## 决策`、`## 后果` | Proposed / Accepted / Superseded；Superseded 时 Superseded-By |
-| T | Status, Covers, Design, Scope, Depends；可选 Extends, Flow | Todo / InProgress / Done / Blocked |
+| T | Status, Covers, Design, Scope, Depends；可选 Extends, Flow | Status: Todo / InProgress / Done / Blocked；Covers: FR、NFR 或 AC 编号；Scope: 仓库相对路径 glob |
 | DEBT | Status, Module | Open / Resolved |
 | 产物文件 | 文件头 Status | Draft / Approved（Approved 只能由 `harness approve` 写入） |
 

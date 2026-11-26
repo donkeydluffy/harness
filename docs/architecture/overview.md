@@ -1,8 +1,8 @@
 # 架构总览：harness
 
-- Status: Approved
-- Updated: 2026-11-25
-- PRD: 1.0-rc2
+- Status: Draft
+- Updated: 2026-11-26
+- PRD: 1.0-rc3
 
 本文件是概要设计：模块划分、依赖、扩展点。每个模块的接口签名和内部设计见 `docs/architecture/modules/`，跨模块调用流程见 `docs/architecture/flows.md`，产物格式见 `docs/architecture/formats.md`，架构决策见 `docs/adr/`。
 
@@ -36,15 +36,15 @@ L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MO
 
 ### MOD-01 cli
 - Status: Active
-- Paths: cmd/harness/**, internal/cli/**
+- Paths: cmd/harness/**, internal/cli/**, go.mod, go.sum, .goreleaser.yaml, .github/workflows/release.yml
 - Public: cmd/harness/main.go
 - Depends: MOD-02, MOD-12
 - Interfaces:
-- Covers: FR-001, FR-007, FR-012, FR-037, FR-045
+- Covers: FR-001, FR-007, FR-012, FR-037, FR-045, NFR-002
 - Core: false
 - Coverage: 60
 
-命令行入口：参数解析、输出格式（文本 / `--json`）、退出码（0 通过 / 1 违规 / 2 内部错误）。
+命令行入口：参数解析、输出格式（文本 / `--json`）、退出码（0 通过 / 1 违规 / 2 内部错误）。同时拥有 Go 模块文件和发布配置（ADR-008）。
 
 ### MOD-02 app
 - Status: Active

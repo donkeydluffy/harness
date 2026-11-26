@@ -8,5 +8,7 @@ func Rules() []engine.Rule {
 	return []engine.Rule{
 		prd01{},
 		prd02{},
+		prd03{},
+		prd08{},
 	}
 }

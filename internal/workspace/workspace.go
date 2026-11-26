@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strings"
 
+	"harness/internal/lock"
 	"harness/internal/model"
 )
 
@@ -19,6 +20,7 @@ type Snapshot struct {
 	Root    string
 	Config  *Config
 	Project *model.Project
+	Lock    *lock.Lock // 锁文件不存在时为空 Lock（空基线）
 	Diags   []model.Diagnostic
 }
 
@@ -46,7 +48,11 @@ func Load(root string, opt LoadOptions) (*Snapshot, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &Snapshot{Root: root, Config: cfg}
+	lk, err := lock.Read(filepath.Join(root, lock.File))
+	if err != nil {
+		return nil, err
+	}
+	s := &Snapshot{Root: root, Config: cfg, Lock: lk}
 	var docs []*model.Doc
 	for _, rel := range artifactFiles(root) {
 		src, err := os.ReadFile(filepath.Join(root, rel))

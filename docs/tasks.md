@@ -160,7 +160,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联需求无 Open 待澄清项。task.08：Done 任务所关联条目涉及的用例全部 passed、全量检查通过、进度文件有记录。
 
 ### T-016 写操作门禁与 Claude Code 适配器
-- Status: InProgress
+- Status: Done
 - Covers: AC-012-1, AC-012-2, AC-012-5, AC-037-2, AC-045-3, AC-045-4
 - Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019, IF-025, ADR-003, ADR-006
 - Flow: FLOW-02
@@ -170,7 +170,7 @@ task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联
 gate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解析，事后快照比对与回滚（大于 1 MiB 只报告）；claudecode 适配器解码 PreToolUse、编码 deny，无法解析即拒绝；`harness gate`。adapter 附 `TestExample_EXT_02` 示例适配器测试。
 
 ### T-017 安全边界
-- Status: Todo
+- Status: InProgress
 - Covers: FR-025
 - Design: FLOW-02, IF-017
 - Flow: FLOW-02

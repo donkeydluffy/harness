@@ -103,3 +103,8 @@
 - 格式补充：OQ 可选 Relates 字段；进度记录须含 `- 结论：` 与 `- 遗留：` 两行，此前 6 条记录缺少遗留行，已补上。formats.md 仍为 Draft。
 - 自检：task.07、task.08 对本仓库 0 条违规；全量检查只剩 test.02 对后续任务用例的覆盖违规。
 - 遗留：formats.md、MOD-10 待用户重新批准；本仓库阶段仍为 requirements，待用户推进。
+
+### 2026-11-26 T-016
+- 结论：Done。gate 按 gate.protect → gate.artifact → gate.write 判定；Bash 命令用 mvdan.cc/sh v3.14.1 解析重定向、tee、cp、mv、rm、sed -i、git checkout/restore 等写入目标，以及 harness approve / phase next；无法静态判定的命令放行执行，命令前快照（大于 1 MiB 只记元数据），命令后恢复不允许的改动并反馈清单。claudecode 适配器解码 PreToolUse/PostToolUse/SessionStart/Stop，输入无法解析即拒绝；入口为 `harness gate <代理> <事件>`。18 个集成测试（AC-012-1、AC-012-2、AC-012-5、AC-037-2、AC-045-3/E3、AC-045-4，另含 FLOW-03）通过；逐一破坏各判定分支后对应用例失败，FLOW-03 的断言因此加上"已恢复"字样。
+- 设计取舍：Edit 的写入后内容由适配器读取当前文件并应用替换得到，用来判定状态行是否被改为 Approved；读取失败时退回新增片段。仓库外路径不受本项目流程约束，直接放行。
+- 遗留：gate.sensitive、gate.secret、gate.command 属于 T-017；hook 配置写入项目属于 init 任务；本仓库尚未启用 hook（阶段仍为 requirements）。

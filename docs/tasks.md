@@ -237,7 +237,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 在临时 git 仓库中按 EXT-04、EXT-03 各做一次示例扩展提交，验证只改允许路径时 commit.04 通过、改动封闭模块时失败。
 
 ### T-024 确定性与无网络访问
-- Status: InProgress
+- Status: Done
 - Covers: NFR-001
 - Design: FLOW-01, ADR-001
 - Scope: internal/app/determinism_integration_test.go, internal/app/testdata/determinism/**
@@ -246,7 +246,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 静态测试：除 audit 包外不得引入网络包；全部检查子命令在禁用网络时结果一致。
 
 ### T-025 性能基准
-- Status: Todo
+- Status: InProgress
 - Covers: NFR-003
 - Design: FLOW-01, FLOW-02
 - Scope: internal/app/perf_integration_test.go, internal/app/testdata/perf/**

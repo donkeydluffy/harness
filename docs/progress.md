@@ -144,3 +144,7 @@
 ### 2026-11-26 T-023
 - 结论：Done。临时 git 仓库直接使用本仓库的 docs/architecture/overview.md，EXT-03、EXT-04 的 Paths 与 Closed 改动后测试随之变化。示例阶段 release（阶段定义、order.json、skill 模板）与示例规则 demo.01（规则文件、样本、registry.go）的扩展提交通过 commit.04；同一提交再改 internal/gate 或 internal/rules/engine 时失败并列出文件。4 个用例（NFR-008、NFR-009）通过。
 - 遗留：无。
+
+### 2026-11-26 T-024
+- 结论：Done。静态测试对模块内每个包（除 internal/audit）用 `go list -deps` 检查不依赖 net、net/http、crypto/tls 等网络包，并以 testdata 中引入 net/http 的包作对照；临时给 lock 包加 net/http 导入后测试失败。断网用代理变量指向关闭的端口模拟，check（文本与 JSON）、trace、phase list 的输出与联网时及重复运行逐字节一致，两次 lock 生成的锁文件一致。2 个用例（NFR-001）通过。
+- 遗留：断网是用代理变量模拟的，没有真正隔离网络；不引入网络包的静态测试保证了这一点。

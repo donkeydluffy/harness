@@ -28,8 +28,11 @@ func checkTasks(t *testing.T, prdText, tasks string) checked {
 	if tasks != "" {
 		files["docs/tasks.md"] = tasks
 	}
-	return checkJSON(t, writeTree(t, files), "task")
+	return checkJSON(t, writeTree(t, files), taskRules...)
 }
+
+// task.07、task.08 依赖批准与测试报告，由 dod_integration_test.go 单独测试。
+var taskRules = []string{"task.01", "task.02", "task.03", "task.04", "task.05", "task.06"}
 
 // ---- AC-011-1 任务必填字段 ----
 
@@ -162,7 +165,7 @@ func TestCheck_AC_011_6_E2(t *testing.T) {
 	files := arch(t, "overview.md", "\n### EXT-01", "\n### MOD-03 cache\n- Status: Active\n- Paths: internal/cache/**\n- Public: internal/cache/cache.go\n- Depends:\n- Interfaces:\n- Covers: FR-002\n- Core: false\n- Coverage: 60\n\n### EXT-01")
 	files["docs/PRD.md"] = basePRD
 	files["docs/tasks.md"] = taskDoc(t001, task("T-002", "InProgress", "FR-002", "FLOW-01, MOD-03", "internal/store/**, internal/cache/**", "T-001", "- Flow: FLOW-01\n"))
-	wantViolation(t, checkJSON(t, writeTree(t, files), "task"), "task.05", "MOD-03", "不在引用的流程 FLOW-01")
+	wantViolation(t, checkJSON(t, writeTree(t, files), taskRules...), "task.05", "MOD-03", "不在引用的流程 FLOW-01")
 }
 
 // ---- AC-034-2 扩展任务不改封闭模块 ----

@@ -17,10 +17,11 @@ func initCmd(root string, args []string, stdout, stderr io.Writer) int {
 	fl.SetOutput(stderr)
 	langs := fl.String("lang", "", "项目语言，逗号分隔（"+strings.Join(scaffold.Languages(), ", ")+"）")
 	agents := fl.String("agent", "claudecode", "编程代理，逗号分隔")
+	ci := fl.String("ci", "", "CI 配置模板：github（默认）或 gitlab")
 	if err := fl.Parse(args); err != nil {
 		return ExitInternal
 	}
-	res, err := app.Init(root, scaffold.InitOptions{Languages: split(*langs), Agents: split(*agents)})
+	res, err := app.Init(root, scaffold.InitOptions{Languages: split(*langs), Agents: split(*agents), CI: *ci})
 	for _, p := range res.Written {
 		fmt.Fprintln(stdout, "写入", p)
 	}
@@ -35,6 +36,9 @@ func initCmd(root string, args []string, stdout, stderr io.Writer) int {
 		}
 		fmt.Fprintln(stderr, "harness init:", err)
 		return ExitInternal
+	}
+	if _, ok := scaffold.GitHooksDir(root); !ok {
+		fmt.Fprintln(stdout, "不是 git 仓库（或 .git 不是目录），跳过 git hook 安装；git init 后重新运行 harness init 安装")
 	}
 	fmt.Fprintf(stdout, "写入 %d 个文件，跳过 %d 个\n", len(res.Written), len(res.Skipped))
 	return ExitOK

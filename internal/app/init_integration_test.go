@@ -40,7 +40,7 @@ func initDir(t *testing.T, langs string) string {
 var goInitFiles = []string{
 	".claude/settings.json", ".claude/skills/architect/SKILL.md", ".claude/skills/change/SKILL.md",
 	".claude/skills/clarify/SKILL.md", ".claude/skills/implement/SKILL.md", ".claude/skills/plan/SKILL.md",
-	".claude/skills/test/SKILL.md", "docs/PRD.md", "docs/architecture/overview.md", "docs/debt.md",
+	".claude/skills/test/SKILL.md", ".github/workflows/harness.yml", "docs/PRD.md", "docs/architecture/overview.md", "docs/debt.md",
 	"docs/lang/go.md", "docs/progress.md", "docs/tasks.md", "harness.json",
 }
 
@@ -89,7 +89,7 @@ func TestInit_AC_001_2_B1(t *testing.T) {
 	dir := initDir(t, "go")
 	os.Remove(filepath.Join(dir, "docs/tasks.md"))
 	r := runHarness(t, dir, "init", "--lang", "go")
-	if r.Code != 0 || !strings.Contains(r.Stdout, "写入 docs/tasks.md\n写入 1 个文件，跳过 0 个") {
+	if r.Code != 0 || !strings.HasPrefix(r.Stdout, "写入 docs/tasks.md\n") || !strings.Contains(r.Stdout, "写入 1 个文件，跳过 0 个") {
 		t.Fatalf("应只补回被删除的文件：%s", r.Stdout)
 	}
 }
@@ -136,9 +136,9 @@ func TestInit_AC_N002_2_E1(t *testing.T) {
 func TestInit_AC_N005_1_N1(t *testing.T) {
 	for _, f := range listFiles(t, initDir(t, "go,typescript,python,java,cpp")) {
 		switch filepath.Ext(f) {
-		case ".md", ".yaml", ".json":
+		case ".md", ".yaml", ".yml", ".json": // .yml 同为 YAML；GitHub Actions 与 GitLab CI 的约定文件名用 .yml
 		default:
-			t.Errorf("%s 不是 .md、.yaml 或 .json", f)
+			t.Errorf("%s 不是 Markdown、YAML 或 JSON", f)
 		}
 	}
 }

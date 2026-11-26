@@ -1,0 +1,27 @@
+# 由 harness init 生成。修改后 harness check（规则 cfg.02）会失败；需要调整时删除本文件并重新运行 harness init。
+name: harness
+on: [push, pull_request]
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: 安装 harness
+        run: go install {{module}}/cmd/harness@latest
+      # 在这里运行项目测试，把报告写到 .harness/reports/（见 docs/lang/<语言>.md）。
+      - name: harness check
+        run: harness check
+      - name: harness check commits
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BASE_REF" ]; then RANGE="origin/$BASE_REF..HEAD"
+          else case "$BEFORE" in ""|0000000*) RANGE="HEAD~1..HEAD" ;; *) RANGE="$BEFORE..HEAD" ;; esac
+          fi
+          harness check commits "$RANGE"

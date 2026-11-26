@@ -55,12 +55,41 @@ func Languages() []string {
 	return out
 }
 
+// modulePath 是 CI 模板中安装 harness 用的模块路径（DEBT-001：发布前改为仓库地址）。
+const modulePath = "harness"
+
+// ciFiles 是 --ci 的取值与生成的 CI 配置文件。
+var ciFiles = map[string]string{"github": ".github/workflows/harness.yml", "gitlab": ".gitlab-ci.yml"}
+
+// gitHooks 是安装到 .git/hooks 的 hook。
+var gitHooks = []string{"commit-msg", "pre-commit"}
+
+// GitHooksDir 返回项目的 git hook 目录；不是 git 仓库（或 .git 不是目录，如工作树）时 ok 为 false。
+func GitHooksDir(root string) (dir string, ok bool) {
+	fi, err := os.Stat(filepath.Join(root, ".git"))
+	if err != nil || !fi.IsDir() {
+		return "", false
+	}
+	return filepath.Join(root, ".git", "hooks"), true
+}
+
 // Generate 写入模板；已存在且内容相同的文件不动，内容不同的跳过并列入 Skipped（AC-001-2）。
-// 选项不合法时不写任何文件（AC-001-1/E1）。
+// 选项不合法时不写任何文件（AC-001-1/E1）。git 仓库中同时安装 commit-msg、pre-commit hook（AC-013-3）。
 func Generate(root string, opt InitOptions) (Result, error) {
 	files, err := Files(opt)
 	if err != nil {
 		return Result{}, err
+	}
+	exec := map[string]bool{}
+	if _, ok := GitHooksDir(root); ok {
+		for _, h := range gitHooks {
+			b, err := templates.ReadFile("templates/githooks/" + h)
+			if err != nil {
+				return Result{}, err
+			}
+			p := ".git/hooks/" + h
+			files[p], exec[p] = render(b, opt), true
+		}
 	}
 	var paths []string
 	for p := range files {
@@ -83,7 +112,11 @@ func Generate(root string, opt InitOptions) (Result, error) {
 		if err := os.MkdirAll(filepath.Dir(abs), 0o755); err != nil {
 			return res, fmt.Errorf("无法创建目录 %s：%w", filepath.Dir(abs), err)
 		}
-		if err := os.WriteFile(abs, files[p], 0o644); err != nil {
+		mode := os.FileMode(0o644)
+		if exec[p] {
+			mode = 0o755
+		}
+		if err := os.WriteFile(abs, files[p], mode); err != nil {
 			return res, fmt.Errorf("无法写入 %s：%w", abs, err)
 		}
 		res.Written = append(res.Written, p)
@@ -143,6 +176,19 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 	}
 	b, _ := json.MarshalIndent(cfg, "", "  ")
 	out[workspace.ConfigFile] = append(b, '\n')
+	ci := opt.CI
+	if ci == "" {
+		ci = "github"
+	}
+	ciPath, ok := ciFiles[ci]
+	if !ok {
+		return nil, &UnsupportedError{"CI", ci, []string{"github", "gitlab"}}
+	}
+	tmpl, err := templates.ReadFile("templates/ci/" + ci + ".yml")
+	if err != nil {
+		return nil, err
+	}
+	out[ciPath] = render(tmpl, opt)
 	for _, name := range agents {
 		a, ok := adapter.Get(name)
 		if !ok {
@@ -152,6 +198,16 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 		out[p] = content
 	}
 	return out, nil
+}
+
+// render 替换模板中的 {{binary}} 与 {{module}}。
+func render(b []byte, opt InitOptions) []byte {
+	binary := opt.Binary
+	if binary == "" {
+		binary = "harness"
+	}
+	s := strings.ReplaceAll(string(b), "{{binary}}", binary)
+	return []byte(strings.ReplaceAll(s, "{{module}}", modulePath))
 }
 
 // copyTree 把内嵌目录 dir 下的文件按相对路径放入 out。

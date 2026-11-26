@@ -1,0 +1,3 @@
+#!/bin/sh
+# 由 harness init 生成：检查暂存区与提交信息（Task 尾注、任务范围、开闭、提交大小）。
+exec {{binary}} check commit --msg-file "$1"

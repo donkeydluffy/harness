@@ -7,6 +7,7 @@ import (
 	"harness/internal/phase"
 	"harness/internal/rules/builtin"
 	"harness/internal/rules/engine"
+	"harness/internal/scaffold"
 )
 
 var registerOnce sync.Once
@@ -18,5 +19,6 @@ func registerRules() {
 			engine.Register(r)
 		}
 		engine.Register(phase.Rule())
+		engine.Register(scaffold.Rule())
 	})
 }

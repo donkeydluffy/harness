@@ -214,7 +214,7 @@ clarify、change、architect、plan、implement、test 六个 skill；每个声�
 - Covers: AC-013-3, AC-043-1, AC-041-2
 - Design: FLOW-07, IF-020, IF-021
 - Flow: FLOW-07
-- Scope: internal/scaffold/**, internal/app/init.go, internal/app/ci_integration_test.go, internal/app/testdata/ci/**
+- Scope: internal/scaffold/**, internal/app/init.go, internal/app/app.go, internal/app/init_integration_test.go, internal/app/session_integration_test.go, internal/cli/init.go, internal/cli/cli.go, internal/app/ci_integration_test.go, internal/app/testdata/ci/**
 - Depends: T-020
 
 commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harness check` 和 `harness check commits`；cfg.02（由 scaffold 模块注册）。

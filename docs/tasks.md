@@ -46,7 +46,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 三章齐全、Open 待澄清项阻止 Approved、澄清记录按轮次且每轮不超过 5 问、用例编号与 N 加 B/E、模糊词（跳过代码格式）、Quantitative NFR 含数值与单位。
 
 ### T-004 统一语言一致性
-- Status: InProgress
+- Status: Done
 - Covers: FR-005
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
@@ -54,7 +54,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 - Depends: T-003
 
 ### T-005 架构产物校验
-- Status: Todo
+- Status: InProgress
 - Covers: FR-006, AC-033-2
 - Design: FLOW-01, MOD-03, IF-002, IF-014
 - Flow: FLOW-01

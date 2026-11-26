@@ -170,7 +170,7 @@ task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联
 gate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解析，事后快照比对与回滚（大于 1 MiB 只报告）；claudecode 适配器解码 PreToolUse、编码 deny，无法解析即拒绝；`harness gate`。adapter 附 `TestExample_EXT_02` 示例适配器测试。
 
 ### T-017 安全边界
-- Status: InProgress
+- Status: Done
 - Covers: FR-025
 - Design: FLOW-02, IF-017
 - Flow: FLOW-02
@@ -180,7 +180,7 @@ gate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解
 gate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危险命令可配置。
 
 ### T-018 写后检查、会话结束检查与会话开始注入
-- Status: Todo
+- Status: InProgress
 - Covers: AC-012-3, AC-012-4, AC-024-1, AC-024-3
 - Design: FLOW-04, FLOW-05, FLOW-06, IF-012, IF-017, IF-019, IF-025
 - Flow: FLOW-05

@@ -108,3 +108,8 @@
 - 结论：Done。gate 按 gate.protect → gate.artifact → gate.write 判定；Bash 命令用 mvdan.cc/sh v3.14.1 解析重定向、tee、cp、mv、rm、sed -i、git checkout/restore 等写入目标，以及 harness approve / phase next；无法静态判定的命令放行执行，命令前快照（大于 1 MiB 只记元数据），命令后恢复不允许的改动并反馈清单。claudecode 适配器解码 PreToolUse/PostToolUse/SessionStart/Stop，输入无法解析即拒绝；入口为 `harness gate <代理> <事件>`。18 个集成测试（AC-012-1、AC-012-2、AC-012-5、AC-037-2、AC-045-3/E3、AC-045-4，另含 FLOW-03）通过；逐一破坏各判定分支后对应用例失败，FLOW-03 的断言因此加上"已恢复"字样。
 - 设计取舍：Edit 的写入后内容由适配器读取当前文件并应用替换得到，用来判定状态行是否被改为 Approved；读取失败时退回新增片段。仓库外路径不受本项目流程约束，直接放行。
 - 遗留：gate.sensitive、gate.secret、gate.command 属于 T-017；hook 配置写入项目属于 init 任务；本仓库尚未启用 hook（阶段仍为 requirements）。
+
+### 2026-11-26 T-017
+- 结论：Done。gate.sensitive（读写与 Bash 参数、输入重定向命中 sensitivePaths，sensitiveAllow 豁免）、gate.secret（规则 secret.aws、secret.pem、secret.gcp、secret.github、secret.entropy，只检查新增行与命令文本）、gate.command（dangerousCommands 模式按词顺序匹配，--force-with-lease 不误判；rm 递归删除仓库外、~ 开头或含变量的路径）。17 个集成测试（FR-025）通过；逐一破坏各判定分支后对应用例失败。十六进制排除分支被证明多余（提交哈希熵不超过 4 比特且通常全小写），已删除。
+- 设计取舍：整条命令只调用一次 harness（如 `harness lock`）时，命令后比对允许它改写锁文件、harness.json 与 hook 配置；夹带其他命令或 harness 只是参数时仍恢复。app/gate.go 因此纳入本任务范围。
+- 遗留：危险命令按文本模式匹配，经变量或脚本间接执行的命令拦不住，靠命令后比对兜底（仅限仓库内文件）。

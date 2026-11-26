@@ -134,3 +134,13 @@ func TestGate_AC_025_4_E3(t *testing.T) {
 	dir := secDir(t)
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool(`echo '{"dangerousCommands": []}' > harness.json`)), "gate.protect", "harness.json")
 }
+
+// 含大小写与数字的长路径不当作高熵密钥；含 / 的 base64 密钥仍命中（T-028，DEBT-006）。
+func TestGate_EntropyIgnoresPaths(t *testing.T) {
+	dir := secDir(t)
+	p := "/private/tmp/claude-501/-Users-alice-Desktop-proj/a913c174-9c27-4f97-b4b8-c6854aba3779/out.txt"
+	wantAllow(t, hook(t, dir, "PreToolUse", bashTool("cat "+p)))
+	wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/a.go", "package api\n\n// 输出在 "+p+"\n")))
+	key := "wJalrXUtnFEMI" + "/K7MDENG/" + "bPxRfiCYEXAMPLEKEY" // AWS 文档的示例 secret，拼接以免样本本身被门禁拦下
+	wantDeny(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/k.go", "package api\n\nvar s = \""+key+"\"\n")), "secret.entropy")
+}

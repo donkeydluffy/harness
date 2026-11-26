@@ -264,10 +264,20 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 对本仓库执行 `harness init`，提交生成文件与锁文件，启用 hook 与 CI；集成测试对仓库根目录运行 `harness check` 并校验 hook 配置存在。
 
 ### T-027 跨平台构建与发布
-- Status: InProgress
+- Status: Blocked
 - Covers: AC-N002-1, AC-N002-3
 - Design: MOD-01, ADR-001, FLOW-07
-- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/scaffold.go
+- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/**
 - Depends: T-026
 
 6 个平台交叉编译、GitHub Release 附校验和、Homebrew tap formula。需要 GitHub 仓库与 tap 仓库，发布前由用户确认。
+
+### T-028 门禁修复：纯赋值命令崩溃与路径误判为密钥
+- Status: InProgress
+- Covers: AC-012-2, AC-025-2
+- Design: FLOW-02
+- Flow: FLOW-02
+- Scope: internal/gate/**, internal/app/gate_integration_test.go, internal/app/security_integration_test.go
+- Depends: T-026
+
+T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门禁 panic 并以退出码 2 拒绝命令；secret.entropy 把含大小写与数字的长路径当作密钥（DEBT-006）。T-027 在本任务完成前为 Blocked。

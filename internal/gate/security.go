@@ -58,11 +58,17 @@ func findSecret(text string) (id, desc string) {
 		}
 	}
 	for _, tok := range tokenRe.FindAllString(text, -1) {
-		if highEntropy(tok) {
+		if !pathLike(tok) && highEntropy(tok) {
 			return "secret.entropy", "高熵 token"
 		}
 	}
 	return "", ""
+}
+
+// pathLike 判断 token 是以 /、./、~/ 开头的文件路径。路径里的用户名、目录名使熵偏高；
+// base64 密钥可能含 /（甚至多个），所以只按开头判断。
+func pathLike(tok string) bool {
+	return strings.HasPrefix(tok, "/") || strings.HasPrefix(tok, "./") || strings.HasPrefix(tok, "~/")
 }
 
 // highEntropy 判断 token 像随机密钥：同时含大小写字母与数字，字符熵不低于 4.3 比特

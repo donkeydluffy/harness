@@ -40,6 +40,9 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 			}
 		case *syntax.CallExpr:
 			args := words(n.Args)
+			if len(args) == 0 {
+				return true // 只有变量赋值（如 d=$(mktemp -d)），赋值中的命令替换由 Walk 继续访问
+			}
 			if humanOnly(args) {
 				d = deny("gate.protect", "harness approve 与 harness phase next 只能由人在终端执行")
 				return false

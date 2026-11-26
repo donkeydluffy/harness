@@ -244,3 +244,15 @@ func TestGate_AC_045_4_B1(t *testing.T) {
 	dir := gateDir(t, "implementation", "")
 	wantAllow(t, hook(t, dir, "PreToolUse", editTool(dir, "docs/PRD.md", "正文第一段。", "正文第一段，需求变更。")))
 }
+
+// 只含变量赋值的命令不使门禁崩溃；赋值里命令替换的写入照常判定（T-028）。
+func TestGate_AssignmentOnlyCommand(t *testing.T) {
+	dir := gateDir(t, "implementation", activeTasks)
+	h := hook(t, dir, "PreToolUse", bashTool("d=$(mktemp -d)"))
+	if h.Code != 0 {
+		t.Fatalf("门禁不应崩溃：%d %s", h.Code, h.Raw)
+	}
+	wantAllow(t, h)
+	wantAllow(t, hook(t, dir, "PreToolUse", bashTool("X=1 Y=2")))
+	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("d=$(touch other/b.go)")), "gate.write", "other/b.go")
+}

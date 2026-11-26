@@ -368,7 +368,7 @@ init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它�
 commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CHG-n` 尾注代替 Task 尾注；Change 尾注引用的 CHG 须在变更日志中存在，不能与 Task 尾注同时出现。
 
 ### T-038 需求取代关系（Replaces / Replaced-By）
-- Status: InProgress
+- Status: Done
 - Covers: AC-003-6
 - Design: FLOW-01, IF-014, IF-022
 - Flow: FLOW-01

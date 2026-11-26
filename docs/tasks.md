@@ -74,7 +74,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 trace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型脚本 selfcheck.py。
 
 ### T-007 git 访问与架构决策记录检查
-- Status: InProgress
+- Status: Done
 - Covers: FR-010
 - Design: FLOW-01, IF-007, IF-009, IF-014
 - Flow: FLOW-01
@@ -84,7 +84,7 @@ trace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型
 vcs 通过 `git` 命令实现提交范围、改动、指定版本文件；adr.03 判断模块增删、依赖变化、扩展点变化是否在同一提交中被 ADR 引用。
 
 ### T-008 测试报告解析、Go 语言包与集成测试追溯
-- Status: Todo
+- Status: InProgress
 - Covers: FR-020
 - Design: FLOW-01, IF-003, IF-004, IF-008, IF-009, IF-014
 - Flow: FLOW-01

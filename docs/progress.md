@@ -40,3 +40,9 @@
 - 调整：锁文件测试的夹具补充架构（`harness lock` 先跑全量检查，trace.01 上线后纯 PRD 夹具不再通过）；新增需求夹具改为 Release 2。
 - 原型脚本：selfcheck.py 的追溯、悬空、环、流程检查已由 trace.*、arch.* 取代；扩展点关联检查保留到 T-010（arch.04），扇出检查属于 Release 2（FR-036）。taskcheck.py 保留到 T-011。
 - 遗留：无。
+
+### 2026-11-26 T-007
+- 结论：Done。vcs（git 命令实现，尾注解析）、workspace 加载仓库与提交范围、adr.01、adr.02、adr.03。10 个用例（FR-010）集成测试通过；让 adr.03 忽略缺少的 ADR 引用后 AC-010-3/E1 失败。
+- 设计澄清：MOD-05 中"输入缺失"的口径改为"指定了提交范围却不是 git 仓库、或需要测试报告却没有报告"；未指定范围时 git 规则检查暂存区。否则任何非 git 目录的全量检查都会失败，与 AC-001-1 冲突。MOD-05 因此回到 Draft，待确认。
+- 规则样本：registry_test 支持 `repo/01`、`repo/02`、`repo/staged` 形式的 git 历史样本。
+- 遗留：DEBT-002 中 ADR 文件的诊断已由 adr.01 报告。

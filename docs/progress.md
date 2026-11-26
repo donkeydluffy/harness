@@ -79,3 +79,7 @@
 - 设计澄清：批准哈希不含文件头 Status 行，否则写入 Approved 本身会让批准失效；可批准产物与哈希计算放在 workspace（approval.go），任务范围相应扩大，MOD-09 增加对应接口。终端判定用 ioctl / GetConsoleMode，`/dev/null` 也是字符设备，只看文件类型会误判为终端。没有提供任何绕过交互的环境变量。
 - 中断：实现过程中磁盘写满，用户清理后继续。
 - 待用户操作：PRD、架构文档、详细设计、ADR 共 26 份产物需要用户在终端用 `harness approve` 补录批准；补录前 approve.01 报告违规，`harness lock` 被挡住。
+
+### 2026-11-26 T-013 批准补录
+- 用户在终端用 `harness approve` 批准了 26 份产物（PRD、总览、格式规范、调用流程、14 个模块详细设计、8 个 ADR），批准记录写入 harness.lock，approve.01 为 0 条违规。此前回到 Draft 的 formats.md、MOD-01、MOD-02、MOD-04、MOD-05、MOD-09、flows.md 与 PRD 的 CHG-013 ~ CHG-015 一并获批。
+- 之后任何产物内容变化都会使对应批准失效，需用户重新批准。

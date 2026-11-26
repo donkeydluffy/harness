@@ -1,6 +1,6 @@
 # MOD-09 workspace 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 职责
 

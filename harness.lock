@@ -1,5 +1,162 @@
 {
-  "approvals": [],
+  "approvals": [
+    {
+      "artifact": "docs/PRD.md",
+      "at": "2026-11-26T03:45:35Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:edc26bae4ee5c6383063e8811c384c7db0aa2171eabbcf2abeb65ebb50a5ce5f"
+    },
+    {
+      "artifact": "docs/architecture/flows.md",
+      "at": "2026-11-26T03:45:39Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:0acec01aa150cdf5c0c9bbcc89084aa617a11326350820175a2b5be9c1e2638b"
+    },
+    {
+      "artifact": "docs/architecture/formats.md",
+      "at": "2026-11-26T03:45:42Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:5f3b6b42aa86cb78cf16071b5e347c26b7b04ee61ae6f531035ef8c485f57c60"
+    },
+    {
+      "artifact": "docs/architecture/overview.md",
+      "at": "2026-11-26T03:45:43Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:4ba05d0f315470eb2202d662135f3a16ef2db5637314c9e6ad048bb65a17053e"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-01-cli.md",
+      "at": "2026-11-26T03:45:45Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:e1cd4dd7a7c9aaec15026858f3929ecd766594fbcb30c144ff0033ba5183de30"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-02-app.md",
+      "at": "2026-11-26T03:45:46Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:3809cbe15b05a42cb5e1c1fe8b63cb0fad32d34ee288d7fd56f58752439d8386"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-03-model.md",
+      "at": "2026-11-26T03:45:47Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:68f7dce28e8ae29d1a385eb9f3d3129c746c9d8b57508c3178370ec851bd2333"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-04-engine.md",
+      "at": "2026-11-26T03:45:48Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:7a539782cf7d6da5d0037b1263603d8b54cf7a136cd78d43cff01a5fd186b208"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-05-builtin.md",
+      "at": "2026-11-26T03:45:50Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:b52ffc375b1f7d52d051db32923634ed00ffd1cfae2956a2565399d084bc08dc"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-06-lock.md",
+      "at": "2026-11-26T03:45:52Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2f0f5ab8d97a31942fef35aea1d52b91ca9c65b3f1045afe4d8cb390ead0e144"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-07-vcs.md",
+      "at": "2026-11-26T03:45:53Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:451a09511c75c0459c2f596a5453025a4528bda25285541739cd361ea3289b0b"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-08-testreport.md",
+      "at": "2026-11-26T03:45:54Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:c9fa67c2e59e5cc09ae979e8b7653cffbb2b63fee4952ea274150c8c3031181f"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-09-workspace.md",
+      "at": "2026-11-26T03:45:54Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:bb43f636bcf63a88fd5510ddacbee0f8b9d87f22527e41baa0b48cd5af9c60e2"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-10-phase.md",
+      "at": "2026-11-26T03:45:55Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2c9a5f1b8df1e171ecfdece819ebbe8d5092470d0602d84a52b9c07cf210d48a"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-11-gate.md",
+      "at": "2026-11-26T03:45:56Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:d20ded0e2446e25cea38356039c8d04476b5c89f53442dc5bce5a6c44c3a2090"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-12-adapter.md",
+      "at": "2026-11-26T03:45:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:61ce0e86a0ada884990f78cad210596a275f22e55611c548ec0b84956731ae04"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-13-scaffold.md",
+      "at": "2026-11-26T03:45:57Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:8283420893f01eee12fc6f4d86ce558188d3c166359e9408baf870571daa36a6"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-14-lang.md",
+      "at": "2026-11-26T03:45:58Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:a9e1703740514fd2048ce8c863b8dc29344c6e3506a4f2c61cdad7975f3dc8d7"
+    },
+    {
+      "artifact": "docs/adr/ADR-001-go-single-binary.md",
+      "at": "2026-11-26T03:45:59Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:566af37975fff84649edeed50e2e7682e6074173ab3b14037c375d3a8a1b89ff"
+    },
+    {
+      "artifact": "docs/adr/ADR-002-artifact-format.md",
+      "at": "2026-11-26T03:46:00Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:c9d24f1b1f8376374b98d3a8a373b4910f96c6d88d46feaea08ec5beab8ed733"
+    },
+    {
+      "artifact": "docs/adr/ADR-003-bash-write-detection.md",
+      "at": "2026-11-26T03:46:01Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:aa8168abd25c40a21ee01c4dde86fbfc4185d226509d3fa9cc0086e837628877"
+    },
+    {
+      "artifact": "docs/adr/ADR-004-lockfile.md",
+      "at": "2026-11-26T03:46:02Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:f3b8e088223ac0f410b0f81112fe44c83445cbd7a594c4e15d5d2c315ae49a29"
+    },
+    {
+      "artifact": "docs/adr/ADR-005-phases-rules-as-data.md",
+      "at": "2026-11-26T03:46:03Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:acb67f823df247c11a7db438e52917c58a1dee7e3e8728cde0d55399176c3c05"
+    },
+    {
+      "artifact": "docs/adr/ADR-006-agent-adapters.md",
+      "at": "2026-11-26T03:46:04Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:7e1c938e0175e3cf986723083bdb8827cd93b7d1f48cdb6490af4fd08daa8108"
+    },
+    {
+      "artifact": "docs/adr/ADR-007-workspace-snapshot.md",
+      "at": "2026-11-26T03:46:05Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:58a65a8dc9250e93645aa855a67a4597d5b3c74add26c03f5acbcfa83482c213"
+    },
+    {
+      "artifact": "docs/adr/ADR-008-task-granularity-and-root-files.md",
+      "at": "2026-11-26T03:46:07Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:9f250320fe88a01f8317a4ea0610d91fea19fe00e670a5faa2b4bf23e1897158"
+    }
+  ],
   "audit": {},
   "items": {
     "AC-001-1/B1": "sha256:7da3263c9c95fed63c43b75629c84d96bc136cacf20c61e4e38a940838b5d4a9",
@@ -390,7 +547,7 @@
     "IF-006": "sha256:7d9a67f3d05f7b9fd61279cd948915895ae637d01ec0b4636f5b004c32356aa8",
     "IF-007": "sha256:47692e2ba6b7ea39ec3469586a95ba1b956db5a9613816c8b965f19bb60bff7d",
     "IF-008": "sha256:81c79235740ebb3db9774188727106ce9943ea9a04632173a15523cb4b51e50c",
-    "IF-009": "sha256:3f83b0cde057d3343df90260b217fdb2defa7f6bf1590a1af66f052a65681dc8",
+    "IF-009": "sha256:84530db8e6957ee1da990fc1fda205701a7f779b8784f14d9474b25cc78abf31",
     "IF-010": "sha256:fe18a3c3e41749325f2d8de75cdc10d536be24f637d00ae7dced6a3e41781c73",
     "IF-011": "sha256:53cc459437077afe1c64e67feae6568cdd54df01d4efd616455d8ef24daed5d1",
     "IF-012": "sha256:e738dfc946aa27be99a388728498125bd6d66c0b6d98e6aee661c508524d545a",

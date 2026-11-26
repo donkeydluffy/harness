@@ -40,10 +40,12 @@
 已解决（T-030）：hook 命令先用 `command -v` 确认 harness 可执行；找不到时 PreToolUse 拒绝、SessionStart 注入说明，PostToolUse 与 Stop 不阻止。
 
 ### DEBT-005 harness init 不忽略门禁运行时目录
-- Status: Open
+- Status: Resolved
 - Module: MOD-13
 
 门禁在 `.harness/snap/`、`.harness/session/` 下保存快照和会话计数，属于运行时状态，不应提交；`harness init` 没有把它们加进 `.gitignore`，本仓库目前只能靠提交时不加这两个目录。应由 init 写入（或追加）`.gitignore` 条目，并把 `.gitignore` 的这部分计入生成文件。
+
+已解决（T-033）：init 写入 `.harness/.gitignore`（`snap/`、`session/` 与它自身），不改项目根目录的 `.gitignore`，不需要提交；已有项目重新运行 `harness init` 即补上。
 
 ### DEBT-006 secret.entropy 把含大写与数字的长路径误判为密钥
 - Status: Resolved

@@ -321,7 +321,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 新增规则：测试报告中有失败的测试时报告测试名；报告 PRD 与进度文件中尚无规则输出的解析诊断。task.08 改用 `engine.FullCheck`。
 
 ### T-033 harness init 忽略门禁运行时目录（DEBT-005）
-- Status: InProgress
+- Status: Done
 - Covers: AC-001-1
 - Design: FLOW-07
 - Scope: internal/scaffold/**, internal/app/init_integration_test.go

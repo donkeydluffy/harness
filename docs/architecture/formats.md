@@ -54,6 +54,7 @@
 | OQ | Status；Closed 时 Resolution | Open / Closed |
 | MOD | Status, Paths, Public, Depends, Interfaces, Covers, Core, Coverage | Paths/Public 为 glob 列表；Core 为 true/false；Coverage 为 0-100 |
 | IF | Module, Covers，及一个首行为 `// IF-xxx` 的代码块（签名） | |
+| MOD / IF（可选） | Domain | 该模块或接口使用的领域概念代码名，逗号分隔；每个名称必须出现在统一语言表格的"代码名"列（规则 term.02） |
 | FLOW | Covers, Steps | Steps 为 `MOD-a -> IF-xxx` 的有序列表，见第 4 节 |
 | EXT | Status, Interface, Paths, Closed, Relates | Relates 必须是 Scenario 类 NFR |
 | ADR | Status, Relates；正文含 `## 背景`、`## 决策`、`## 后果` | Proposed / Accepted / Superseded；Superseded 时 Superseded-By |

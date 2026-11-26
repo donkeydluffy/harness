@@ -105,18 +105,32 @@ var inlineCodeRe = regexp.MustCompile("`[^`]*`")
 
 // bodyLines 返回实体正文（不含标题、字段行、代码块）的行及行号，行内代码替换为空白。
 func bodyLines(e *model.Entity) (lines []string, nums []int) {
+	all, ln := proseLines(strings.Split(e.Raw, "\n"), e.Line)
+	for i, l := range all {
+		idx := ln[i] - e.Line
+		if idx == 0 || (idx <= len(e.Order) && strings.HasPrefix(l, "- ")) {
+			continue
+		}
+		lines = append(lines, l)
+		nums = append(nums, ln[i])
+	}
+	return lines, nums
+}
+
+// proseLines 去掉围栏代码块，并把行内代码替换为等长空白；first 为第一行的行号。
+func proseLines(src []string, first int) (lines []string, nums []int) {
 	inCode := false
-	for i, l := range strings.Split(e.Raw, "\n") {
+	for i, l := range src {
 		t := strings.TrimSpace(l)
 		if strings.HasPrefix(t, "```") || strings.HasPrefix(t, "~~~") {
 			inCode = !inCode
 			continue
 		}
-		if inCode || i == 0 || (i <= len(e.Order) && strings.HasPrefix(l, "- ")) {
+		if inCode {
 			continue
 		}
 		lines = append(lines, inlineCodeRe.ReplaceAllStringFunc(l, func(m string) string { return strings.Repeat(" ", len(m)) }))
-		nums = append(nums, e.Line+i)
+		nums = append(nums, first+i)
 	}
 	return lines, nums
 }

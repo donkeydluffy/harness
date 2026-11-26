@@ -7,4 +7,8 @@
 
 ## 技术债
 
-（暂无）
+### DEBT-001 Go 模块路径暂为 harness
+- Status: Open
+- Module: MOD-01
+
+仓库还没有远程地址，`go.mod` 的模块路径暂用 `harness`。T-027 发布前改为仓库地址，否则 `go install` 不可用。

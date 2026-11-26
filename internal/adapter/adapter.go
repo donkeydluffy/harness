@@ -10,6 +10,8 @@ import (
 )
 
 // Adapter 是一种编程代理的 hook 适配器（IF-019）。
+//
+// harness:IF-019
 type Adapter interface {
 	Name() string
 	// Decode 把代理 hook 的事件名和标准输入转换为门禁请求。

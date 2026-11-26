@@ -54,6 +54,8 @@ type Problem struct{ File, Msg string }
 
 // Load 合并内置阶段（internal/phase/builtin/*.json，顺序见 order.json）与 harness.json 的 phases（IF-015）。
 // 定义有问题时返回第一个问题。
+//
+// harness:IF-015
 func Load(s *workspace.Snapshot) ([]Phase, error) {
 	phases, probs := load(builtinFS, s)
 	if len(probs) > 0 {
@@ -215,6 +217,8 @@ func Selector(refs []string) (engine.Selector, bool) {
 var ErrLastPhase = errors.New("已是最后一个阶段，无法继续推进")
 
 // Current 返回锁文件记录的当前阶段；未记录时为第一个阶段（IF-016）。
+//
+// harness:IF-016
 func Current(s *workspace.Snapshot, phases []Phase) (Phase, error) {
 	if len(phases) == 0 {
 		return Phase{}, errors.New("没有任何阶段定义")

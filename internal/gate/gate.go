@@ -51,6 +51,8 @@ func deny(rule, format string, a ...any) Decision {
 
 // Decide 按判定顺序给出结论（IF-017）：gate.protect → gate.sensitive → gate.secret → gate.command
 // （命令中的写入目标再按前述顺序与 gate.artifact、gate.write 判定）→ gate.artifact → gate.write。
+//
+// harness:IF-017
 func Decide(s *workspace.Snapshot, req Request) Decision {
 	switch req.Kind {
 	case Read:

@@ -11,6 +11,8 @@ import (
 // Gate 加载轻量快照并调用门禁判定（IF-025）；cli 负责用 adapter 解码代理输入、编码判定结果。
 // Bash 命令放行前记录命令前快照，命令执行后比对并恢复不被允许的改动（FLOW-03）。
 // 任何内部错误都判定为拒绝（失败即阻断）。
+//
+// harness:IF-025
 func Gate(root string, req gate.Request) gate.Decision {
 	registerRules()
 	// 会话开始与结束运行全量检查，需要源码与测试报告；其余请求用轻量快照。

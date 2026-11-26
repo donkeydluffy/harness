@@ -34,6 +34,8 @@ func snapDir(root, session string) string {
 }
 
 // Before 在命令执行前记录仓库文件的 (路径, 大小, mtime) 与小文件内容副本，存于 .harness/snap/<会话>（IF-018）。
+//
+// harness:IF-018
 func Before(root, sessionID string) error {
 	dir := snapDir(root, sessionID)
 	if err := os.RemoveAll(dir); err != nil {

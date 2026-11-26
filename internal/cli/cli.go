@@ -25,6 +25,7 @@ const usage = `用法：harness <命令> [参数]
 命令：
   check [规则或前缀...] [--json]   运行检查；无参数时运行全部规则
   lock                             全量检查通过后更新 harness.lock
+  trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
 `
 
 // Main 执行命令并返回退出码。
@@ -43,6 +44,8 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return check(root, args[1:], stdout, stderr)
 	case "lock":
 		return lockCmd(root, stdout, stderr)
+	case "trace":
+		return traceCmd(root, args[1:], stdout, stderr)
 	case "help", "-h", "--help":
 		fmt.Fprint(stdout, usage)
 		return ExitOK
@@ -71,6 +74,29 @@ func check(root string, args []string, stdout, stderr io.Writer) int {
 		return ExitInternal
 	}
 	return printReport(rep, opt.JSON, stdout, stderr)
+}
+
+func traceCmd(root string, args []string, stdout, stderr io.Writer) int {
+	format := "md"
+	for i := 0; i < len(args); i++ {
+		switch a := args[i]; {
+		case a == "--format" && i+1 < len(args):
+			format = args[i+1]
+			i++
+		case strings.HasPrefix(a, "--format="):
+			format = strings.TrimPrefix(a, "--format=")
+		default:
+			fmt.Fprintf(stderr, "harness trace: 未知参数 %q\n", a)
+			return ExitInternal
+		}
+	}
+	out, err := app.Trace(root, format)
+	if err != nil {
+		fmt.Fprintln(stderr, "harness trace:", err)
+		return ExitInternal
+	}
+	stdout.Write(out)
+	return ExitOK
 }
 
 func lockCmd(root string, stdout, stderr io.Writer) int {

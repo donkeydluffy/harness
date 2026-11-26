@@ -213,3 +213,33 @@ func parseSteps(v string) (steps []flowStep, bad []int) {
 	}
 	return steps, bad
 }
+
+// designKinds 是设计元素的类型（TERM-011，含扩展点）。
+var designKinds = []string{"MOD", "IF", "FLOW", "EXT", "ADR"}
+
+// designElements 返回架构文档与 ADR 中的全部设计元素。
+func designElements(s *workspace.Snapshot) []*model.Entity {
+	var out []*model.Entity
+	for _, d := range s.Project.Docs {
+		if !strings.HasPrefix(d.Path, "docs/architecture/") && !strings.HasPrefix(d.Path, "docs/adr/") {
+			continue
+		}
+		for _, e := range d.Entities {
+			if contains(designKinds, e.Kind) {
+				out = append(out, e)
+			}
+		}
+	}
+	return out
+}
+
+// effective 判断设计元素是否有效：ADR 不是 Superseded，其他元素不是 Removed。
+func effective(e *model.Entity) bool {
+	st := e.Fields["Status"]
+	return st != "Superseded" && st != "Removed"
+}
+
+// traceRefs 返回设计元素声明的追溯引用（Covers 与 Relates）。
+func traceRefs(e *model.Entity) []string {
+	return append(e.List("Covers"), e.List("Relates")...)
+}

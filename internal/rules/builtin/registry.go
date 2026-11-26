@@ -4,6 +4,8 @@ package builtin
 import "github.com/donkeydluffy/harness/internal/rules/engine"
 
 // Rules 返回全部内置规则；每条规则一行，供 app 在启动时注册（IF-014）。
+//
+// harness:IF-014
 func Rules() []engine.Rule {
 	return []engine.Rule{
 		prd01{},
@@ -54,6 +56,10 @@ func Rules() []engine.Rule {
 		cfg01{},
 		cfg03{},
 		lint01{},
+		if01{},
+		if02{},
+		if03{},
+		if04{},
 		smoke01{},
 		ci01{},
 	}

@@ -36,7 +36,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 规范化与哈希、锁文件读写（键排序、逐字节稳定）、`harness lock`（检查通过才写，保留批准与阶段）、prd.03 编号不得消失或复用、prd.08 CHG 与哈希差异一致。
 
 ### T-003 澄清记录、验收用例与需求文本质量
-- Status: InProgress
+- Status: Done
 - Covers: FR-002, AC-019-1, AC-019-2, FR-040
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
@@ -46,7 +46,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 三章齐全、Open 待澄清项阻止 Approved、澄清记录按轮次且每轮不超过 5 问、用例编号与 N 加 B/E、模糊词（跳过代码格式）、Quantitative NFR 含数值与单位。
 
 ### T-004 统一语言一致性
-- Status: Todo
+- Status: InProgress
 - Covers: FR-005
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01

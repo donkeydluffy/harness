@@ -228,7 +228,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Depends: T-021
 
 ### T-023 扩展场景回归：新增阶段与新增规则
-- Status: InProgress
+- Status: Done
 - Covers: NFR-008, NFR-009
 - Design: FLOW-09, EXT-03, EXT-04
 - Scope: internal/app/extdemo_integration_test.go, internal/app/testdata/extdemo/**
@@ -237,7 +237,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 在临时 git 仓库中按 EXT-04、EXT-03 各做一次示例扩展提交，验证只改允许路径时 commit.04 通过、改动封闭模块时失败。
 
 ### T-024 确定性与无网络访问
-- Status: Todo
+- Status: InProgress
 - Covers: NFR-001
 - Design: FLOW-01, ADR-001
 - Scope: internal/app/determinism_integration_test.go, internal/app/testdata/determinism/**

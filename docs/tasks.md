@@ -349,7 +349,7 @@ init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它�
 同一条命令中字面量的 `cd <目录>` 之后，相对路径按该目录解析；`cd` 的目标无法静态判定时，之后的写入交给命令后比对。
 
 ### T-036 secret.entropy 不把由单词拼成的标识符判为密钥（DEBT-013）
-- Status: InProgress
+- Status: Done
 - Covers: AC-025-2
 - Design: FLOW-02
 - Scope: internal/gate/**, internal/app/security_integration_test.go

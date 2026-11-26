@@ -171,6 +171,17 @@ const basePRD = `# PRD: demo
   - AC-N001-1/N1: 断网运行
   - AC-N001-1/E1: 引入网络包
 
+### NFR-002 扩展场景：新增存储
+- Status: Active
+- Release: 2
+- Type: Scenario
+- Priority: P2
+- Adds: 一种存储实现
+- Allowed-Paths: 存储实现目录
+- Closed-Modules: 接口层
+
+- AC-N002-1: 新增一种存储只改存储实现目录。
+
 ## 6. 待澄清项
 
 ### OQ-001 是否支持 Windows
@@ -182,7 +193,7 @@ const basePRD = `# PRD: demo
 | ID | 日期 | 动作 | 对象 | 说明 |
 |---|---|---|---|---|
 | CHG-001 | 2026-11-25 | 新增 | FR-001, FR-002 | 初稿 |
-| CHG-001 | 2026-11-25 | 新增 | NFR-001 | 初稿 |
+| CHG-001 | 2026-11-25 | 新增 | NFR-001, NFR-002 | 初稿 |
 `
 
 // prd 返回对 basePRD 依次做字符串替换后的文本；每个替换必须命中。

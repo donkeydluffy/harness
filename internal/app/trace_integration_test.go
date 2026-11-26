@@ -77,7 +77,7 @@ func TestCheck_AC_007_3_E2(t *testing.T) {
 }
 
 func TestCheck_AC_007_3_B1(t *testing.T) {
-	files := traced(t, basePRD, "overview.md", "- Relates: NFR-001\n", "- Relates: NFR-001, ADR-001\n")
+	files := traced(t, basePRD, "overview.md", "- Relates: NFR-002\n", "- Relates: NFR-002, ADR-001\n")
 	files["docs/adr/ADR-001.md"] = sprintf(adr, "Superseded", "FR-001", "- Superseded-By: ADR-002\n")
 	files["docs/adr/ADR-002.md"] = strings.Replace(sprintf(adr, "Accepted", "FR-001", ""), "ADR-001", "ADR-002", 1)
 	wantViolation(t, checkTrace(t, files), "trace.03", "Superseded 的 ADR-001", "应改为引用 ADR-002")

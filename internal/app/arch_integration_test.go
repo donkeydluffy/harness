@@ -34,7 +34,7 @@ const archOverview = `# 架构总览
 - Interface: IF-002
 - Paths: internal/store/<实现>/**
 - Closed: MOD-01
-- Relates: NFR-001
+- Relates: NFR-002
 `
 
 const archModules = "# 模块详细设计\n\n- Status: Draft\n\n### IF-001 Serve\n- Module: MOD-01\n- Covers: FR-001\n\n```go\n// IF-001\nfunc Serve() error\n```\n\n### IF-002 Save\n- Module: MOD-02\n- Covers: FR-002\n\n```go\n// IF-002\nfunc Save(b []byte) error\n```\n"

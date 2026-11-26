@@ -30,14 +30,23 @@ var ErrDeclined = errors.New("未确认，产物状态与锁文件均未改变")
 // now 便于测试固定时间。
 var now = func() time.Time { return time.Now().UTC().Truncate(time.Second) }
 
-// Approve 由人批准产物：确认交互式终端，产物文档规则通过后请求确认，
-// 把文件头 Status 改为 Approved（ADR 为 Accepted），并在锁文件追加批准记录（IF-024）。
-// artifact 可以是产物路径，或 prd（docs/PRD.md）。检查未通过时返回 *ViolationsError。
+// Approve 由人批准（IF-024）。锁文件为第 2 版时按批准单位批准（approveUnits）；为第 1 版时批准整个产物：
+// 产物文档规则通过后请求确认，把文件头 Status 改为 Approved（ADR 为 Accepted），并在锁文件追加批准记录。
+// artifact 可以是产物路径、prd（docs/PRD.md），第 2 版时还可以是单位编号。检查未通过时返回 *ViolationsError。
+//
+// harness:IF-024
 func Approve(root, artifact string, t Terminal) error {
 	if !t.IsInteractive() {
 		return ErrNotInteractive
 	}
 	registerRules()
+	if l, err := lock.Read(filepath.Join(root, lock.File)); err == nil && l.ByUnit() {
+		s, err := workspace.Load(root, workspace.LoadOptions{})
+		if err != nil {
+			return err
+		}
+		return approveUnits(root, s, artifact, t)
+	}
 	rel := filepath.ToSlash(filepath.Clean(artifact))
 	if strings.EqualFold(artifact, "prd") {
 		rel = workspace.PRDIndex

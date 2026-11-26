@@ -31,7 +31,7 @@ const usage = `用法：harness <命令> [参数]
                                    也可写作 check commits origin/main..HEAD；
                                    --msg-file 传入即将提交的信息（commit-msg hook 使用）
   lock                             产物文档检查通过后更新 harness.lock
-  approve <产物>                   由人在终端批准产物（prd 或产物路径），写入批准记录
+  approve <产物或单位>             由人在终端批准（prd、产物路径或单位编号），写入批准记录
   phase list                       列出流程阶段，标出当前阶段
   phase next                       由人在终端推进到下一阶段（退出与进入规则须通过）
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
@@ -188,7 +188,7 @@ func printReport(rep engine.Report, asJSON bool, stdout, stderr io.Writer) int {
 
 func approveCmd(root string, args []string, stdout, stderr io.Writer) int {
 	if len(args) != 1 {
-		fmt.Fprintln(stderr, "用法：harness approve <产物>（prd 或产物路径，如 docs/architecture/overview.md）")
+		fmt.Fprintln(stderr, "用法：harness approve <产物或单位>（prd、产物路径如 docs/architecture/overview.md，或单位编号如 FR-047）")
 		return ExitInternal
 	}
 	err := app.Approve(root, args[0], newTerminal(stdout))
@@ -196,6 +196,9 @@ func approveCmd(root string, args []string, stdout, stderr io.Writer) int {
 	switch {
 	case err == nil:
 		fmt.Fprintln(stdout, "已批准，批准记录写入 harness.lock")
+		return ExitOK
+	case errors.Is(err, app.ErrNothingPending):
+		fmt.Fprintln(stdout, "没有待批准的内容，锁文件未改变")
 		return ExitOK
 	case errors.As(err, &ve):
 		printReport(ve.Report, false, stdout, stderr)

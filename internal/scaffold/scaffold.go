@@ -55,7 +55,7 @@ func Languages() []string {
 	return out
 }
 
-// modulePath 是 CI 模板中安装 harness 用的模块路径（DEBT-001：发布前改为仓库地址）。
+// modulePath 是 CI 模板中安装 harness 用的模块路径，与 go.mod 的模块路径一致。
 const modulePath = "github.com/donkeydluffy/harness"
 
 // ciFiles 是 --ci 的取值与生成的 CI 配置文件。

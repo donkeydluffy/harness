@@ -266,8 +266,8 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 ### T-027 跨平台构建与发布
 - Status: InProgress
 - Covers: AC-N002-1, AC-N002-3
-- Design: MOD-01, ADR-001
-- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml
+- Design: MOD-01, ADR-001, FLOW-07
+- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/scaffold.go
 - Depends: T-026
 
 6 个平台交叉编译、GitHub Release 附校验和、Homebrew tap formula。需要 GitHub 仓库与 tap 仓库，发布前由用户确认。

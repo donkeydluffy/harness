@@ -176,3 +176,7 @@
 ### 2026-11-26 T-030
 - 结论：Done。生成的 hook 命令改为 `command -v harness >/dev/null 2>&1 || {…}; exec harness gate claudecode <事件>`：找不到 harness 时 PreToolUse 输出拒绝（AC-012-5/E1 的失败即阻断），SessionStart 注入"harness 未安装"，PostToolUse 与 Stop 不阻止。`TestGate_MissingBinaryFailsClosed` 用 /bin/sh 按 Claude Code 的方式执行生成的命令，分别在 PATH 不含与含 harness 时验证；两个变异都被抓到（其中一个起初因编译失败看似存活，换成可编译的变异后确认）。用户在终端重新生成了本仓库的 `.claude/settings.json`。
 - 遗留：新的 hook 配置在 Claude Code 重新加载后生效。
+
+### 2026-11-26 T-031
+- 结论：Done。workspace 新增 `RegeneratedFiles`（GitHub、GitLab 的 CI 配置）。整条命令只是 `rm`（可带 `-f`）这些文件时，门禁命令前放行、命令后保留删除；单独一次 `harness init` 写回它们时保留。复合命令、`-r`、混入其他路径都拒绝，通配符照常命令前放行、命令后恢复。最初把 `.claude/settings.json` 也列入清单，对照 AC-025-4（代理修改 hook 配置须拒绝）后移除：代理删除 hook 配置而不写回会让下次会话失去门禁。回归测试通过，三个变异都被抓到。
+- 遗留：hook 配置的模板变化后仍需由人运行 `rm .claude/settings.json && harness init`。

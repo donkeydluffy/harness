@@ -148,7 +148,7 @@ func onlyHarness(cmd string) bool {
 }
 
 // regenRemovals 返回整条命令只是 rm 可重新生成的生成文件时被删除的文件（仓库相对路径）；
-// 命令含其他内容、其他路径或通配符时返回 nil（DEBT-009）。
+// 命令含其他内容、其他路径或通配符时返回 nil。
 func regenRemovals(s *workspace.Snapshot, cmd string) map[string]bool {
 	f, err := syntax.NewParser().Parse(strings.NewReader(cmd), "")
 	if err != nil || len(f.Stmts) != 1 || f.Stmts[0].Redirs != nil {

@@ -63,10 +63,12 @@ test.02 只看用例编号的测试，arch.05 只看扩展点编号的测试；�
 
 
 ### DEBT-009 门禁不允许代理按 cfg.02 的修复办法重新生成生成文件
-- Status: Open
+- Status: Resolved
 - Module: MOD-11
 
 commit.02/commit.03 豁免生成文件（TERM-026），门禁却按源码路径判定 `.github/workflows/harness.yml` 这类不属于任何模块的生成文件，拒绝 `rm` 后再 `harness init`。cfg.02 的修复办法因此只能由人执行（T-027 模板变化后即如此）。应让门禁允许删除生成文件，再由单独的 `harness init` 写回，写回内容由 cfg.02 校验。
+
+已解决（df67d88，T-031）：整条命令只是 `rm` CI 配置（`workspace.RegeneratedFiles`）时放行并保留删除，单独一次 `harness init` 写回的内容保留。hook 配置 `.claude/settings.json` 不在其中，仍只能由人重新生成（AC-025-4）。
 
 ### DEBT-010 用户项目的 CI 安装 @latest，与生成文件的 harness 版本可能不一致
 - Status: Open

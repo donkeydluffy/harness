@@ -257,7 +257,7 @@ func TestGate_AssignmentOnlyCommand(t *testing.T) {
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("d=$(touch other/b.go)")), "gate.write", "other/b.go")
 }
 
-// 代理可按 cfg.02 的修复办法删除可重新生成的生成文件，再单独运行 harness init 写回（T-031，DEBT-009）。
+// 代理可按 cfg.02 的修复办法删除可重新生成的生成文件，再单独运行 harness init 写回（T-031）。
 func TestGate_RegenerateGeneratedFile(t *testing.T) {
 	dir := gateDir(t, "implementation", activeTasks)
 	write(t, dir, ".github/workflows/harness.yml", "旧内容\n")

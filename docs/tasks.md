@@ -302,7 +302,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 生成的 hook 命令先检查 harness 是否可执行：PreToolUse 找不到时输出拒绝，SessionStart 注入"harness 未安装"，PostToolUse 与 Stop 不阻止。
 
 ### T-031 门禁允许删除不属于任何模块的生成文件（DEBT-009）
-- Status: InProgress
+- Status: Done
 - Covers: AC-012-2
 - Design: FLOW-02
 - Flow: FLOW-02
@@ -312,7 +312,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 代理可按 cfg.02 的修复办法删除生成文件，再由单独一次 `harness init` 写回；写入其他内容仍按范围判定。
 
 ### T-032 报告失败的测试与剩余的解析诊断（DEBT-008、DEBT-002、DEBT-003）
-- Status: Todo
+- Status: InProgress
 - Covers: AC-039-2, AC-003-1
 - Design: MOD-05
 - Scope: internal/rules/builtin/**

@@ -264,7 +264,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 对本仓库执行 `harness init`，提交生成文件与锁文件，启用 hook 与 CI；集成测试对仓库根目录运行 `harness check` 并校验 hook 配置存在。
 
 ### T-027 跨平台构建与发布
-- Status: InProgress
+- Status: Done
 - Covers: AC-N002-1, AC-N002-3
 - Design: MOD-01, ADR-001, FLOW-07
 - Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/**, internal/app/ci_integration_test.go, internal/app/cfg_integration_test.go

@@ -167,3 +167,8 @@
 ### 2026-11-26 T-029
 - 结论：Done。`TestParseRepoArtifacts_IF_001` 改为下限断言（任务数至少 29），只保证本仓库产物无诊断地解析且没有漏读整类实体；全量测试 0 失败。
 - 遗留：无。
+
+### 2026-11-26 T-027
+- 结论：Done。用户确认后建立仓库 donkeydluffy/harness（先私有，后改公开）与公开的 donkeydluffy/homebrew-tap，模块路径改为 `github.com/donkeydluffy/harness`（DEBT-001，用户在终端运行脚本并以 `--no-verify` 提交，fd3898e）。`.goreleaser.yaml` 构建 6 个平台的归档、checksums.txt 与 Homebrew formula；release.yml 先发草稿，校验 6 个归档、校验和与 formula 版本后公开，测试直接运行工作流中的校验命令（3 个变异均被抓到）。用户设置 HOMEBREW_TAP_TOKEN 并推送 v0.1.0 后，发布运行 45785485863 通过：Release 公开，含 6 个归档与 checksums.txt，tap 中 Formula/harness.rb 的版本为 0.1.0；本地下载后 `shasum -c` 全部 OK，darwin/arm64 二进制可运行。6 个用例（AC-N002-1、AC-N002-3）通过。
+- 期间修正：CI 模板运行测试、生成报告（Go 语言包声明 ciTest，cfg.02 按 harness.json 的语言生成期望内容）；harness 自身的仓库在 CI 中从源码构建（代理缓存的 @latest 落后于最新提交）。门禁的两个缺陷由 T-028、T-029 修复。
+- 遗留：goreleaser 的 `brews` 已标为弃用，工作流固定 v2.20.3 继续使用；没有在本机执行 `brew install` 验证 formula（会改动本机环境）；DEBT-004、005、007、008、009、010 待后续 Release 处理。

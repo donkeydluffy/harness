@@ -246,7 +246,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 静态测试：除 audit 包外不得引入网络包；全部检查子命令在禁用网络时结果一致。
 
 ### T-025 性能基准
-- Status: InProgress
+- Status: Done
 - Covers: NFR-003
 - Design: FLOW-01, FLOW-02
 - Scope: internal/app/perf_integration_test.go, internal/app/testdata/perf/**
@@ -255,7 +255,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 生成 5000 个源文件、200 个任务的样例仓库；PreToolUse 门禁 p95 < 200ms，全量检查 < 10s，50000 行 PRD 的 `harness check prd` < 2s。
 
 ### T-026 自举：本仓库启用 harness
-- Status: Todo
+- Status: InProgress
 - Covers: FR-017
 - Design: FLOW-01, FLOW-07
 - Scope: internal/app/bootstrap_integration_test.go, internal/app/testdata/bootstrap/**

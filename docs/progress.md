@@ -68,3 +68,8 @@
 - 实现取舍：Removed 标记只用于需求和用例；AC-003-3 的正文以"Removed"开头，按用例规则判断会误报为已删除。规则样本改用最小夹具，完整夹具复制 12 份超出提交行数上限。
 - 自检：`harness check task` 对本仓库 0 条违规，taskcheck.py 原型不再需要。
 - 遗留：DEBT-002 仍为 Open，剩 PRD 中与用例无关的诊断和进度文件的诊断。
+
+### 2026-11-26 T-012
+- 结论：Done。commit.01 ~ commit.04；`harness check` 支持 `--commits <范围>`、`check commits <范围>` 与 `--msg-file`（commit-msg hook 传入即将形成的提交信息）。14 个用例（AC-013-1、2、4，AC-034-1）集成测试通过；逐一破坏各判定分支后对应用例失败。
+- 设计澄清：pre-commit 时提交信息尚未写出，依赖 Task 尾注的规则只能在 commit-msg hook 中运行；为此 CheckOptions 增加 MessageFile，LoadOptions 增加 Message。MOD-01、MOD-09、flows.md 因此回到 Draft，待确认。生成文件暂按 TERM-026 列为 harness.json、harness.lock、.claude/settings.json、CODEOWNERS、.github/workflows/harness.yml，T-019 实现 init 后以 scaffold 的清单为准。
+- 自检发现：`harness check commits 552eb0b..HEAD` 报告 24 条违规。11 个"docs: T-00x 完成"提交没有 Task 尾注；T-003、T-006、T-007、T-008、T-010 有 13 处改动超出任务范围（共享测试夹具、T-008 的 engine 接口调整等），当时应先扩大任务范围再改。历史提交不改写，提交规则从 920a059 起生效：此后每个提交（含文档提交）都带 Task 尾注，并在提交前用 `harness check commit adr.03 --msg-file` 检查；T-012 实现过程中已按此先扩大了自身范围（workspace.go、registry_test.go）。

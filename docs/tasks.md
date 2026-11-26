@@ -120,7 +120,7 @@ JUnit XML 与 `go test -json` 解析；Go 语言包（注释提取、`*_integrat
 task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC 都被关联。完成后本文件由 `harness check task` 校验。
 
 ### T-012 提交检查
-- Status: InProgress
+- Status: Done
 - Covers: AC-013-1, AC-013-2, AC-013-4, AC-034-1
 - Design: FLOW-09, IF-007, IF-014, IF-022, ADR-008
 - Flow: FLOW-01

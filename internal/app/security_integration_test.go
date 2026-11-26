@@ -144,3 +144,11 @@ func TestGate_EntropyIgnoresPaths(t *testing.T) {
 	key := "wJalrXUtnFEMI" + "/K7MDENG/" + "bPxRfiCYEXAMPLEKEY" // AWS 文档的示例 secret，拼接以免样本本身被门禁拦下
 	wantDeny(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/k.go", "package api\n\nvar s = \""+key+"\"\n")), "secret.entropy")
 }
+
+// 由单词拼成的长测试名写入文件或出现在命令中都不被判为密钥（T-036）。
+func TestGate_EntropyIgnoresWordIdentifiers(t *testing.T) {
+	dir := secDir(t)
+	name := "TestParseGoJSON" + "PackageFailure" + "_IF_008"
+	wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/a_test.go", "package api\n\nfunc "+name+"(t *testing.T) {}\n")))
+	wantAllow(t, hook(t, dir, "PreToolUse", bashTool("go test -run "+name+" ./...")))
+}

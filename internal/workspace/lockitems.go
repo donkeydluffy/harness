@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -19,7 +20,7 @@ func CaseRemoved(text string) bool { return strings.HasPrefix(strings.TrimSpace(
 var chgIDRe = regexp.MustCompile(`^CHG-\d+$`)
 
 // LockItems 计算当前产物应写入锁文件的条目（formats.md 第 7 节）。
-// 键为 FR/NFR、用例、IF、CHG 编号与 config；已删除的需求和用例值前加 removed:。
+// 键为 FR/NFR、用例、IF、CHG、ADR 编号与 config；已删除的需求和用例值前加 removed:。
 func (s *Snapshot) LockItems() map[string]string {
 	items := map[string]string{}
 	for _, d := range s.PRDDocs() {
@@ -55,8 +56,37 @@ func (s *Snapshot) LockItems() map[string]string {
 	for id, r := range rows {
 		items[id] = lock.Hash(strings.Join(r, "\n"))
 	}
+	for _, e := range s.Project.ByKind["ADR"] {
+		items[e.ID] = lock.Hash(e.Raw)
+	}
 	if src, err := os.ReadFile(filepath.Join(s.Root, ConfigFile)); err == nil {
-		items["config"] = lock.Hash(string(src))
+		items["config"] = ConfigHash(src)
 	}
 	return items
+}
+
+// ConfigHash 返回 harness.json 的规范化哈希：按 JSON 解析，去掉键为 "//" 的注释项，键排序后紧凑序列化，
+// 空白、键顺序与注释的变化不改变哈希。不是合法 JSON 时按文本规范化（formats.md 第 6 节）。
+func ConfigHash(src []byte) string {
+	var v any
+	if err := json.Unmarshal(src, &v); err != nil {
+		return lock.Hash(string(src))
+	}
+	b, _ := json.Marshal(stripComments(v))
+	return lock.Hash(string(b))
+}
+
+func stripComments(v any) any {
+	switch t := v.(type) {
+	case map[string]any:
+		delete(t, "//")
+		for k, x := range t {
+			t[k] = stripComments(x)
+		}
+	case []any:
+		for i, x := range t {
+			t[i] = stripComments(x)
+		}
+	}
+	return v
 }

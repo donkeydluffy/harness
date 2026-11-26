@@ -67,6 +67,9 @@ func (prd08) Check(s *workspace.Snapshot) []engine.Violation {
 			continue
 		}
 		for _, target := range c.Targets {
+			if target == workspace.ConfigFile {
+				continue // 门禁配置的变更由 cfg.01 检查
+			}
 			ids, ok := expandTarget(target)
 			if !ok {
 				out = append(out, engine.Violation{File: c.File, Line: c.Line,

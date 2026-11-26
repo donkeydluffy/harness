@@ -224,7 +224,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Covers: AC-041-1, AC-043-2
 - Design: FLOW-01, IF-014
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/cfg_01.go, internal/rules/builtin/testdata/cfg.01/**, internal/rules/builtin/ci_01.go, internal/rules/builtin/testdata/ci.01/**, internal/app/cfg_integration_test.go, internal/app/testdata/cfg/**
+- Scope: internal/workspace/lockitems.go, internal/rules/builtin/prd_08.go, internal/app/session_integration_test.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/cfg_01.go, internal/rules/builtin/testdata/cfg.01/**, internal/rules/builtin/ci_01.go, internal/rules/builtin/testdata/ci.01/**, internal/app/cfg_integration_test.go, internal/app/testdata/cfg/**
 - Depends: T-021
 
 ### T-023 扩展场景回归：新增阶段与新增规则

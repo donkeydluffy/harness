@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -418,5 +419,113 @@ func entityRefs(s *workspace.Snapshot, text string) []*model.Entity {
 			}
 		}
 	}
+	return out
+}
+
+const tasksFile = "docs/tasks.md"
+
+// tasks 返回任务列表中的任务。
+func tasks(s *workspace.Snapshot) []*model.Entity {
+	var out []*model.Entity
+	if d := s.Doc(tasksFile); d != nil {
+		for _, e := range d.Entities {
+			if e.Kind == "T" {
+				out = append(out, e)
+			}
+		}
+	}
+	return out
+}
+
+// acItem 返回编号为 id 的验收标准及其所属需求。
+func acItem(s *workspace.Snapshot, id string) (*model.Item, *model.Entity) {
+	for _, e := range requirements(s) {
+		for _, it := range e.Items {
+			if it.ID == id {
+				return it, e
+			}
+		}
+	}
+	return nil, nil
+}
+
+// flowModules 返回调用流程涉及的模块：调用方与被调接口的所属模块。
+func flowModules(s *workspace.Snapshot, flow string) map[string]bool {
+	out := map[string]bool{}
+	f := s.Project.ByID[flow]
+	if f == nil || f.Kind != "FLOW" {
+		return out
+	}
+	steps, _ := parseSteps(f.Fields["Steps"])
+	for _, st := range steps {
+		if st.Caller != "" {
+			out[st.Caller] = true
+		}
+		if i := s.Project.ByID[st.IF]; i != nil && i.Fields["Module"] != "" {
+			out[i.Fields["Module"]] = true
+		}
+	}
+	return out
+}
+
+// taskFlows 返回任务引用的调用流程（Flow 字段与 Design 中的 FLOW）。
+func taskFlows(t *model.Entity) []string {
+	var out []string
+	for _, d := range append(t.List("Flow"), t.List("Design")...) {
+		if strings.HasPrefix(d, "FLOW-") && !contains(out, d) {
+			out = append(out, d)
+		}
+	}
+	return out
+}
+
+// taskModules 返回任务的关联模块：Design 中的模块、接口所属模块、所引用流程涉及的模块。
+func taskModules(s *workspace.Snapshot, t *model.Entity) map[string]bool {
+	out := map[string]bool{}
+	for _, d := range t.List("Design") {
+		e := s.Project.ByID[d]
+		switch {
+		case e == nil:
+		case e.Kind == "MOD":
+			out[d] = true
+		case e.Kind == "IF" && e.Fields["Module"] != "":
+			out[e.Fields["Module"]] = true
+		}
+	}
+	for _, f := range taskFlows(t) {
+		for m := range flowModules(s, f) {
+			out[m] = true
+		}
+	}
+	return out
+}
+
+// globWithin 判断范围 glob p 匹配的文件是否都在路径 glob m 内（按前缀近似判断）。
+func globWithin(p, m string) bool {
+	if p == m {
+		return true
+	}
+	if strings.HasSuffix(m, "/**") {
+		dir := strings.TrimSuffix(m, "**")
+		return strings.HasPrefix(p, dir) || p == strings.TrimSuffix(dir, "/")
+	}
+	return globBase(p) == p && globBase(m) != m && workspace.Match(m, p)
+}
+
+// scopeOwners 返回路径包含范围 glob p 的模块，按编号排序。
+func scopeOwners(s *workspace.Snapshot, p string) []string {
+	var out []string
+	for _, m := range s.Project.ByKind["MOD"] {
+		if workspace.Removed(m) {
+			continue
+		}
+		for _, g := range m.List("Paths") {
+			if globWithin(p, g) {
+				out = append(out, m.ID)
+				break
+			}
+		}
+	}
+	sort.Strings(out)
 	return out
 }

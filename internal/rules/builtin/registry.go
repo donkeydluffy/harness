@@ -35,5 +35,11 @@ func Rules() []engine.Rule {
 		debt01{},
 		debt02{},
 		debt03{},
+		task01{},
+		task02{},
+		task03{},
+		task04{},
+		task05{},
+		task06{},
 	}
 }

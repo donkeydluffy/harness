@@ -433,7 +433,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 锁文件为第 2 版时：`docs/` 任何时候可写（去掉 gate.artifact），源码写入检查 InProgress 任务的批准链，会话开始注入批准状态摘要与建议的 skill。顺带为 IF-015 ~ IF-019、IF-025 补锚点与单元测试。
 
 ### T-044 声明式自定义规则
-- Status: Todo
+- Status: Done
 - Covers: FR-054
 - Design: MOD-17, IF-036, IF-013, IF-024, FLOW-08
 - Flow: FLOW-08

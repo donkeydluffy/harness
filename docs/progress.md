@@ -232,3 +232,7 @@
 ### 2026-11-26 T-043
 - 结论：锁文件为第 2 版时门禁不再按阶段判定产物写入，`docs/` 随时可写（保护文件与状态改为 Approved 仍拒绝）；源码写入除了要在 InProgress 任务范围内，还要求该任务的批准链全部有效，失效时拒绝并列出未批准或失效的单位与原因。approval 新增 Summarize：未批准与失效单位数、可开工任务（Todo、批准链有效、链上需求没有 Open 待澄清项）、进行中任务、Open 待澄清项与建议的 skill（clarify → architect → plan → implement，设计或任务未覆盖当前 Release 的需求也算未完成）；会话开始注入它取代阶段。第 1 版锁文件仍走阶段逻辑。IF-015 ~ IF-019、IF-025 补了锚点与单元测试。变异测试：门禁 3 处、Summarize 8 处均被发现。
 - 遗留：gate.artifact 与阶段逻辑在 T-054 删除。
+
+### 2026-11-26 T-044
+- 结论：新增 MOD-17（internal/rules/custom）：按 `harness.json` 的 rules 构造 required、enum、ref、forbid 四类规则，校验编号（须有项目前缀且不与内置区域冲突）、类型、必填字段、正则、批准单位类型与样本目录；`harness check` 先用样本验证，定义有误或样本不符合预期的规则判定失效，不运行。锁文件新增 `rule:<编号>`，哈希覆盖规则定义与样本目录（formats.md 只写了样本目录，加上定义是为了满足 AC-054-2/E1 修改定义后未 lock 时报告不一致）。`harness approve` 时运行登记在待批准单位类型上的规则，只保留落在这些单位内的违规。engine 注册表是全局的，项目规则在 app 中按快照运行。变异测试 11 处均被发现。
+- 遗留：门禁会话开始与结束的全量检查（gate 包内的 engine.Run）还不含项目规则，留给触及 gate 的后续任务；formats.md 第 7 节 `rule:<编号>` 的说明待补"含定义"。

@@ -33,7 +33,11 @@ func TestRulesSamples_IF_014(t *testing.T) {
 			if fi, err := os.Stat(filepath.Join(d, "repo")); err == nil && fi.IsDir() {
 				root = gitSample(t, filepath.Join(d, "repo"))
 			}
-			s, err := workspace.Load(root, workspace.LoadOptions{WithSources: true, WithTests: true})
+			opt := workspace.LoadOptions{WithSources: true, WithTests: true}
+			if b, err := os.ReadFile(filepath.Join(d, "range")); err == nil {
+				opt.CommitRange = strings.TrimSpace(string(b))
+			}
+			s, err := workspace.Load(root, opt)
 			if err != nil {
 				t.Fatalf("%s: %v", d, err)
 			}
@@ -46,7 +50,8 @@ func TestRulesSamples_IF_014(t *testing.T) {
 	}
 }
 
-// gitSample 把 repo/01、repo/02…依次作为完整目录树提交，repo/staged 存在时最后暂存，返回临时仓库目录。
+// gitSample 把 repo/01、repo/02…依次作为完整目录树提交（步骤目录中的 MESSAGE 文件为提交信息），
+// repo/staged 存在时最后暂存，返回临时仓库目录。样本目录中的 range 文件指定提交范围。
 func gitSample(t *testing.T, repo string) string {
 	t.Helper()
 	dir := t.TempDir()
@@ -71,9 +76,14 @@ func gitSample(t *testing.T, repo string) string {
 		if err := os.CopyFS(dir, os.DirFS(step)); err != nil {
 			t.Fatal(err)
 		}
+		msg := "sample " + filepath.Base(step)
+		if b, err := os.ReadFile(filepath.Join(dir, "MESSAGE")); err == nil {
+			msg = string(b)
+			os.Remove(filepath.Join(dir, "MESSAGE"))
+		}
 		run("add", "-A")
 		if filepath.Base(step) != "staged" {
-			run("commit", "-q", "--allow-empty", "-m", "sample "+filepath.Base(step))
+			run("commit", "-q", "--allow-empty", "-m", msg)
 		}
 	}
 	return dir

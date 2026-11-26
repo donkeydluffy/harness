@@ -1,6 +1,6 @@
 # PRD: harness
 
-- Status: Approved
+- Status: Draft
 - Version: 1.0-rc3
 - Current-Release: 1
 - Updated: 2026-11-26
@@ -897,6 +897,22 @@ harness 自身的开发受 harness 管理。
   - AC-048-3/N1: 有 2 条未批准需求、1 个可开工任务时，注入内容包含这两项数量并建议 clarify
   - AC-048-3/B1: 空项目注入"无已批准的需求，建议 clarify"
 
+### FR-049 版本信息
+- Status: Active
+- Release: 2
+- Priority: P2
+
+能确认当前使用的 harness 版本，判断 hook 调用的是不是预期的二进制。
+
+- AC-049-1: `harness version` 与 `harness --version` 输出 `harness <版本>` 并以退出码 0 退出。发布构建输出发布版本号；从源码 `go install` 构建时输出模块版本，没有模块版本时输出提交哈希前 12 位，构建时工作区有未提交改动则附加 `-dirty`；都取不到时输出 `dev`。
+  - AC-049-1/N1: 发布流程构建的 v0.1.4 二进制输出 `harness 0.1.4`
+  - AC-049-1/N2: 在仓库中执行 `go install ./cmd/harness` 后，输出包含当前提交哈希的前 12 位
+  - AC-049-1/B1: 构建时工作区有未提交改动，输出以 `-dirty` 结尾
+  - AC-049-1/E1: `harness version extra` 带多余参数，退出码非 0 并提示用法
+- AC-049-2: `harness help` 与未知命令的用法提示中列出 version 命令。
+  - AC-049-2/N1: `harness help` 的输出包含 version
+  - AC-049-2/E1: 执行未知命令，错误输出的用法提示包含 version
+
 ## 4. 非功能需求
 
 ### NFR-001 确定性
@@ -1135,6 +1151,9 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 ### 2026-11-26 第 17 轮
 - Q: 新增的 FR-047、FR-048 与仍有效的 FR-038、FR-045 冲突，旧需求怎么处理？ A: 不直接改为 Removed（代码、架构仍在实现它们）；新需求用 `Replaces` 声明取代、旧需求用 `Replaced-By` 指回，Current-Release 达到新需求的 Release 时旧条目自动按 Removed 判定（AC-003-6，由 T-038 实现）。
 - Q: 何时把 Current-Release 改为 2？ A: Release 2 的全部需求澄清完毕后再改；批准 PRD 时会运行追溯检查，提前改会使尚无设计的 Release 2 需求阻止 PRD 批准。
+### 2026-11-26 第 18 轮
+- Q: 怎么确认当前使用的 harness 版本？ A: 新增 `harness version` 与 `--version`（FR-049，Release 2）。
+- Q: 代码对应不到设计或需求时怎么处理？ A: 已有 AC-008-2（不属于任何模块的源文件报告为未归属）与 AC-009-4、AC-009-5、FR-018（代码中的接口须与设计签名一致、锚点有效），均为 Release 2，澄清时补用例，不另加需求。删除阶段时 MOD-10 只覆盖已被取代的需求而被 trace.03 报告，删去 MOD-10 后 `internal/phase` 成为未归属文件，由 AC-008-2 要求删除代码。
 
 ## 8. 变更日志
 
@@ -1170,3 +1189,4 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 | CHG-018 | 2026-11-26 | 修改 | FR-013 | 新增 AC-013-5：只改产物与锁文件的提交可用 Change 尾注代替 Task 尾注 |
 | CHG-019 | 2026-11-26 | 修改 | FR-003 | 新增 AC-003-6：需求取代关系（Replaces / Replaced-By），按 Release 生效 |
 | CHG-019 | 2026-11-26 | 修改 | FR-038, FR-045, NFR-008, FR-047, FR-048 | 标注取代关系：FR-047 取代 FR-038、AC-037-3、AC-024-1，FR-048 取代 FR-045、NFR-008 |
+| CHG-020 | 2026-11-26 | 新增 | FR-049 | 版本信息（第 18 轮，Release 2） |

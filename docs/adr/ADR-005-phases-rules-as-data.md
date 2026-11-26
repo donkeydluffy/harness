@@ -1,7 +1,8 @@
 # ADR-005 阶段与规则可注册、可配置
 
-- Status: Accepted
-- Relates: FR-045, FR-046, NFR-008, NFR-009, MOD-04, MOD-05, MOD-10, EXT-03, EXT-04
+- Status: Superseded
+- Superseded-By: ADR-010
+- Relates: FR-046, NFR-009, MOD-04, MOD-05, MOD-10, EXT-03, EXT-04
 
 ## 背景
 

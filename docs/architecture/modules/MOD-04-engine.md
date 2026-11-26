@@ -1,12 +1,12 @@
 # MOD-04 engine 详细设计
 
-- Status: Approved
+- Status: Draft
 
 ## 接口
 
 ### IF-011 Rule
 - Module: MOD-04
-- Covers: FR-028, FR-046
+- Covers: FR-028, FR-054
 
 ```go
 // IF-011
@@ -16,7 +16,12 @@ type Rule interface {
 	Fix() string                // 默认修复建议
 	Check(s *workspace.Snapshot) []Violation
 }
-type Violation struct{ Rule, File string; Line int; Msg, Fix string }
+type Violation struct {
+	Rule, File string
+	Line       int
+	Msg, Fix   string
+	Warn       bool // 告警：输出但不影响退出码（AC-030-4、AC-047-1/E1）
+}
 
 // Needer 是可选接口：规则声明在产物文档之外需要的输入。未实现表示只读产物文档。
 type Input uint8 // InputSources | InputTests | InputGit
@@ -29,7 +34,7 @@ func Lookup(id string) (Rule, bool)
 
 ### IF-012 Run
 - Module: MOD-04
-- Covers: FR-045, NFR-004
+- Covers: FR-030, NFR-004
 
 ```go
 // IF-012
@@ -41,7 +46,7 @@ func Run(s *workspace.Snapshot, sel Selector) Report // 输出按 文件、行�
 
 ### IF-013 Verify
 - Module: MOD-04
-- Covers: FR-028, FR-046
+- Covers: FR-028, FR-054
 
 ```go
 // IF-013
@@ -52,5 +57,6 @@ func Verify(r Rule, samples []Sample) error
 
 ## 内部设计
 
-- 项目自定义规则（Release 2）实现同一个 Rule 接口：声明式规则由配置构造，外部命令规则通过子进程执行。
+- 项目自定义规则实现同一个 Rule 接口：Release 2 的声明式规则由 MOD-17 按配置构造；外部命令规则在 Release 3（FR-046）。
+- Report 的退出码只看 `Warn` 为 false 的违规。
 - 违规缺少修复建议时，Run 用规则的 `Fix()` 补齐；两者都空视为规则缺陷（自身测试失败，AC-N004-1/E1）。

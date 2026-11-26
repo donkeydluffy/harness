@@ -1,7 +1,8 @@
 # ADR-004 锁文件记录哈希、批准与当前阶段
 
-- Status: Accepted
-- Relates: FR-004, FR-037, FR-041, FR-045, MOD-06
+- Status: Superseded
+- Superseded-By: ADR-009
+- Relates: FR-004, FR-037, FR-041, MOD-06
 
 ## 背景
 

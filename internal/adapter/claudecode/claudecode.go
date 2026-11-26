@@ -178,7 +178,7 @@ func (Adapter) Encode(event string, d gate.Decision) ([]byte, int) {
 // Claude Code 把退出码 2 视为阻断，保证失败即拒绝。
 func (Adapter) HookConfig(binary string) (string, []byte) {
 	hook := func(event string) []map[string]any {
-		return []map[string]any{{"type": "command", "command": binary + " gate claudecode " + event}}
+		return []map[string]any{{"type": "command", "command": hookCommand(binary, event)}}
 	}
 	cfg := map[string]any{"hooks": map[string]any{
 		"SessionStart": []map[string]any{{"hooks": hook("SessionStart")}},
@@ -188,4 +188,40 @@ func (Adapter) HookConfig(binary string) (string, []byte) {
 	}}
 	b, _ := json.MarshalIndent(cfg, "", "  ")
 	return ".claude/settings.json", append(b, '\n')
+}
+
+// missingBinary 是找不到 harness 时反馈给代理的说明。
+const missingBinary = "harness 未安装或不在 Claude Code 的 PATH 中，门禁无法运行，写操作一律拒绝。安装 harness 并把它所在目录加入 PATH 后重启会话。"
+
+// hookCommand 返回事件 event 的 hook 命令：先确认 binary 可执行再交给它判定。
+// 找不到时失败即阻断（AC-012-5）：PreToolUse 拒绝，SessionStart 注入说明；
+// PostToolUse 与 Stop 不阻止，因为工具调用已被 PreToolUse 拒绝。
+func hookCommand(binary, event string) string {
+	name := binary
+	if f := strings.Fields(binary); len(f) > 0 {
+		name = f[0]
+	}
+	var fallback string
+	switch event {
+	case "PreToolUse":
+		fallback = fallbackJSON(map[string]any{"hookEventName": event, "permissionDecision": "deny", "permissionDecisionReason": missingBinary})
+	case "SessionStart":
+		fallback = fallbackJSON(map[string]any{"hookEventName": event, "additionalContext": missingBinary})
+	}
+	check := "command -v " + name + " >/dev/null 2>&1 || "
+	if fallback == "" {
+		check += "exit 0; "
+	} else {
+		check += "{ printf '%s\\n' '" + fallback + "'; exit 0; }; "
+	}
+	return check + "exec " + binary + " gate claudecode " + event
+}
+
+// fallbackJSON 序列化 hookSpecificOutput；内容不含单引号，可直接放进 sh 的单引号字符串。
+func fallbackJSON(out map[string]any) string {
+	var b strings.Builder
+	enc := json.NewEncoder(&b)
+	enc.SetEscapeHTML(false)
+	enc.Encode(map[string]any{"hookSpecificOutput": out})
+	return strings.TrimSuffix(b.String(), "\n")
 }

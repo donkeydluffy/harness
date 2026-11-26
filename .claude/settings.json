@@ -4,7 +4,7 @@
       {
         "hooks": [
           {
-            "command": "harness gate claudecode PostToolUse",
+            "command": "command -v harness \u003e/dev/null 2\u003e\u00261 || exit 0; exec harness gate claudecode PostToolUse",
             "type": "command"
           }
         ],
@@ -15,7 +15,7 @@
       {
         "hooks": [
           {
-            "command": "harness gate claudecode PreToolUse",
+            "command": "command -v harness \u003e/dev/null 2\u003e\u00261 || { printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"harness 未安装或不在 Claude Code 的 PATH 中，门禁无法运行，写操作一律拒绝。安装 harness 并把它所在目录加入 PATH 后重启会话。\"}}'; exit 0; }; exec harness gate claudecode PreToolUse",
             "type": "command"
           }
         ],
@@ -26,7 +26,7 @@
       {
         "hooks": [
           {
-            "command": "harness gate claudecode SessionStart",
+            "command": "command -v harness \u003e/dev/null 2\u003e\u00261 || { printf '%s\\n' '{\"hookSpecificOutput\":{\"additionalContext\":\"harness 未安装或不在 Claude Code 的 PATH 中，门禁无法运行，写操作一律拒绝。安装 harness 并把它所在目录加入 PATH 后重启会话。\",\"hookEventName\":\"SessionStart\"}}'; exit 0; }; exec harness gate claudecode SessionStart",
             "type": "command"
           }
         ]
@@ -36,7 +36,7 @@
       {
         "hooks": [
           {
-            "command": "harness gate claudecode Stop",
+            "command": "command -v harness \u003e/dev/null 2\u003e\u00261 || exit 0; exec harness gate claudecode Stop",
             "type": "command"
           }
         ]

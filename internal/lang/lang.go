@@ -18,6 +18,9 @@ type (
 	Tool     = spec.Tool
 	Pack     = spec.Pack
 	Packer   = spec.Packer
+	Analyzer = spec.Analyzer
+	Import   = spec.Import
+	Decl     = spec.Decl
 )
 
 const (
@@ -81,4 +84,14 @@ func PackFor(name string) (Pack, bool) {
 		return Pack{}, false
 	}
 	return p.Pack(), true
+}
+
+// AnalyzerFor 返回文件所属语言的源码分析器；语言未注册或没有分析器时 ok 为 false（IF-035）。
+func AnalyzerFor(p string) (Analyzer, bool) {
+	l, ok := ForPath(p)
+	if !ok {
+		return nil, false
+	}
+	a, ok := l.(Analyzer)
+	return a, ok
 }

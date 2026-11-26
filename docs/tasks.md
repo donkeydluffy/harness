@@ -190,7 +190,7 @@ gate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危�
 PostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连续阻止 3 次后放行并写进度文件；SessionStart 注入阶段、InProgress 任务、未通过检查、Open 待澄清项、冒烟测试结果。
 
 ### T-019 项目初始化与产物模板
-- Status: InProgress
+- Status: Done
 - Covers: FR-001, AC-N002-2, NFR-005
 - Design: FLOW-07, IF-020, IF-021, IF-026
 - Flow: FLOW-07
@@ -200,7 +200,7 @@ PostToolUse 写产物后按类型运行规则并反馈；Stop 全量检查，连
 go:embed 模板；`harness init --lang go` 生成产物骨架、harness.json、Claude Code hook 配置；重复执行不覆盖已修改文件并列出跳过的文件。
 
 ### T-020 流程 skill 集
-- Status: Todo
+- Status: InProgress
 - Covers: FR-016, AC-011-5, AC-033-5
 - Design: MOD-13, IF-020
 - Scope: internal/scaffold/templates/skills/**, internal/scaffold/skills_integration_test.go

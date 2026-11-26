@@ -118,3 +118,9 @@
 - 结论：Done。写入产物后按文件选择规则前缀（PRD → prd、term；架构 → arch、trace、term；ADR → adr；任务 → task；技术债 → debt）运行文档规则并反馈；会话结束运行全量检查（engine.FullCheck，不含覆盖类规则），连续阻止 stopMaxBlocks 次后放行，未通过项写入 docs/progress.md 的"## 未完成"段，检查通过时清除；会话开始注入未完成项（最先）、阶段、进行中任务、未通过检查数、Open 待澄清项与冒烟结果（失败时最后 50 行）。12 个集成测试（AC-012-3、AC-012-4、AC-024-1、AC-024-3）通过；逐一破坏各判定分支（含两处计数清零）后对应用例失败。
 - 设计取舍：会话结束检查与会话开始注入沿用 task.08 的解释（全量检查不含 test.02、arch.05），否则 Release 1 完成前每次会话都会被阻止 3 次。写后检查只运行不依赖测试报告与版本库的规则。
 - 遗留：DEBT-003（task.08 仍重复维护排除列表）；Bash 命令改动产物后不运行写后检查，由会话结束检查兜底。
+
+### 2026-11-26 T-019
+- 结论：Done。`harness init --lang <语言列表> [--agent <代理列表>]` 写入内嵌模板：PRD、架构总览、任务、技术债、进度骨架，每种语言的配置包（`docs/lang/<语言>.md` 测试与注释约定，pack.json 的 sourcePaths 合并进 harness.json），以及 claudecode 的 `.claude/settings.json`。已存在且内容相同的文件不动，内容不同的跳过并列出；语言或代理不支持时不写任何文件。10 个集成测试（FR-001、AC-N002-2、NFR-005）通过；逐一破坏各判定分支后对应用例失败（目录创建与文件写入两处错误分支互为兜底，同时破坏才失败）。
+- 设计澄清（用户确认）：AC-001-1/B1 要求 5 种语言，Release 1 新增 TypeScript/JavaScript、Python、Java/Kotlin、C/C++ 的最小语言包，只提供注释提取、测试分类、测试名，T-019 的范围因此纳入 internal/lang/**。完整的格式化与静态检查配置属于 FR-014（Release 2）。
+- 设计取舍：prd.04（AC-002-3）要求三章各有条目，PRD 骨架带 TERM-001、FR-001、NFR-001 三个格式示例，Release 为 2，不进入当前 Release 的追溯与覆盖检查，澄清需求时替换。MOD-13 列出的 formats 参考与 ADR 模板没有放进骨架：放在 docs/architecture、docs/adr 下会被当作产物解析；改由 T-020 的 skill 说明格式。
+- 遗留：T-021 的 git hook 文件（commit-msg、pre-commit）没有扩展名，与 AC-N005-1/N1 的"全部产物扩展名为 .md、.yaml 或 .json"冲突，届时需确认 git hook 是否算产物。

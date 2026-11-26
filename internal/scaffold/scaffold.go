@@ -34,6 +34,9 @@ type InitOptions struct {
 	SelfHosted bool
 }
 
+// gateIgnoreFile 是忽略门禁运行时目录的 .gitignore。
+const gateIgnoreFile = ".harness/.gitignore"
+
 // selfHosted 判断 root 下 go.mod 的模块路径是否为 harness 自身。
 func selfHosted(root string) bool {
 	b, err := os.ReadFile(filepath.Join(root, "go.mod"))
@@ -157,6 +160,9 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 		binary = "harness"
 	}
 	out := map[string][]byte{}
+	// 门禁的快照与会话计数是运行时状态：用 .harness/ 下的 .gitignore 忽略它们（连同它自身），
+	// 不改项目根目录的 .gitignore，也不需要提交。
+	out[gateIgnoreFile] = []byte("snap/\nsession/\n.gitignore\n")
 	if err := copyTree(out, "templates/artifacts"); err != nil {
 		return nil, err
 	}

@@ -40,7 +40,7 @@ func initDir(t *testing.T, langs string) string {
 var goInitFiles = []string{
 	".claude/settings.json", ".claude/skills/architect/SKILL.md", ".claude/skills/change/SKILL.md",
 	".claude/skills/clarify/SKILL.md", ".claude/skills/implement/SKILL.md", ".claude/skills/plan/SKILL.md",
-	".claude/skills/test/SKILL.md", ".github/workflows/harness.yml", "docs/PRD.md", "docs/architecture/overview.md", "docs/debt.md",
+	".claude/skills/test/SKILL.md", ".github/workflows/harness.yml", ".harness/.gitignore", "docs/PRD.md", "docs/architecture/overview.md", "docs/debt.md",
 	"docs/lang/go.md", "docs/progress.md", "docs/tasks.md", "harness.json",
 }
 
@@ -135,6 +135,9 @@ func TestInit_AC_N002_2_E1(t *testing.T) {
 
 func TestInit_AC_N005_1_N1(t *testing.T) {
 	for _, f := range listFiles(t, initDir(t, "go,typescript,python,java,cpp")) {
+		if strings.HasPrefix(f, ".harness/") {
+			continue // 门禁运行时目录（被忽略、不提交），不是产物
+		}
 		switch filepath.Ext(f) {
 		case ".md", ".yaml", ".yml", ".json": // .yml 同为 YAML；GitHub Actions 与 GitLab CI 的约定文件名用 .yml
 		default:
@@ -176,5 +179,29 @@ func TestInit_AC_N005_1_E1(t *testing.T) {
 			t.Fatalf("键未按字典序排列：%s", first)
 		}
 		pos = i
+	}
+}
+
+// init 写入 .harness/.gitignore：门禁的快照与会话目录、以及这个文件本身都不出现在 git status 中，
+// 测试报告与项目根目录的 .gitignore 不受影响（T-033）。
+func TestInit_IgnoresGateRuntimeDirs(t *testing.T) {
+	dir := initGit(t)
+	for _, p := range []string{".harness/snap/s1/state.json", ".harness/session/s1.json", ".harness/reports/go.jsonl"} {
+		write(t, dir, p, "x\n")
+	}
+	out, err := exec.Command("git", "-C", dir, "status", "--porcelain", "--untracked-files=all", "--", ".harness").Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.TrimSpace(string(out)); got != "?? .harness/reports/go.jsonl" {
+		t.Fatalf("只有测试报告应出现在 git status 中：%q", got)
+	}
+	if _, err := os.Stat(filepath.Join(dir, ".gitignore")); !os.IsNotExist(err) {
+		t.Fatal("不应创建项目根目录的 .gitignore")
+	}
+	// 已有项目重新运行 init 补上该文件。
+	os.Remove(filepath.Join(dir, ".harness/.gitignore"))
+	if r := runHarness(t, dir, "init", "--lang", "go"); r.Code != 0 || !strings.Contains(r.Stdout, "写入 .harness/.gitignore") {
+		t.Fatalf("%d %s", r.Code, r.Stdout)
 	}
 }

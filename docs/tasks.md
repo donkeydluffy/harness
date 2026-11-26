@@ -327,4 +327,4 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 - Scope: internal/scaffold/**, internal/app/init_integration_test.go
 - Depends: T-032
 
-init 在 `.gitignore` 中补上 `.harness/snap/`、`.harness/session/`（缺失时追加，不覆盖已有内容）。
+init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它自身：不改项目根目录的 `.gitignore`，不需要提交；已有项目重新运行 `harness init` 即补上。

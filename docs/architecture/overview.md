@@ -1,6 +1,6 @@
 # 架构总览：harness
 
-- Status: Draft
+- Status: Approved
 - Updated: 2026-11-26
 - PRD: 1.0-rc3
 

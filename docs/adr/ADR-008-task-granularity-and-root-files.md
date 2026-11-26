@@ -1,6 +1,6 @@
 # ADR-008 任务可关联验收标准；根目录文件的归属
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-011, FR-013, FR-039, MOD-01, FLOW-01
 
 ## 背景

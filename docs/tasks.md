@@ -1,6 +1,6 @@
 # 任务列表
 
-- Status: Draft
+- Status: Approved
 - Updated: 2026-11-26
 - PRD: 1.0-rc3
 - Release: 1
@@ -16,7 +16,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 ## 任务
 
 ### T-001 CLI 骨架与 PRD 编号、必填字段检查
-- Status: Todo
+- Status: InProgress
 - Covers: AC-003-1, AC-003-2, AC-003-4, AC-003-5, NFR-004
 - Design: FLOW-01, IF-001, IF-002, IF-009, IF-010, IF-011, IF-012, IF-013, IF-014, IF-022, ADR-001, ADR-002, ADR-007
 - Flow: FLOW-01

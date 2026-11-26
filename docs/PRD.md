@@ -1,6 +1,6 @@
 # PRD: harness
 
-- Status: Draft
+- Status: Approved
 - Version: 1.0-rc3
 - Current-Release: 1
 - Updated: 2026-11-26
@@ -1040,6 +1040,8 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 ### 2026-11-26 第 13 轮
 - Q: 规划时发现，AC-039-1 要求任务完成时关联 FR 的全部用例通过，AC-011-6 又要求跨模块任务引用一个调用流程；跨多个流程的 FR 无法拆成多个任务。怎么处理？ A: 任务可关联到验收标准，完成定义只检查所关联 FR 或 AC 下的用例；FR 的每条 AC 都被关联也算覆盖。
 - Q: go.mod、发布配置和 `harness init` 写入的配置文件不在任何模块路径内，归到哪里？ A: go.mod、go.sum、发布配置归 MOD-01；`harness init` 写入的文件定义为生成文件，提交范围检查与产物文件一样豁免。
+### 2026-11-26 第 14 轮
+- 用户批准 PRD 1.0-rc3、架构修订（ADR-008、MOD-01 路径、FLOW-01 步骤）与 Release 1 任务列表，进入实现阶段。`harness approve` 实现后由用户在终端补录批准哈希。
 
 ## 8. 变更日志
 

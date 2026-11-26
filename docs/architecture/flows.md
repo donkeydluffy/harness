@@ -1,6 +1,6 @@
 # 调用流程
 
-- Status: Draft
+- Status: Approved
 
 每个流程的 Steps 按调用顺序列出"调用方模块 -> 被调用接口"（格式见 `docs/architecture/formats.md` 第 4 节）。
 

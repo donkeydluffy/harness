@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd07：用例编号格式合法、前缀与所在验收标准一致；纳入范围的 Active 需求的每条验收标准

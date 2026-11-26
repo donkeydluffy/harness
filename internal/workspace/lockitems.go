@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/lock"
-	"harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/model"
 )
 
 // Removed 判断需求实体是否为 Removed 状态。

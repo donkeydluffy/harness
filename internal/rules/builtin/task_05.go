@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task05：任务范围只落在一个模块内；跨模块时须引用一个包含全部涉及模块的调用流程。

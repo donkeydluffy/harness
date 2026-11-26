@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd01：PRD 编号格式合法、在全部 PRD 文件中唯一；拆分文件只能包含功能需求。

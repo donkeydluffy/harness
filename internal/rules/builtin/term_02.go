@@ -3,8 +3,8 @@ package builtin
 import (
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // term02：架构声明中以 Domain 字段标注的领域概念必须出现在统一语言表格的"代码名"列。

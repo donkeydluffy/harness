@@ -1,11 +1,11 @@
 package lang
 
 import (
-	"harness/internal/lang/cpp"
-	"harness/internal/lang/golang"
-	"harness/internal/lang/java"
-	"harness/internal/lang/python"
-	"harness/internal/lang/typescript"
+	"github.com/donkeydluffy/harness/internal/lang/cpp"
+	"github.com/donkeydluffy/harness/internal/lang/golang"
+	"github.com/donkeydluffy/harness/internal/lang/java"
+	"github.com/donkeydluffy/harness/internal/lang/python"
+	"github.com/donkeydluffy/harness/internal/lang/typescript"
 )
 
 // 内置语言，每种语言一行。

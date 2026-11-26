@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd04：PRD 包含功能需求、非功能需求、统一语言三章，且各章非空。

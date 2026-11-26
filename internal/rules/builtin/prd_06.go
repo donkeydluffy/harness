@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd06：澄清记录按轮次标题（日期 + 第 N 轮）组织，每轮不超过 5 个问题。

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd09：需求描述与验收标准中不得出现模糊词；代码格式中的文字不检查。

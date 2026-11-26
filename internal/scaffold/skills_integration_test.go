@@ -12,10 +12,10 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"harness/internal/phase"
-	"harness/internal/rules/builtin"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/phase"
+	"github.com/donkeydluffy/harness/internal/rules/builtin"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 var registerOnce sync.Once

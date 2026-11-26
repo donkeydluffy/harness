@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task07：InProgress 任务要求 PRD 有效批准、所引用设计元素所在产物有效批准、关联需求没有 Open 的待澄清项。

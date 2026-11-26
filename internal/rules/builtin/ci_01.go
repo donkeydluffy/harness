@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // ci01：项目的 CI 配置中至少有一份运行 harness check（AC-043-2）。只检查执行过 harness init（有 harness.json）的项目。

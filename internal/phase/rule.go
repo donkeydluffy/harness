@@ -1,8 +1,8 @@
 package phase
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Rule 返回本模块注册的规则 phase.01：阶段定义合法、规则引用存在、阶段名不重复、移除内置规则须引用 ADR。

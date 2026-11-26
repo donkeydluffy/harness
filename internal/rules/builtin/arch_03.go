@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // arch03：调用流程每一步"调用方模块 -> 接口"中，接口存在，且接口所属模块是调用方自身或在调用方的 Depends 中。

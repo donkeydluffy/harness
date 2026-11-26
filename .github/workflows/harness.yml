@@ -12,7 +12,7 @@ jobs:
         with:
           go-version: stable
       - name: 安装 harness
-        run: go install harness/cmd/harness@latest
+        run: go install github.com/donkeydluffy/harness/cmd/harness@latest
       # 在这里运行项目测试，把报告写到 .harness/reports/（见 docs/lang/<语言>.md）。
       - name: harness check
         run: harness check

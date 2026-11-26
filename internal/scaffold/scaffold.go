@@ -15,9 +15,9 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/adapter"
-	"harness/internal/lang"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/adapter"
+	"github.com/donkeydluffy/harness/internal/lang"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 //go:embed all:templates
@@ -56,7 +56,7 @@ func Languages() []string {
 }
 
 // modulePath 是 CI 模板中安装 harness 用的模块路径（DEBT-001：发布前改为仓库地址）。
-const modulePath = "harness"
+const modulePath = "github.com/donkeydluffy/harness"
 
 // ciFiles 是 --ci 的取值与生成的 CI 配置文件。
 var ciFiles = map[string]string{"github": ".github/workflows/harness.yml", "gitlab": ".gitlab-ci.yml"}

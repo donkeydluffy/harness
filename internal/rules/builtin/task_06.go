@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task06：扩展任务（Extends 引用扩展点）的文件范围不能与扩展点封闭模块的路径重叠。

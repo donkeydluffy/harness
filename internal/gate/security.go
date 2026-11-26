@@ -10,7 +10,7 @@ import (
 
 	"mvdan.cc/sh/v3/syntax"
 
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // sensitive 判断路径命中敏感路径且不在豁免列表中（gate.sensitive）。不含 "/" 的模式匹配文件名。

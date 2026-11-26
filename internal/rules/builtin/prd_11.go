@@ -3,8 +3,8 @@ package builtin
 import (
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd11：Scenario 类 NFR 写明新增什么、允许路径、封闭模块；PRD 没有 Scenario 类 NFR 时，

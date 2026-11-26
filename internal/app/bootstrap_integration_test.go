@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness/internal/adapter/claudecode"
+	"github.com/donkeydluffy/harness/internal/adapter/claudecode"
 )
 
 const repoRoot = "../.."

@@ -3,8 +3,8 @@ package builtin
 import (
 	"fmt"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // test01：测试名中引用的用例编号必须存在。

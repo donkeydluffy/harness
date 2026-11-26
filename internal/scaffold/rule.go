@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/adapter"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/adapter"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Expected 返回纳入版本库的生成文件的期望内容（IF-021）：claudecode 的 hook 配置必有；

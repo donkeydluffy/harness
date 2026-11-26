@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	"harness/internal/lang/spec"
+	"github.com/donkeydluffy/harness/internal/lang/spec"
 )
 
 // Syntax 描述一种语言的注释与字符串语法。

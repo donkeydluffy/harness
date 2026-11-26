@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	"harness/internal/adapter"
-	"harness/internal/app"
-	"harness/internal/gate"
+	"github.com/donkeydluffy/harness/internal/adapter"
+	"github.com/donkeydluffy/harness/internal/app"
+	"github.com/donkeydluffy/harness/internal/gate"
 )
 
 // gateCmd 是代理 hook 入口：适配器解码输入，app.Gate 判定，适配器编码输出。

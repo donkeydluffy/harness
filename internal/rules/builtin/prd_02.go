@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd02：需求必填字段与取值（Status、Release、Priority，NFR 另有 Type），

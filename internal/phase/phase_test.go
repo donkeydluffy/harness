@@ -6,8 +6,8 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 type fakeRule struct{ id string }

@@ -4,7 +4,7 @@ package main
 import (
 	"os"
 
-	"harness/internal/cli"
+	"github.com/donkeydluffy/harness/internal/cli"
 )
 
 func main() {

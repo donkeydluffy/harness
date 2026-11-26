@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"harness/internal/lang/spec"
+	"github.com/donkeydluffy/harness/internal/lang/spec"
 )
 
 type fakeLang struct{}

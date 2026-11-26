@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/lock"
-	"harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/model"
 )
 
 // Approvable 判断产物是否需要人工批准：PRD 索引（覆盖全部 PRD 文件）、架构文档、详细设计、ADR（FR-037）。

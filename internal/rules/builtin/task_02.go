@@ -3,8 +3,8 @@ package builtin
 import (
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task02：纳入范围的 Active FR 被任务覆盖：直接关联，或其每条有效验收标准都被关联（ADR-008）。

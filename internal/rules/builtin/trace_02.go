@@ -3,8 +3,8 @@ package builtin
 import (
 	"regexp"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // trace02：每个设计元素至少引用一条需求或一条 ADR，否则为孤儿。

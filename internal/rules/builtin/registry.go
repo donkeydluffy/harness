@@ -1,7 +1,7 @@
 // Package builtin 包含全部内置规则，每条规则一个文件，样本在 testdata/<规则编号>/（MOD-05）。
 package builtin
 
-import "harness/internal/rules/engine"
+import "github.com/donkeydluffy/harness/internal/rules/engine"
 
 // Rules 返回全部内置规则；每条规则一行，供 app 在启动时注册（IF-014）。
 func Rules() []engine.Rule {

@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // adr01：每个 ADR 文件恰好一条 ADR，含标题、Status、Relates 与正文三节（背景、决策、后果）。

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"harness/internal/lock"
-	"harness/internal/phase"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/phase"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // PhaseList 返回全部阶段与当前阶段名。

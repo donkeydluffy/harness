@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // approve01：状态为 Approved（ADR 为 Accepted）的产物必须有批准记录，且当前内容与批准哈希一致；

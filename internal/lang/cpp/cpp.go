@@ -5,8 +5,8 @@ import (
 	"path"
 	"regexp"
 
-	"harness/internal/lang/spec"
-	"harness/internal/lang/textscan"
+	"github.com/donkeydluffy/harness/internal/lang/spec"
+	"github.com/donkeydluffy/harness/internal/lang/textscan"
 )
 
 // Lang 实现 spec.Language。

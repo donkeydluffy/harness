@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // test02：纳入范围的 Active 用例至少有一个 passed 的集成测试，且引用它的集成测试没有失败；

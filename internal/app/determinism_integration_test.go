@@ -42,7 +42,7 @@ func TestCheck_AC_N001_1_E1(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, pkg := range strings.Fields(string(out)) {
-		if strings.HasPrefix(pkg, "harness/internal/audit") {
+		if strings.HasPrefix(pkg, "github.com/donkeydluffy/harness/internal/audit") {
 			continue // harness audit deps 允许联网（NFR-001）
 		}
 		if bad := networkDeps(t, pkg); len(bad) > 0 {

@@ -3,8 +3,8 @@ package builtin
 import (
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // commit01：每个提交恰好一个 Task 尾注，且引用存在的任务。检查暂存区且没有提交信息时不检查。

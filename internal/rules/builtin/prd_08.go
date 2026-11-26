@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"harness/internal/lock"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd08：内容哈希相对锁文件变化的需求必须被锁定之后新增的 CHG 条目引用，且动作与差异一致。

@@ -6,7 +6,7 @@ import (
 
 	"mvdan.cc/sh/v3/syntax"
 
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // decideCommand 解析 Bash 命令（ADR-003）：拒绝 harness approve / phase next，

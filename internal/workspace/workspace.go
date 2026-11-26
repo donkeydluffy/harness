@@ -11,10 +11,10 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/lock"
-	"harness/internal/model"
-	"harness/internal/testreport"
-	"harness/internal/vcs"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/testreport"
+	"github.com/donkeydluffy/harness/internal/vcs"
 )
 
 // Snapshot 是一次检查的只读输入。规则只读快照，不自行读文件。

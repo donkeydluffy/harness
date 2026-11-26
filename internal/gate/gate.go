@@ -6,9 +6,9 @@ import (
 	"path"
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/phase"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/phase"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Kind 是门禁请求的类型。

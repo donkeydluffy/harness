@@ -6,7 +6,7 @@ import (
 	"sort"
 	"sync"
 
-	"harness/internal/gate"
+	"github.com/donkeydluffy/harness/internal/gate"
 )
 
 // Adapter 是一种编程代理的 hook 适配器（IF-019）。

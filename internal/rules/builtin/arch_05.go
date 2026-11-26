@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/testreport"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/testreport"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // arch05：每个扩展点至少有一个测试名含其编号、状态为 passed 的示例扩展测试；

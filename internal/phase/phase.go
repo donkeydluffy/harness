@@ -10,8 +10,8 @@ import (
 	"io/fs"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Phase 是一个流程阶段（IF-015）。Entry、Exit 中每项是规则编号、"区域.*" 或 "*"（全部规则）。

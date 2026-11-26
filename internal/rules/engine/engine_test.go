@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness/internal/model"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // exampleRule 演示 EXT-03：新增一条内置规则只需实现 Rule 并注册。

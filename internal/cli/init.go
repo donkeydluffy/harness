@@ -7,8 +7,8 @@ import (
 	"io"
 	"strings"
 
-	"harness/internal/app"
-	"harness/internal/scaffold"
+	"github.com/donkeydluffy/harness/internal/app"
+	"github.com/donkeydluffy/harness/internal/scaffold"
 )
 
 // initCmd：harness init --lang <语言列表> [--agent <代理列表>]。

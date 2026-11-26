@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness/internal/scaffold"
+	"github.com/donkeydluffy/harness/internal/scaffold"
 )
 
 // addGenerated 补上 harness init 生成的 hook 配置与 CI 配置：有 harness.json 的项目视为已初始化，

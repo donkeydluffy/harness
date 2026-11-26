@@ -10,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"harness/internal/lang/spec"
+	"github.com/donkeydluffy/harness/internal/lang/spec"
 )
 
 // Lang 实现 spec.Language。

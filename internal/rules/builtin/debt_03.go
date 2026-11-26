@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // debt03：Resolved 的技术债不能再被源码注释引用。

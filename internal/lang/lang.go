@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"harness/internal/lang/spec"
+	"github.com/donkeydluffy/harness/internal/lang/spec"
 )
 
 // 类型别名：语言实现依赖 spec，调用方使用 lang。

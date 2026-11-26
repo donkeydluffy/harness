@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // cfg01：harness.json 的规范化哈希相对锁文件变化时，须有锁定之后新增的 CHG 条目（对象写 harness.json）

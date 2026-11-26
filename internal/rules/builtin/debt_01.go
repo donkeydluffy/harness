@@ -4,9 +4,9 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // debt01：技术债清单中每项有合法编号、所属模块（存在的 MOD）、描述、状态（Open / Resolved）。

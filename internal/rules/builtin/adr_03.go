@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // adr03：同一提交中，架构声明的模块增删、允许依赖变化、扩展点变化必须由该提交新增或修改的 ADR 引用。

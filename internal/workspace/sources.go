@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/lang"
-	"harness/internal/testreport"
+	"github.com/donkeydluffy/harness/internal/lang"
+	"github.com/donkeydluffy/harness/internal/testreport"
 )
 
 // SourceFile 是按 sourcePaths 收集的源码文件，内容惰性读取。

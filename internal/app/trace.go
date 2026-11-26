@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // TraceRow 是覆盖矩阵的一行：一条纳入范围的需求及覆盖它的有效设计元素。

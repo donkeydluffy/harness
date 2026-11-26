@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"harness/internal/gate"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/gate"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Gate 加载轻量快照并调用门禁判定（IF-025）；cli 负责用 adapter 解码代理输入、编码判定结果。

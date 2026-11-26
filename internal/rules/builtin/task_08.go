@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task08：Done 任务的完成定义：所关联条目涉及的用例都有通过的集成测试；进度文件有该任务的记录

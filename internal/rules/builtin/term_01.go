@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // term01：受检产物（PRD、架构声明、详细设计、任务列表）中不得出现术语表的禁用别名。

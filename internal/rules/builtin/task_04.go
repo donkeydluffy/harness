@@ -3,9 +3,9 @@ package builtin
 import (
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task04：至多一个 InProgress 任务；两个未完成任务范围重叠时，须有一方（直接或间接）依赖另一方。

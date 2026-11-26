@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Rule 是一条确定性检查（IF-011）。

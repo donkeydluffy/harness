@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	"harness/internal/app"
-	"harness/internal/phase"
-	"harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/app"
+	"github.com/donkeydluffy/harness/internal/phase"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
 )
 
 // 退出码（AC-N004-2）。

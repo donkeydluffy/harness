@@ -4,8 +4,8 @@ import (
 	"regexp"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // task01：任务有编号、标题、状态、关联需求（FR、NFR 或 AC）、关联设计元素、文件范围、前置任务。

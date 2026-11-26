@@ -3,8 +3,8 @@ package builtin
 import (
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd05：待澄清项状态合法，Closed 必须有 Resolution；存在 Open 的待澄清项时 PRD 不得为 Approved。

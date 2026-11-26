@@ -1,4 +1,4 @@
-module harness
+module github.com/donkeydluffy/harness
 
 go 1.27
 

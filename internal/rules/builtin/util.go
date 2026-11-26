@@ -8,12 +8,12 @@ import (
 	"strconv"
 	"strings"
 
-	"harness/internal/lang"
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/testreport"
-	"harness/internal/vcs"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/lang"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/testreport"
+	"github.com/donkeydluffy/harness/internal/vcs"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // 产物编号的合法格式（docs/architecture/formats.md 第 2 节）。

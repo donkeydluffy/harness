@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"harness/internal/lock"
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // Terminal 是与批准人交互的终端（IF-024）。

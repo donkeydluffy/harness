@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"harness/internal/lock"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // ViolationsError 表示命令因检查未通过而没有执行。

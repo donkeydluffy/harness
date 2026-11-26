@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"harness/internal/phase"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/phase"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // artifactRules 按写入的产物文件选择检查的规则前缀（FLOW-04）。

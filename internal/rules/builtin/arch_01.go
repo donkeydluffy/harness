@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"harness/internal/model"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/model"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // arch01：模块、接口、调用流程、扩展点的必填字段与取值；模块路径不重叠；

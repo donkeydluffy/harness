@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"harness/internal/gate"
+	"github.com/donkeydluffy/harness/internal/gate"
 )
 
 // Adapter 实现 adapter.Adapter。

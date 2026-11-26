@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // 每条内置规则在 testdata/<规则编号>/ 下必须有 violation* 与 ok* 样本目录，并通过 Verify。

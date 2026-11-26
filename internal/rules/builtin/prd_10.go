@@ -3,8 +3,8 @@ package builtin
 import (
 	"regexp"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd10：Quantitative 类 NFR 的每条验收标准至少包含一个数值和单位。

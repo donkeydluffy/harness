@@ -3,7 +3,7 @@ package adapter
 import (
 	"testing"
 
-	"harness/internal/gate"
+	"github.com/donkeydluffy/harness/internal/gate"
 )
 
 type fakeAgent struct{}

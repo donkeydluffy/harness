@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // debt02：源码中的待办标记注释必须在同一行引用 Open 的技术债或未完成的任务。

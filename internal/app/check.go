@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // CheckOptions 是 harness check 的参数（IF-022）。

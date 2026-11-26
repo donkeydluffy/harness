@@ -3,8 +3,8 @@ package builtin
 import (
 	"regexp"
 
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // trace03：设计元素中的引用必须指向存在且有效的编号；引用 Superseded 的 ADR 时提示改引取代它的 ADR。

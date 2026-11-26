@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"harness/internal/rules/builtin"
+	"github.com/donkeydluffy/harness/internal/rules/builtin"
 )
 
 // 集成测试通过真实的 harness 二进制运行。TestMain 构建一次，供本包全部集成测试使用。
@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	harnessBin = filepath.Join(dir, "harness")
-	if out, err := exec.Command("go", "build", "-o", harnessBin, "harness/cmd/harness").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", harnessBin, "github.com/donkeydluffy/harness/cmd/harness").CombinedOutput(); err != nil {
 		fmt.Fprintf(os.Stderr, "构建 harness 失败：%v\n%s", err, out)
 		os.Exit(2)
 	}

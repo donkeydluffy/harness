@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/lock"
-	"harness/internal/rules/engine"
-	"harness/internal/workspace"
+	"github.com/donkeydluffy/harness/internal/lock"
+	"github.com/donkeydluffy/harness/internal/rules/engine"
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // prd03：锁文件中的需求与用例编号不得从文档消失；Removed 的编号不得复用。

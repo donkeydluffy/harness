@@ -156,3 +156,60 @@ func anyRow(d *model.Doc, start, end int, prefix string) bool {
 	}
 	return false
 }
+
+// archEntities 返回架构文档（docs/architecture/）中指定类型的实体。
+func archEntities(s *workspace.Snapshot, kind string) []*model.Entity {
+	var out []*model.Entity
+	for _, d := range s.Project.Docs {
+		if !strings.HasPrefix(d.Path, "docs/architecture/") {
+			continue
+		}
+		for _, e := range d.Entities {
+			if e.Kind == kind {
+				out = append(out, e)
+			}
+		}
+	}
+	return out
+}
+
+// globBase 返回 glob 中第一个通配符之前的目录前缀，如 "internal/app/**" → "internal/app/"。
+func globBase(g string) string {
+	if i := strings.IndexAny(g, "*?[<"); i >= 0 {
+		return g[:i]
+	}
+	return g
+}
+
+// globsOverlap 判断两个路径 glob 是否可能匹配同一文件（按前缀近似判断）。
+func globsOverlap(a, b string) bool {
+	ba, bb := globBase(a), globBase(b)
+	wa, wb := ba != a, bb != b
+	switch {
+	case !wa && !wb:
+		return a == b
+	case wa && wb:
+		return strings.HasPrefix(ba, bb) || strings.HasPrefix(bb, ba)
+	case wa:
+		return strings.HasPrefix(b, ba)
+	default:
+		return strings.HasPrefix(a, bb)
+	}
+}
+
+// flowStep 是调用流程的一步：调用方模块 -> 被调用接口。
+type flowStep struct{ Caller, IF string }
+
+// parseSteps 解析 Steps 字段；格式错误的步骤返回其序号（从 1 开始）。
+func parseSteps(v string) (steps []flowStep, bad []int) {
+	for i, st := range model.SplitList(v) {
+		parts := strings.Split(st, "->")
+		if len(parts) != 2 || strings.TrimSpace(parts[0]) == "" || strings.TrimSpace(parts[1]) == "" {
+			bad = append(bad, i+1)
+			steps = append(steps, flowStep{})
+			continue
+		}
+		steps = append(steps, flowStep{strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])})
+	}
+	return steps, bad
+}

@@ -28,10 +28,12 @@
 `engine.FullCheck` 定义了"全量检查"不含的覆盖类规则（test.02、arch.05），会话结束检查与会话开始注入使用它；task.08 仍在 task_08.go 中重复列出这两条规则。T-018 的模块范围不含 MOD-05，没有一并修改。以后修改 task.08 的任务应改为调用 `engine.FullCheck("task.08")`，避免两处列表不一致。
 
 ### DEBT-004 找不到 harness 二进制时 hook 失败放行
-- Status: Open
+- Status: Resolved
 - Module: MOD-12
 
 `harness init` 生成的 hook 命令是裸 `harness`，依赖 Claude Code 进程的 PATH。T-026 启用后，PATH 里没有 `~/go/bin` 的那段时间，hook 以退出码 127 失败，Claude Code 把它当作非阻止错误，写操作没有经过门禁。应让 PreToolUse 在找不到二进制时拒绝写操作（例如 hook 命令外包一层 `command -v harness || 输出拒绝`），并在 SessionStart 提示安装。
+
+已解决（T-030）：hook 命令先用 `command -v` 确认 harness 可执行；找不到时 PreToolUse 拒绝、SessionStart 注入说明，PostToolUse 与 Stop 不阻止。
 
 ### DEBT-005 harness init 不忽略门禁运行时目录
 - Status: Open

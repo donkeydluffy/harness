@@ -292,7 +292,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 `TestParseRepoArtifacts_IF_001` 用固定数字断言本仓库的需求、模块、接口、任务数量，新增 T-028 后失败。改为下限断言，测试只保证本仓库产物能无诊断地解析。
 
 ### T-030 找不到 harness 二进制时 hook 失败即阻断（DEBT-004）
-- Status: InProgress
+- Status: Done
 - Covers: AC-012-5
 - Design: IF-019, FLOW-02
 - Flow: FLOW-02
@@ -302,7 +302,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 生成的 hook 命令先检查 harness 是否可执行：PreToolUse 找不到时输出拒绝，SessionStart 注入"harness 未安装"，PostToolUse 与 Stop 不阻止。
 
 ### T-031 门禁允许删除不属于任何模块的生成文件（DEBT-009）
-- Status: Todo
+- Status: InProgress
 - Covers: AC-012-2
 - Design: FLOW-02
 - Flow: FLOW-02

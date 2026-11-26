@@ -258,7 +258,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Status: InProgress
 - Covers: FR-017
 - Design: FLOW-01, FLOW-07
-- Scope: internal/app/bootstrap_integration_test.go, internal/app/testdata/bootstrap/**
+- Scope: internal/rules/builtin/util.go, internal/app/bootstrap_integration_test.go, internal/app/testdata/bootstrap/**
 - Depends: T-025
 
 对本仓库执行 `harness init`，提交生成文件与锁文件，启用 hook 与 CI；集成测试对仓库根目录运行 `harness check` 并校验 hook 配置存在。

@@ -535,11 +535,23 @@ func scopeOwners(s *workspace.Snapshot, p string) []string {
 }
 
 // generatedFiles 是 harness 命令写入项目的生成文件（TERM-026），提交范围与行数检查豁免。
-var generatedFiles = []string{"harness.json", "harness.lock", ".claude/settings.json", "CODEOWNERS", ".github/CODEOWNERS", ".github/workflows/harness.yml"}
+var generatedFiles = []string{"harness.json", "harness.lock", ".claude/settings.json", "CODEOWNERS", ".github/CODEOWNERS",
+	".github/workflows/harness.yml", ".gitlab-ci.yml"}
+
+// generatedDirs 下的文件同样是生成文件：harness init 写入的 skill。
+var generatedDirs = []string{".claude/skills/"}
 
 // exemptFile 判断文件是否为产物文件（docs/ 下）或生成文件。
 func exemptFile(p string) bool {
-	return strings.HasPrefix(p, "docs/") || contains(generatedFiles, p)
+	if strings.HasPrefix(p, "docs/") || contains(generatedFiles, p) {
+		return true
+	}
+	for _, d := range generatedDirs {
+		if strings.HasPrefix(p, d) {
+			return true
+		}
+	}
+	return false
 }
 
 // commitTask 返回提交的 Task 尾注对应的任务；尾注缺失、重复或任务不存在时返回 nil。

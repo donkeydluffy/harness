@@ -1,6 +1,6 @@
 # PRD: harness
 
-- Status: Approved
+- Status: Draft
 - Version: 1.0-rc3
 - Current-Release: 1
 - Updated: 2026-11-26
@@ -44,7 +44,7 @@ harness 的目标：用一套 skill 引导流程，用一个确定性的检查�
 | TERM-023 | 扩展场景 | ExtensionScenario | 以非功能需求形式写出的"未来会新增什么、允许改动哪里"的变更场景 | |
 | TERM-024 | 封闭模块 | ClosedModule | 实现某扩展场景时不得修改的模块 | |
 | TERM-025 | 规则 | Rule | 一条确定性检查，有唯一编号、违规样本和合规样本；分内置规则和项目自定义规则 | 校验项 |
-| TERM-026 | 生成文件 | GeneratedFile | 由 `harness init` 或其他 harness 命令写入项目的配置文件：项目配置、hook 配置、CI 配置、git hook、CODEOWNERS | |
+| TERM-026 | 生成文件 | GeneratedFile | 由 `harness init` 或其他 harness 命令写入项目的配置文件：项目配置、hook 配置、CI 配置、git hook、CODEOWNERS、skill | |
 
 ## 3. 功能需求
 
@@ -1048,6 +1048,9 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 - Q: go.mod、发布配置和 `harness init` 写入的配置文件不在任何模块路径内，归到哪里？ A: go.mod、go.sum、发布配置归 MOD-01；`harness init` 写入的文件定义为生成文件，提交范围检查与产物文件一样豁免。
 ### 2026-11-26 第 14 轮
 - 用户批准 PRD 1.0-rc3、架构修订（ADR-008、MOD-01 路径、FLOW-01 步骤）与 Release 1 任务列表，进入实现阶段。`harness approve` 实现后由用户在终端补录批准哈希。
+### 2026-11-26 第 15 轮
+- Q: 本仓库启用 hook 时，hook 调用哪个 harness 二进制？ A: 在本仓库执行 `go install ./cmd/harness` 安装到 PATH，hook 调用 `harness`，与 `harness init` 生成的内容一致。
+- Q: `harness init` 写入的 skill 不属于生成文件，提交时违反范围检查，怎么处理？ A: 把 skill 纳入生成文件（TERM-026），提交范围与行数检查豁免。
 
 ## 8. 变更日志
 
@@ -1075,3 +1078,5 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 | CHG-013 | 2026-11-26 | 修改 | FR-040 | 词表与示例改为代码格式，避免 prd.09 命中需求自身引用的词表；语义不变 |
 | CHG-014 | 2026-11-26 | 修改 | FR-005, FR-015 | 用例中引用的禁用别名改为代码格式；AC-015-2 的 `组件文件` 改为 `界面代码文件`，避免与禁用别名冲突；语义不变 |
 | CHG-015 | 2026-11-26 | 修改 | NFR-006, NFR-007 | 补上 CHG-010 遗漏的 Adds、Allowed-Paths、Closed-Modules 字段，取值摘自正文；语义不变 |
+| CHG-016 | 2026-11-26 | 修改 | TERM-026 | 生成文件包含 `harness init` 写入的 skill（第 15 轮） |
+| CHG-016 | 2026-11-26 | 新增 | harness.json | 本仓库执行 `harness init --lang go` 启用 harness（FR-017） |

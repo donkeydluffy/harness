@@ -53,7 +53,7 @@ func addCHG(t *testing.T, dir string, rows ...string) {
 const (
 	fr002Desc    = "- AC-002-1: 记录问答。"
 	fr002Changed = "- AC-002-1: 记录每轮问答。"
-	fr020        = "### FR-020 新需求\n- Status: Active\n- Release: 1\n- Priority: P2\n\n- AC-020-1: 新增。\n  - AC-020-1/N1: 正常\n\n## 4. 非功能需求"
+	fr020        = "### FR-020 新需求\n- Status: Active\n- Release: 1\n- Priority: P2\n\n- AC-020-1: 新增。\n  - AC-020-1/N1: 正常\n  - AC-020-1/E1: 异常\n\n## 4. 非功能需求"
 )
 
 // ---- AC-004-1 变更必须登记 ----
@@ -215,7 +215,7 @@ func TestCheck_AC_019_3_E1(t *testing.T) {
 }
 
 func TestCheck_AC_019_3_E2(t *testing.T) {
-	dir := lockedRepo(t, prd(t, "  - AC-001-1/E1: 只读目录", "  - AC-001-1/E1: Removed：不再考虑只读目录"))
+	dir := lockedRepo(t, prd(t, "  - AC-001-1/E1: 只读目录", "  - AC-001-1/E1: Removed：不再考虑只读目录\n  - AC-001-1/B1: 路径含空格"))
 	edit(t, dir, "  - AC-001-1/E1: Removed：不再考虑只读目录", "  - AC-001-1/E1: 磁盘已满")
 	addCHG(t, dir, "| CHG-002 | 2026-11-26 | 修改 | FR-001 | 复用用例编号 |")
 	wantViolation(t, checkJSON(t, dir), "prd.03", "AC-001-1/E1 已 Removed")

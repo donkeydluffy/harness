@@ -157,6 +157,7 @@ const basePRD = `# PRD: demo
 
 - AC-002-1: 记录问答。
   - AC-002-1/N1: 一轮问答
+  - AC-002-1/B1: 一轮 5 个问题
 
 ## 4. 非功能需求
 
@@ -168,6 +169,7 @@ const basePRD = `# PRD: demo
 
 - AC-N001-1: 不联网。
   - AC-N001-1/N1: 断网运行
+  - AC-N001-1/E1: 引入网络包
 
 ## 6. 待澄清项
 
@@ -230,6 +232,7 @@ func TestCheck_AC_003_1_B1(t *testing.T) {
 
 - AC-1000-1: 新增。
   - AC-1000-1/N1: 正常
+  - AC-1000-1/E1: 异常
 
 ## 4. 非功能需求`)
 	wantPass(t, checkPRD(t, map[string]string{"docs/PRD.md": src}))
@@ -253,12 +256,12 @@ func TestCheck_AC_003_2_E2(t *testing.T) {
 
 func TestCheck_AC_003_2_B1(t *testing.T) {
 	src := prd(t, "### FR-002 澄清\n- Status: Active", "### FR-002 澄清\n- Status: Removed",
-		"- AC-002-1: 记录问答。\n  - AC-002-1/N1: 一轮问答\n", "")
+		"- AC-002-1: 记录问答。\n  - AC-002-1/N1: 一轮问答\n  - AC-002-1/B1: 一轮 5 个问题\n", "")
 	wantPass(t, checkPRD(t, map[string]string{"docs/PRD.md": src}))
 }
 
 func TestCheck_AC_003_2_E3(t *testing.T) {
-	src := prd(t, "- AC-002-1: 记录问答。\n  - AC-002-1/N1: 一轮问答\n", "")
+	src := prd(t, "- AC-002-1: 记录问答。\n  - AC-002-1/N1: 一轮问答\n  - AC-002-1/B1: 一轮 5 个问题\n", "")
 	c := checkPRD(t, map[string]string{"docs/PRD.md": src})
 	wantViolation(t, c, "prd.02", "FR-002", "没有验收标准")
 }
@@ -274,11 +277,12 @@ const splitFR = `# PRD 领域 %s
 
 - AC-%s-1: 拆分。
   - AC-%s-1/N1: 正常
+  - AC-%s-1/E1: 异常
 `
 
 func split(id string) string {
 	n := strings.TrimPrefix(id, "FR-")
-	return fmt.Sprintf(splitFR, id, id, n, n)
+	return fmt.Sprintf(splitFR, id, id, n, n, n)
 }
 
 func TestCheck_AC_003_4_N1(t *testing.T) {

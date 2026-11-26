@@ -3,6 +3,7 @@
 package approval
 
 import (
+	"encoding/json"
 	"fmt"
 	"path"
 	"regexp"
@@ -342,4 +343,48 @@ func Record(s *workspace.Snapshot, units []Unit, by string, at time.Time) map[st
 		out[u.ID] = lock.UnitApproval{Hash: u.Hash, Text: u.Text, By: by, At: at, Upstream: ups}
 	}
 	return out
+}
+
+// migration 是迁移的审计说明：按文件批准仍有效与已失效的产物。
+type migration struct {
+	Valid   []string  `json:"valid"`
+	Invalid []string  `json:"invalid"`
+	At      time.Time `json:"at"`
+}
+
+// Migrate 把 Release 1 的按文件批准换算为按单位批准（IF-029，AC-047-6）：仍有效的文件批准换算为文件内的
+// 全部单位，已失效的文件中的单位不记录。批准人与时间沿用原记录，上游哈希取当前值。
+func Migrate(s *workspace.Snapshot) (map[string]lock.UnitApproval, json.RawMessage) {
+	m := migration{Valid: []string{}, Invalid: []string{}, At: time.Now().UTC().Truncate(time.Second)}
+	covered := map[string]*lock.Approval{} // 文件 -> 有效的批准记录
+	seen := map[string]bool{}
+	for i := len(s.Lock.Legacy) - 1; i >= 0; i-- {
+		a := s.Lock.Legacy[i]
+		if seen[a.Artifact] {
+			continue // 只看每个产物最近一次批准
+		}
+		seen[a.Artifact] = true
+		if a.Hash != s.ApprovalHash(a.Artifact) {
+			m.Invalid = append(m.Invalid, a.Artifact)
+			continue
+		}
+		m.Valid = append(m.Valid, a.Artifact)
+		for _, d := range s.ApprovalDocs(a.Artifact) {
+			covered[d.Path] = &s.Lock.Legacy[i]
+		}
+	}
+	sort.Strings(m.Valid)
+	sort.Strings(m.Invalid)
+	out := map[string]lock.UnitApproval{}
+	for _, u := range Units(s) {
+		a := covered[u.File]
+		if a == nil {
+			continue
+		}
+		for id, rec := range Record(s, []Unit{u}, a.By, a.At) {
+			out[id] = rec
+		}
+	}
+	raw, _ := json.Marshal(m)
+	return out, raw
 }

@@ -413,14 +413,14 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 批准单位与哈希、批准链与状态（IF-027、IF-028），锁文件第 2 版的 `units`，`harness approve <路径、prd 或单位编号>` 显示差异并按单位记录。engine 的告警（Violation.Warn，不影响退出码）在此加入；approve.01 在锁文件为第 2 版时按单位列出未批准与失效项（告警），task.07 在第 2 版时按批准链判定。
 
 ### T-042 锁文件迁移
-- Status: Todo
+- Status: InProgress
 - Covers: AC-047-6
 - Design: IF-029, IF-006, IF-023, FLOW-10
 - Flow: FLOW-10
 - Scope: internal/approval/**, internal/lock/**, internal/app/**
 - Depends: T-041
 
-`harness lock` 把 Release 1 的按文件批准迁移为按单位批准，写审计记录，删除 `phase` 字段。在本仓库执行迁移后，任务需要按单位批准才能开工。
+`harness lock` 把 Release 1 的按文件批准迁移为按单位批准，写审计记录；`phase` 字段由 T-054 删除（在此之前门禁仍按阶段判定产物写入）。在本仓库执行迁移后，任务需要按单位批准才能开工。
 
 ### T-043 门禁按批准链判定
 - Status: Todo

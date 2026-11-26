@@ -227,3 +227,86 @@ func TestApprove_AC_047_3_B1(t *testing.T) {
 		t.Fatalf("FR-002 只改空白，MOD-02 不应失效：\n%s", w)
 	}
 }
+
+// ---- AC-047-6 Release 1 锁文件迁移 ----
+
+// legacyApproved 返回按文件批准了 PRD 与 files 中各设计文件的第 1 版锁文件仓库。
+func legacyApproved(t *testing.T, files ...string) string {
+	t.Helper()
+	dir := lockedRepo(t, basePRD)
+	mustApprove(t, dir, append([]string{"prd"}, files...)...)
+	if !strings.Contains(readFile(t, dir, "harness.lock"), `"version": 1`) || len(approvals(t, dir)) != 1+len(files) {
+		t.Fatalf("应为第 1 版按文件批准：%s", readFile(t, dir, "harness.lock"))
+	}
+	return dir
+}
+
+func lockOK(t *testing.T, dir string) {
+	t.Helper()
+	if r := runHarness(t, dir, "lock"); r.Code != 0 {
+		t.Fatalf("harness lock 失败：%s%s", r.Stdout, r.Stderr)
+	}
+}
+
+func TestLock_AC_047_6_N1(t *testing.T) {
+	dir := legacyApproved(t, "docs/architecture/overview.md", "docs/architecture/modules/modules.md")
+	// PRD 批准后修改并重新批准：只看最近一次批准，较早的记录不算失效。
+	editFile(t, dir, "docs/PRD.md", "- Current-Release: 1\n", "- Current-Release: 1\n\n背景说明。\n")
+	mustApprove(t, dir, "prd")
+	lockOK(t, dir)
+	var l struct {
+		Audit map[string]struct{ Valid, Invalid []string }
+	}
+	json.Unmarshal([]byte(readFile(t, dir, "harness.lock")), &l)
+	if m := l.Audit["unit-migration"]; len(m.Invalid) != 0 || len(m.Valid) != 3 {
+		t.Errorf("审计记录：%+v", m)
+	}
+	u := unitRecords(t, dir)
+	for _, id := range []string{"FR-001", "FR-002", "NFR-001", "TERM-001", "OQ-001", "docs/PRD.md#正文", "MOD-01", "MOD-02", "EXT-01", "IF-001", "IF-002"} {
+		if u[id] == nil || u[id]["by"] == "" {
+			t.Errorf("%s 应迁移为已批准：%v", id, u[id])
+		}
+	}
+	if u["FLOW-01"] != nil {
+		t.Error("未批准的 flows.md 中的 FLOW-01 不应迁移")
+	}
+	lk := readFile(t, dir, "harness.lock")
+	if !strings.Contains(lk, `"version": 2`) || !strings.Contains(lk, `"unit-migration"`) || len(approvals(t, dir)) != 0 {
+		t.Fatalf("迁移后应为第 2 版并写审计记录：%s", lk)
+	}
+	if w := approvalWarnings(t, dir); strings.Contains(w, "FR-001") || strings.Contains(w, "MOD-02") {
+		t.Fatalf("迁移的单位应为已批准：\n%s", w)
+	}
+}
+
+func TestLock_AC_047_6_E1(t *testing.T) {
+	dir := legacyApproved(t, "docs/architecture/overview.md")
+	editFile(t, dir, "docs/architecture/overview.md", "- Covers: FR-002", "- Covers: FR-001, FR-002", "- Status: Approved", "- Status: Draft")
+	lockOK(t, dir)
+	u := unitRecords(t, dir)
+	if u["FR-001"] == nil {
+		t.Error("PRD 的批准仍有效，FR-001 应已批准")
+	}
+	for _, id := range []string{"MOD-01", "MOD-02", "EXT-01"} {
+		if u[id] != nil {
+			t.Errorf("批准已失效的架构声明中的 %s 不应迁移", id)
+		}
+	}
+	var l struct {
+		Audit map[string]struct{ Invalid []string }
+	}
+	json.Unmarshal([]byte(readFile(t, dir, "harness.lock")), &l)
+	if got := l.Audit["unit-migration"].Invalid; len(got) != 1 || got[0] != "docs/architecture/overview.md" {
+		t.Errorf("审计记录应列出失效的产物：%v", got)
+	}
+}
+
+func TestLock_AC_047_6_B1(t *testing.T) {
+	dir := legacyApproved(t)
+	lockOK(t, dir)
+	before := readFile(t, dir, "harness.lock")
+	lockOK(t, dir)
+	if readFile(t, dir, "harness.lock") != before {
+		t.Fatal("已是第 2 版的锁文件再次 harness lock，批准记录不应变化")
+	}
+}

@@ -273,7 +273,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 6 个平台交叉编译、GitHub Release 附校验和、Homebrew tap formula。需要 GitHub 仓库与 tap 仓库，发布前由用户确认。
 
 ### T-028 门禁修复：纯赋值命令崩溃与路径误判为密钥
-- Status: InProgress
+- Status: Done
 - Covers: AC-012-2, AC-025-2
 - Design: FLOW-02
 - Flow: FLOW-02
@@ -281,3 +281,12 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Depends: T-026
 
 T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门禁 panic 并以退出码 2 拒绝命令；secret.entropy 把含大小写与数字的长路径当作密钥（DEBT-006）。T-027 在本任务完成前为 Blocked。
+
+### T-029 解析测试不再断言本仓库产物的固定数量
+- Status: InProgress
+- Covers: FR-003
+- Design: IF-001
+- Scope: internal/model/model_test.go
+- Depends: T-028
+
+`TestParseRepoArtifacts_IF_001` 用固定数字断言本仓库的需求、模块、接口、任务数量，新增 T-028 后失败。改为下限断言，测试只保证本仓库产物能无诊断地解析。

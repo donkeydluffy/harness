@@ -129,7 +129,8 @@ func TestParseRepoArtifacts_IF_001(t *testing.T) {
 	if len(diags) > 0 {
 		t.Errorf("build: %v", diags)
 	}
-	if len(p.ByKind["FR"]) != 46 || len(p.ByKind["MOD"]) != 14 || len(p.ByKind["IF"]) != 26 || len(p.ByKind["T"]) != 27 {
+	// 下限：产物会随项目增长，测试只保证本仓库产物能无诊断地解析且没有漏读整类实体。
+	if len(p.ByKind["FR"]) < 46 || len(p.ByKind["MOD"]) < 14 || len(p.ByKind["IF"]) < 26 || len(p.ByKind["T"]) < 29 {
 		t.Errorf("counts FR=%d MOD=%d IF=%d T=%d", len(p.ByKind["FR"]), len(p.ByKind["MOD"]), len(p.ByKind["IF"]), len(p.ByKind["T"]))
 	}
 }

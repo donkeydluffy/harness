@@ -267,7 +267,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 - Status: InProgress
 - Covers: AC-N002-1, AC-N002-3
 - Design: MOD-01, ADR-001, FLOW-07
-- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/**
+- Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/**, internal/app/ci_integration_test.go, internal/app/cfg_integration_test.go
 - Depends: T-026
 
 6 个平台交叉编译、GitHub Release 附校验和、Homebrew tap formula。需要 GitHub 仓库与 tap 仓库，发布前由用户确认。

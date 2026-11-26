@@ -130,3 +130,27 @@ func TestCheck_AC_041_2_B1(t *testing.T) {
 	os.Remove(filepath.Join(dir, ".claude/settings.json"))
 	wantViolation(t, checkJSON(t, dir, "cfg.02"), "cfg.02", "缺少生成文件 .claude/settings.json", "harness init --lang go")
 }
+
+// CI 配置在 harness check 之前按语言配置包运行测试、写出测试报告；没有通用测试命令的语言留注释（T-027）。
+func TestInit_CIRunsTests(t *testing.T) {
+	gh, err := os.ReadFile(filepath.Join(initDir(t, "go,python"), ".github/workflows/harness.yml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(gh)
+	step := "go test -json ./... > .harness/reports/go.jsonl"
+	if i, j := strings.Index(s, step), strings.Index(s, "run: harness check\n"); i < 0 || j < i {
+		t.Fatalf("GitHub Actions 应先运行 Go 测试再运行 harness check：\n%s", s)
+	}
+	if !strings.Contains(s, "# python：没有通用的测试命令") || strings.Contains(s, "测试（python）") {
+		t.Fatalf("Python 没有通用测试命令，应只留注释：\n%s", s)
+	}
+	dir := t.TempDir()
+	if r := runHarness(t, dir, "init", "--lang", "go", "--ci", "gitlab"); r.Code != 0 {
+		t.Fatal(r.Stderr)
+	}
+	gl, _ := os.ReadFile(filepath.Join(dir, ".gitlab-ci.yml"))
+	if i, j := strings.Index(string(gl), "    - mkdir -p .harness/reports && "+step), strings.Index(string(gl), "    - harness check\n"); i < 0 || j < i {
+		t.Fatalf("GitLab CI 应先运行 Go 测试再运行 harness check：\n%s", gl)
+	}
+}

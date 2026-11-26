@@ -13,8 +13,7 @@ jobs:
           go-version: stable
       - name: 安装 harness
         run: go install {{module}}/cmd/harness@latest
-      # 在这里运行项目测试，把报告写到 .harness/reports/（见 docs/lang/<语言>.md）。
-      - name: harness check
+{{testSteps}}      - name: harness check
         run: harness check
       - name: harness check commits
         env:

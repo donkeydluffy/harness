@@ -149,6 +149,7 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 		Languages   []string `json:"languages"`
 		SourcePaths []string `json:"sourcePaths"`
 	}{Languages: []string{}, SourcePaths: []string{}}
+	var tests []langTest
 	for _, name := range opt.Languages {
 		if !contains(supported, name) {
 			return nil, &UnsupportedError{"语言", name, supported}
@@ -161,10 +162,14 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		var pack struct{ SourcePaths []string }
+		var pack struct {
+			SourcePaths []string
+			CITest      string `json:"ciTest"` // CI 中生成测试报告的命令；为空表示没有通用命令
+		}
 		if err := json.Unmarshal(b, &pack); err != nil {
 			return nil, fmt.Errorf("语言配置包 %s 的 pack.json 有误：%w", name, err)
 		}
+		tests = append(tests, langTest{name, pack.CITest})
 		for _, p := range pack.SourcePaths {
 			if !contains(cfg.SourcePaths, p) {
 				cfg.SourcePaths = append(cfg.SourcePaths, p)
@@ -184,11 +189,11 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 	if !ok {
 		return nil, &UnsupportedError{"CI", ci, []string{"github", "gitlab"}}
 	}
-	tmpl, err := templates.ReadFile("templates/ci/" + ci + ".yml")
+	b, err := ciConfig(ci, tests, opt)
 	if err != nil {
 		return nil, err
 	}
-	out[ciPath] = render(tmpl, opt)
+	out[ciPath] = b
 	for _, name := range agents {
 		a, ok := adapter.Get(name)
 		if !ok {
@@ -198,6 +203,59 @@ func Files(opt InitOptions) (map[string][]byte, error) {
 		out[p] = content
 	}
 	return out, nil
+}
+
+// CIConfig 返回 harness init 为语言列表 langs 生成的 CI 配置（ci 为 github 或 gitlab）。
+func CIConfig(ci string, langs []string) ([]byte, error) {
+	return ciConfig(ci, langTests(langs), InitOptions{})
+}
+
+// ciConfig 渲染 CI 配置：模板中的 {{binary}}、{{module}} 与各语言的测试步骤。
+func ciConfig(ci string, tests []langTest, opt InitOptions) ([]byte, error) {
+	tmpl, err := templates.ReadFile("templates/ci/" + ci + ".yml")
+	if err != nil {
+		return nil, err
+	}
+	return []byte(strings.ReplaceAll(string(render(tmpl, opt)), "{{testSteps}}", testSteps(ci, tests))), nil
+}
+
+// langTests 读取各语言配置包的 CI 测试命令；不支持的语言忽略。
+func langTests(langs []string) []langTest {
+	var out []langTest
+	for _, name := range langs {
+		b, err := templates.ReadFile("templates/langs/" + name + "/pack.json")
+		if err != nil {
+			continue
+		}
+		var pack struct {
+			CITest string `json:"ciTest"`
+		}
+		json.Unmarshal(b, &pack)
+		out = append(out, langTest{name, pack.CITest})
+	}
+	return out
+}
+
+// langTest 是一种语言在 CI 中生成测试报告的命令。
+type langTest struct{ lang, cmd string }
+
+// testSteps 渲染 CI 配置中运行测试、把报告写到 .harness/reports/ 的步骤；
+// 没有通用测试命令的语言留一行注释，指向该语言的说明。
+func testSteps(ci string, tests []langTest) string {
+	var b strings.Builder
+	for _, t := range tests {
+		switch {
+		case t.cmd == "" && ci == "github":
+			fmt.Fprintf(&b, "      # %s：没有通用的测试命令，测试报告的生成方式见 docs/lang/%s.md。\n", t.lang, t.lang)
+		case t.cmd == "":
+			fmt.Fprintf(&b, "    # %s：没有通用的测试命令，测试报告的生成方式见 docs/lang/%s.md。\n", t.lang, t.lang)
+		case ci == "github":
+			fmt.Fprintf(&b, "      - name: 测试（%s）\n        run: %s\n", t.lang, t.cmd)
+		default:
+			fmt.Fprintf(&b, "    - %s\n", t.cmd)
+		}
+	}
+	return b.String()
 }
 
 // render 替换模板中的 {{binary}} 与 {{module}}。

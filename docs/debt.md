@@ -59,3 +59,9 @@ task.05 要求文件范围跨模块的任务引用覆盖这些模块的调用流
 
 test.02 只看用例编号的测试，arch.05 只看扩展点编号的测试；名字含 IF 编号或不含编号的测试失败时，`harness check` 与 task.08 都通过。T-028 提交时 `TestParseRepoArtifacts_IF_001` 失败而检查全部通过。应增加一条规则：测试报告中存在失败的测试时报告（或把它纳入完成定义），并给出失败的测试名。
 
+
+### DEBT-009 门禁不允许代理按 cfg.02 的修复办法重新生成生成文件
+- Status: Open
+- Module: MOD-11
+
+commit.02/commit.03 豁免生成文件（TERM-026），门禁却按源码路径判定 `.github/workflows/harness.yml` 这类不属于任何模块的生成文件，拒绝 `rm` 后再 `harness init`。cfg.02 的修复办法因此只能由人执行（T-027 模板变化后即如此）。应让门禁允许删除生成文件，再由单独的 `harness init` 写回，写回内容由 cfg.02 校验。

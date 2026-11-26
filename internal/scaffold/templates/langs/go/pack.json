@@ -1,1 +1,1 @@
-{"sourcePaths": ["cmd/**", "internal/**", "pkg/**"]}
+{"sourcePaths": ["cmd/**", "internal/**", "pkg/**"], "ciTest": "mkdir -p .harness/reports && go test -json ./... > .harness/reports/go.jsonl"}

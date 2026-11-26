@@ -5,7 +5,6 @@ harness:
     GIT_DEPTH: "0"
   script:
     - go install {{module}}/cmd/harness@latest
-    # 在这里运行项目测试，把报告写到 .harness/reports/（见 docs/lang/<语言>.md）。
-    - harness check
+{{testSteps}}    - harness check
     - git fetch origin "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}"
     - harness check commits "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}..HEAD"

@@ -24,11 +24,11 @@ func Expected(s *workspace.Snapshot) (map[string][]byte, error) {
 		if _, err := os.Stat(filepath.Join(s.Root, filepath.FromSlash(p))); err != nil {
 			continue
 		}
-		b, err := templates.ReadFile("templates/ci/" + ci + ".yml")
+		b, err := CIConfig(ci, s.Config.Languages)
 		if err != nil {
 			return nil, err
 		}
-		out[p] = render(b, InitOptions{})
+		out[p] = b
 	}
 	return out, nil
 }

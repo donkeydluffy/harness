@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,9 +18,15 @@ func addGenerated(t *testing.T, files map[string]string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, p := range []string{".claude/settings.json", ".github/workflows/harness.yml"} {
-		files[p] = string(gen[p])
+	files[".claude/settings.json"] = string(gen[".claude/settings.json"])
+	// CI 配置的测试步骤随 harness.json 的 languages 变化，按夹具声明的语言生成。
+	var cfg struct{ Languages []string }
+	json.Unmarshal([]byte(files["harness.json"]), &cfg)
+	ci, err := scaffold.CIConfig("github", cfg.Languages)
+	if err != nil {
+		t.Fatal(err)
 	}
+	files[".github/workflows/harness.yml"] = string(ci)
 }
 
 const cfgJSON = `{

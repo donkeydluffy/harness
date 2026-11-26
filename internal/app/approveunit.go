@@ -85,6 +85,7 @@ func unitViolations(s *workspace.Snapshot, pending []approval.Pending) engine.Re
 			}
 		}
 	}
+	keep = append(keep, approveChecks(s, pending)...)
 	batch := map[string]bool{}
 	for _, p := range pending {
 		batch[p.Unit.ID] = true

@@ -2,9 +2,11 @@ package workspace
 
 import (
 	"encoding/json"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/donkeydluffy/harness/internal/lock"
@@ -62,7 +64,36 @@ func (s *Snapshot) LockItems() map[string]string {
 	if src, err := os.ReadFile(filepath.Join(s.Root, ConfigFile)); err == nil {
 		items["config"] = ConfigHash(src)
 	}
+	for _, raw := range s.Config.Rules {
+		var d struct{ ID, Samples string }
+		if json.Unmarshal(raw, &d) == nil && d.ID != "" {
+			items["rule:"+d.ID] = ruleHash(s.Root, raw, d.Samples)
+		}
+	}
 	return items
+}
+
+// ruleHash 是自定义规则的定义与样本目录（全部文件按路径排序）的哈希（formats.md 第 7 节 rule:<编号>，AC-054-2）。
+// 定义的变化也计入，保证修改规则后不执行 harness lock 时能被发现。
+func ruleHash(root string, def json.RawMessage, samples string) string {
+	parts := []string{ConfigHash(def)}
+	if samples != "" {
+		dir := filepath.Join(root, filepath.FromSlash(samples))
+		var paths []string
+		filepath.WalkDir(dir, func(p string, de fs.DirEntry, err error) error {
+			if err == nil && !de.IsDir() {
+				paths = append(paths, p)
+			}
+			return nil
+		})
+		sort.Strings(paths)
+		for _, p := range paths {
+			b, _ := os.ReadFile(p)
+			rel, _ := filepath.Rel(dir, p)
+			parts = append(parts, filepath.ToSlash(rel)+"\n"+string(b))
+		}
+	}
+	return lock.Hash(strings.Join(parts, "\n"))
 }
 
 // ConfigHash 返回 harness.json 的规范化哈希：按 JSON 解析，去掉键为 "//" 的注释项，键排序后紧凑序列化，

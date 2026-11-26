@@ -22,10 +22,6 @@ type CheckOptions struct {
 func Check(root string, opt CheckOptions) (engine.Report, error) {
 	registerRules()
 	sel := selector(opt.Rules)
-	if unknown := sel.Unknown(); len(unknown) > 0 {
-		return engine.Report{}, fmt.Errorf("没有匹配的规则：%s（可用规则：%s）",
-			strings.Join(unknown, ", "), strings.Join(engine.IDs(), ", "))
-	}
 	lo := workspace.LoadOptions{CommitRange: opt.Commits, WithSources: true, WithTests: true}
 	if opt.MessageFile != "" {
 		b, err := os.ReadFile(opt.MessageFile)
@@ -34,7 +30,43 @@ func Check(root string, opt CheckOptions) (engine.Report, error) {
 		}
 		lo.Message = stripComments(string(b))
 	}
-	return run(root, sel, lo)
+	s, err := workspace.Load(root, lo)
+	if err != nil {
+		return engine.Report{}, err
+	}
+	rules, bad := projectRules(s)
+	var unknown []string
+	for _, u := range sel.Unknown() {
+		if !projectSelected(u, rules, bad) {
+			unknown = append(unknown, u)
+		}
+	}
+	if len(unknown) > 0 {
+		return engine.Report{}, fmt.Errorf("没有匹配的规则：%s（可用规则：%s）",
+			strings.Join(unknown, ", "), strings.Join(engine.IDs(), ", "))
+	}
+	rep := engine.Run(s, sel)
+	if len(rep.Errors) > 0 {
+		return rep, rep.Errors[0]
+	}
+	runProject(s, sel, rules, bad, &rep)
+	return rep, nil
+}
+
+// projectSelected 判断选择器条目是否匹配某条项目规则（含定义有误的规则）。
+func projectSelected(item string, rules []engine.Rule, bad []engine.Violation) bool {
+	one := selector([]string{item})
+	for _, r := range rules {
+		if selected(one, r.ID()) {
+			return true
+		}
+	}
+	for _, v := range bad {
+		if selected(one, v.Rule) {
+			return true
+		}
+	}
+	return false
 }
 
 // stripComments 去掉提交信息中 git 的注释行（以 # 开头）。

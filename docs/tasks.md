@@ -379,7 +379,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 
 
 ### T-039 门禁以项目根判定，命令从代理的当前目录解析（DEBT-015）
-- Status: Todo
+- Status: Done
 - Covers: AC-012-2, AC-025-4
 - Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019
 - Flow: FLOW-02

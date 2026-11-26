@@ -100,3 +100,30 @@ func TestLoadSourcesAndReports_IF_009(t *testing.T) {
 		t.Fatalf("sources %+v tests %+v reports %v", s.Sources, s.Tests, s.Reports)
 	}
 }
+
+func TestInterfaces_IF_009(t *testing.T) {
+	dir := t.TempDir()
+	write(t, dir, "a/a.go", "package a\n\n// harness:IF-002\nfunc B() {}\n\n// harness:IF-001\nfunc A(x int) error { return nil }\n")
+	write(t, dir, "b/b.go", "package b\n\n// harness:IF-001\nfunc Other() {}\n")
+	write(t, dir, "a/a_test.go", "package a\n\n// harness:IF-003\nfunc helper() {}\n")
+	s, err := Load(dir, LoadOptions{WithSources: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	sigs := s.ExtractInterfaces()
+	want := map[string]string{"IF-001": "func A(x int) error", "IF-002": "func B()"}
+	if len(sigs) != 2 || sigs["IF-001"] != want["IF-001"] || sigs["IF-002"] != want["IF-002"] {
+		t.Fatalf("同一接口取第一个锚点，测试文件不计入：%v", sigs)
+	}
+	out := FormatInterfaces(sigs)
+	if string(out) != "IF-001\nfunc A(x int) error\n\nIF-002\nfunc B()\n" {
+		t.Fatalf("格式：%q", out)
+	}
+	if back := ParseInterfaces(out); len(back) != 2 || back["IF-002"] != "func B()" {
+		t.Fatalf("解析：%v", back)
+	}
+	write(t, dir, InterfacesFile, string(out))
+	if got, ok := s.Interfaces(); !ok || got["IF-001"] != want["IF-001"] {
+		t.Fatalf("读取快照：%v %v", got, ok)
+	}
+}

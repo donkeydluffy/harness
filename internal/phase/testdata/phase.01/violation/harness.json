@@ -1,0 +1,1 @@
+{"phases": [{"name": "release", "after": "implementation", "entry": [], "writable": ["docs/release/**"], "skill": "release"}]}

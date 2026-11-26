@@ -60,6 +60,40 @@ func TestCheck_AC_013_1_E3(t *testing.T) {
 	wantViolation(t, checkLast(t, commitRepo(t, coreChange, "改动\n\nTask: T-99")), "commit.01", "T-99 不存在")
 }
 
+// ---- AC-013-5 需求提交使用 Change 尾注 ----
+
+const changePRD = "# PRD: x\n\n- Status: Draft\n\n## 变更日志\n\n| 编号 | 日期 | 动作 | 对象 | 说明 |\n|---|---|---|---|---|\n| CHG-018 | 2026-11-26 | 修改 | FR-013 | 说明 |\n"
+
+// changeCommit 提交 PRD（含变更日志）、锁文件与 extra 中的文件，提交信息为 msg。
+func changeCommit(t *testing.T, extra map[string]string, msg string) checked {
+	t.Helper()
+	files := map[string]string{"docs/PRD.md": changePRD, "harness.lock": "{}\n"}
+	for k, v := range extra {
+		files[k] = v
+	}
+	return checkLast(t, commitRepo(t, files, msg))
+}
+
+func TestCheck_AC_013_5_N1(t *testing.T) {
+	wantPass(t, changeCommit(t, nil, "澄清需求\n\nChange: CHG-018"))
+}
+
+func TestCheck_AC_013_5_E1(t *testing.T) {
+	wantViolation(t, changeCommit(t, coreChange, "澄清需求\n\nChange: CHG-018"), "commit.01", "internal/core/core.go", "需要关联任务")
+}
+
+func TestCheck_AC_013_5_E2(t *testing.T) {
+	wantViolation(t, changeCommit(t, nil, "澄清需求\n\nChange: CHG-099"), "commit.01", "CHG-099 不在变更日志中")
+}
+
+func TestCheck_AC_013_5_E3(t *testing.T) {
+	wantViolation(t, changeCommit(t, nil, "澄清需求\n\nTask: T-003\nChange: CHG-018"), "commit.01", "同时有 Task 与 Change 尾注")
+}
+
+func TestCheck_AC_013_5_B1(t *testing.T) {
+	wantViolation(t, changeCommit(t, nil, "澄清需求\n\nChange: CHG-018\nChange: CHG-018"), "commit.01", "2 个 Change 尾注")
+}
+
 // ---- AC-013-2 改动在任务范围内 ----
 
 func TestCheck_AC_013_2_N1(t *testing.T) {

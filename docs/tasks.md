@@ -284,7 +284,7 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 
 ### T-029 解析测试不再断言本仓库产物的固定数量
 - Status: Done
-- Covers: FR-003
+- Covers: AC-003-1
 - Design: IF-001
 - Scope: internal/model/model_test.go
 - Depends: T-028
@@ -356,3 +356,24 @@ init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它�
 - Depends: T-035
 
 计算熵之前排除标识符形状的 token：只含字母、数字、下划线，按大小写边界、字母数字边界与 `_` 切开后至少 3 段，且大部分字母落在 3 个字符以上的段中。随机密钥切开后多为一两个字符的碎片，仍按熵判定。
+
+### T-037 需求提交使用 Change 尾注
+- Status: InProgress
+- Covers: AC-013-5
+- Design: FLOW-09, IF-014
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/app/commit_integration_test.go
+- Depends: T-036
+
+commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CHG-n` 尾注代替 Task 尾注；Change 尾注引用的 CHG 须在变更日志中存在，不能与 Task 尾注同时出现。
+
+### T-038 需求取代关系（Replaces / Replaced-By）
+- Status: Todo
+- Covers: AC-003-6
+- Design: FLOW-01, IF-014, IF-022
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_02.go, internal/rules/builtin/prd_12.go, internal/rules/builtin/testdata/prd.12/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**
+- Depends: T-037
+
+被取代的条目在取代者的 Release 不大于 Current-Release 时按 Removed 判定：覆盖检查不再要求它，trace.03 报告对它的引用。新增 prd.12 校验 `Replaces` 与 `Replaced-By` 互相对应、引用存在、被取代者的 Release 小于取代者。
+

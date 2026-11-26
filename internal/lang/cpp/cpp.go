@@ -37,3 +37,12 @@ func (Lang) TestNames(src []byte) []string {
 	}
 	return out
 }
+
+// Pack 返回语言配置包（IF-034）。
+func (Lang) Pack() spec.Pack {
+	return spec.Pack{
+		SourcePaths: []string{"src/**", "include/**", "tests/**"},
+		Format:      spec.Tool{Cmd: "clang-format --dry-run -Werror $(find src include -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' 2>/dev/null)", Output: "lines", Install: "brew install clang-format（或 apt install clang-format）"},
+		Lint:        spec.Tool{Cmd: "clang-tidy --quiet $(find src -name '*.c' -o -name '*.cc' -o -name '*.cpp' 2>/dev/null)", Output: "lines", Install: "brew install llvm（或 apt install clang-tidy）"},
+	}
+}

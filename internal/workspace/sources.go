@@ -1,6 +1,9 @@
 package workspace
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -121,4 +124,18 @@ func matchParts(pat, name []string) bool {
 		pat, name = pat[1:], name[1:]
 	}
 	return len(name) == 0
+}
+
+// SourceHash 返回已加载源文件（按路径排序的路径与内容）的哈希，报告据此判断是否过期（IF-009）。
+// 需要以 LoadOptions.WithSources 加载快照。
+func (s *Snapshot) SourceHash() string {
+	files := append([]*SourceFile(nil), s.Sources...)
+	sort.Slice(files, func(i, j int) bool { return files[i].Path < files[j].Path })
+	h := sha256.New()
+	for _, f := range files {
+		b, _ := f.Content()
+		fmt.Fprintf(h, "%s\x00%d\x00", f.Path, len(b))
+		h.Write(b)
+	}
+	return "sha256:" + hex.EncodeToString(h.Sum(nil))
 }

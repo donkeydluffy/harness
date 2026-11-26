@@ -39,3 +39,12 @@ func (Lang) TestNames(src []byte) []string {
 	}
 	return out
 }
+
+// Pack 返回语言配置包（IF-034）。
+func (Lang) Pack() spec.Pack {
+	return spec.Pack{
+		SourcePaths: []string{"src/**", "test/**", "tests/**"},
+		Format:      spec.Tool{Cmd: "prettier --list-different .", Output: "files", Install: "npm install --save-dev prettier"},
+		Lint:        spec.Tool{Cmd: "eslint --format unix .", Output: "lines", Install: "npm install --save-dev eslint"},
+	}
+}

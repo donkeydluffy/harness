@@ -80,3 +80,13 @@ func (Lang) TestNames(src []byte) []string {
 	}
 	return out
 }
+
+// Pack 返回语言配置包（IF-034）。
+func (Lang) Pack() spec.Pack {
+	return spec.Pack{
+		SourcePaths: []string{"cmd/**", "internal/**", "pkg/**"},
+		Test:        "mkdir -p .harness/reports && go test -json ./... > .harness/reports/go.jsonl",
+		Format:      spec.Tool{Cmd: "gofmt -l .", Output: "files", Install: "安装 Go 工具链（https://go.dev/dl/），gofmt 随附"},
+		Lint:        spec.Tool{Cmd: "go vet ./...", Output: "lines", Install: "安装 Go 工具链（https://go.dev/dl/），go vet 随附"},
+	}
+}

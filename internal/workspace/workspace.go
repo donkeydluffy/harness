@@ -26,10 +26,12 @@ type Snapshot struct {
 	Repo    vcs.Repo   // 非 git 仓库时为 nil
 	// CommitRange 是要检查的提交范围；为空时依赖 git 的规则检查暂存区（即将形成的提交）。
 	CommitRange string
-	Message     string                // 见 LoadOptions.Message
-	Sources     []*SourceFile         // LoadOptions.WithSources 时加载
-	Tests       []testreport.TestCase // LoadOptions.WithTests 时加载
-	Reports     []string              // 读到的测试报告文件；为空表示没有报告
+	Message     string                 // 见 LoadOptions.Message
+	Sources     []*SourceFile          // LoadOptions.WithSources 时加载
+	Tests       []testreport.TestCase  // LoadOptions.WithTests 时加载
+	Reports     []string               // 读到的测试报告文件；为空表示没有报告
+	Lint        *testreport.LintReport // LoadOptions.WithTests 时读取 lint 报告；不存在时为 nil
+	LintErr     error                  // lint 报告无法读取或解析
 	Diags       []model.Diagnostic
 }
 
@@ -76,6 +78,7 @@ func Load(root string, opt LoadOptions) (*Snapshot, error) {
 		if s.Reports, s.Tests, err = loadReports(root, cfg.TestReports); err != nil {
 			return nil, err
 		}
+		s.Lint, s.LintErr = testreport.ReadLint(filepath.Join(root, testreport.LintFile))
 	}
 	var docs []*model.Doc
 	for _, rel := range artifactFiles(root) {
@@ -158,6 +161,8 @@ type Config struct {
 	StaleCommits      int               `json:"staleCommits"`
 	Phases            []json.RawMessage `json:"phases"`
 	Rules             []json.RawMessage `json:"rules"`
+	// Tools 按语言覆盖格式化检查（format）与静态检查（lint）命令（AC-014-3）。
+	Tools map[string]map[string]string `json:"tools"`
 }
 
 // DefaultConfig 返回全部字段取默认值的配置。

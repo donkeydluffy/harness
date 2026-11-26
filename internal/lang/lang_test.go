@@ -93,3 +93,23 @@ func TestLanguages_IF_003(t *testing.T) {
 		}
 	}
 }
+
+func TestPackFor_IF_034(t *testing.T) {
+	for _, name := range []string{"go", "python", "typescript", "java", "cpp"} {
+		p, ok := PackFor(name)
+		if !ok || len(p.SourcePaths) == 0 || p.Format.Cmd == "" || p.Lint.Cmd == "" || p.Format.Install == "" || p.Lint.Install == "" {
+			t.Errorf("%s 的语言配置包不完整：%+v", name, p)
+		}
+		for _, tool := range []Tool{p.Format, p.Lint} {
+			if tool.Output != "files" && tool.Output != "lines" {
+				t.Errorf("%s 的输出格式 %q 无效", name, tool.Output)
+			}
+		}
+	}
+	if p, _ := PackFor("go"); p.Format.Cmd != "gofmt -l ." || p.Lint.Cmd != "go vet ./..." {
+		t.Errorf("Go 的默认工具：%+v", p)
+	}
+	if _, ok := PackFor("rust"); ok {
+		t.Error("未注册的语言没有配置包")
+	}
+}

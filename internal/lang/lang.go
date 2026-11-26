@@ -15,6 +15,9 @@ type (
 	Language = spec.Language
 	Comment  = spec.Comment
 	TestKind = spec.TestKind
+	Tool     = spec.Tool
+	Pack     = spec.Pack
+	Packer   = spec.Packer
 )
 
 const (
@@ -61,4 +64,21 @@ func All() []Language {
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Name() < out[j].Name() })
 	return out
+}
+
+// PackFor 返回语言的配置包；语言未注册或没有配置包时 ok 为 false（IF-034）。
+//
+// harness:IF-034
+func PackFor(name string) (Pack, bool) {
+	mu.RLock()
+	l, ok := langs[name]
+	mu.RUnlock()
+	if !ok {
+		return Pack{}, false
+	}
+	p, ok := l.(Packer)
+	if !ok {
+		return Pack{}, false
+	}
+	return p.Pack(), true
 }

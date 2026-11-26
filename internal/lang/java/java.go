@@ -38,3 +38,12 @@ func (Lang) TestNames(src []byte) []string {
 	}
 	return out
 }
+
+// Pack 返回语言配置包（IF-034）。
+func (Lang) Pack() spec.Pack {
+	return spec.Pack{
+		SourcePaths: []string{"src/**"},
+		Format:      spec.Tool{Cmd: "google-java-format --dry-run --set-exit-if-changed $(find src -name '*.java')", Output: "files", Install: "brew install google-java-format（或从 https://github.com/google/google-java-format/releases 下载）"},
+		Lint:        spec.Tool{Cmd: "pmd check -d src -R rulesets/java/quickstart.xml -f emacs --no-progress", Output: "lines", Install: "brew install pmd（或从 https://pmd.github.io 下载）"},
+	}
+}

@@ -154,7 +154,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 - Covers: FR-038, FR-039, AC-024-2
 - Design: FLOW-01, IF-014, ADR-008
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/task_08.go, internal/rules/builtin/testdata/task.08/**, internal/app/dod_integration_test.go, internal/app/testdata/dod/**
+- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/test_02.go, internal/app/task_integration_test.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/task_08.go, internal/rules/builtin/testdata/task.08/**, internal/app/dod_integration_test.go, internal/app/testdata/dod/**
 - Depends: T-014
 
 task.07：InProgress 任务要求 PRD 与所引用设计的批准有效、关联需求无 Open 待澄清项。task.08：Done 任务所关联条目涉及的用例全部 passed、全量检查通过、进度文件有记录。

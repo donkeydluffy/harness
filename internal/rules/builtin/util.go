@@ -561,3 +561,99 @@ func commitViolation(cs changeSet, file, format string, args ...any) engine.Viol
 	}
 	return engine.Violation{File: file, Line: 1, Msg: cs.Name + "：" + fmt.Sprintf(format, args...)}
 }
+
+// caseResult 汇总测试报告中每个用例的集成测试结果。
+type caseResult struct {
+	passed   map[string]bool
+	failed   map[string][]string
+	other    map[string]string // 未计入覆盖的原因
+	inReport map[string]bool   // 文件 + "\x00" + 测试名
+}
+
+func caseResults(s *workspace.Snapshot, statics []staticTest) caseResult {
+	r := caseResult{map[string]bool{}, map[string][]string{}, map[string]string{}, map[string]bool{}}
+	for _, tc := range s.Tests {
+		st, ok := reportKind(tc, statics)
+		if ok {
+			r.inReport[st.File+"\x00"+st.Name] = true
+		}
+		for _, c := range caseRefs(tc.Name) {
+			switch {
+			case !ok || st.Kind != lang.Integration:
+				r.other[c] = "只被单元测试或无法识别类型的测试引用"
+			case tc.Status == testreport.Passed:
+				r.passed[c] = true
+			case tc.Status == testreport.Failed:
+				r.failed[c] = append(r.failed[c], tc.Name)
+			default:
+				r.other[c] = "引用它的测试状态为 skipped"
+			}
+		}
+	}
+	return r
+}
+
+// violation 返回用例未被通过的集成测试覆盖时的违规；覆盖时返回 nil。
+func (r caseResult) violation(s *workspace.Snapshot, id string) *engine.Violation {
+	c := s.Project.Cases[id]
+	switch {
+	case len(r.failed[id]) > 0:
+		return &engine.Violation{File: c.File, Line: c.Line,
+			Msg: fmt.Sprintf("用例 %s 的集成测试失败：%s", id, strings.Join(r.failed[id], ", "))}
+	case !r.passed[id]:
+		why := "没有引用它的集成测试"
+		if r.other[id] != "" {
+			why = r.other[id]
+		}
+		return &engine.Violation{File: c.File, Line: c.Line,
+			Msg: fmt.Sprintf("用例 %s 未被通过的集成测试覆盖（%s）", id, why)}
+	}
+	return nil
+}
+
+// effectivelyApproved 判断产物处于有效的批准状态：文件头为 Approved（ADR 为 Accepted），且批准记录与当前内容一致。
+func effectivelyApproved(s *workspace.Snapshot, rel string) bool {
+	d := s.Doc(rel)
+	if d == nil || workspace.HeaderStatus(d) != workspace.ApprovedStatus(rel) {
+		return false
+	}
+	a := s.Lock.LastApproval(rel)
+	return a != nil && a.Hash == s.ApprovalHash(rel)
+}
+
+// coveredRequirement 返回任务关联条目所属的需求编号（AC 取其所属需求）。
+func coveredRequirement(s *workspace.Snapshot, ref string) string {
+	if strings.HasPrefix(ref, "AC-") {
+		if _, req := acItem(s, ref); req != nil {
+			return req.ID
+		}
+		return ""
+	}
+	return ref
+}
+
+// taskCases 返回任务关联条目涉及的有效用例：关联 FR 或 NFR 时为其下全部用例，关联 AC 时为该 AC 下的用例（ADR-008）。
+func taskCases(s *workspace.Snapshot, t *model.Entity) []string {
+	var out []string
+	add := func(it *model.Item) {
+		for _, c := range it.Children {
+			if !workspace.CaseRemoved(c.Text) && !contains(out, c.ID) {
+				out = append(out, c.ID)
+			}
+		}
+	}
+	for _, ref := range t.List("Covers") {
+		if strings.HasPrefix(ref, "AC-") {
+			if it, _ := acItem(s, ref); it != nil {
+				add(it)
+			}
+			continue
+		}
+		if e := s.Project.ByID[ref]; e != nil && (e.Kind == "FR" || e.Kind == "NFR") {
+			for _, it := range e.Items {
+				add(it)
+			}
+		}
+	}
+	return out
+}

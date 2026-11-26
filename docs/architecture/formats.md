@@ -51,7 +51,7 @@
 | FR / NFR | Status, Release, Priority | Active / Removed；正整数；P0 / P1 / P2 |
 | NFR | Type | Quantitative / Constraint / Scenario |
 | NFR（Scenario） | Adds, Allowed-Paths, Closed-Modules | 文字 |
-| OQ | Status；Closed 时 Resolution | Open / Closed |
+| OQ | Status；Closed 时 Resolution；可选 Relates（关联的需求编号，task.07 据此判定） | Open / Closed |
 | MOD | Status, Paths, Public, Depends, Interfaces, Covers, Core, Coverage | Paths/Public 为 glob 列表；Core 为 true/false；Coverage 为 0-100 |
 | IF | Module, Covers，及一个首行为 `// IF-xxx` 的代码块（签名） | |
 | MOD / IF（可选） | Domain | 该模块或接口使用的领域概念代码名，逗号分隔；每个名称必须出现在统一语言表格的"代码名"列（规则 term.02） |
@@ -60,7 +60,7 @@
 | ADR | Status, Relates；正文含 `## 背景`、`## 决策`、`## 后果` | Proposed / Accepted / Superseded；Superseded 时 Superseded-By |
 | T | Status, Covers, Design, Scope, Depends；可选 Extends, Flow | Status: Todo / InProgress / Done / Blocked；Covers: FR、NFR 或 AC 编号；Scope: 仓库相对路径 glob |
 | DEBT | Status, Module | Open / Resolved |
-| 进度记录 | 标题 `### <日期> T-n`（日期在前，不构成任务实体），正文含结论与遗留问题 | 位于 `docs/progress.md` |
+| 进度记录 | 标题 `### <日期> T-n`（日期在前，不构成任务实体；标题后可加说明），正文含 `- 结论：` 与 `- 遗留：` 两行 | 位于 `docs/progress.md`；同一任务可有多条，任意一条两行齐全即可 |
 | 产物文件 | 文件头 Status | Draft / Approved（Approved 只能由 `harness approve` 写入） |
 
 ## 4. 调用流程步骤

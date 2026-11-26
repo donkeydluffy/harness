@@ -5,9 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"harness/internal/lang"
 	"harness/internal/rules/engine"
-	"harness/internal/testreport"
 	"harness/internal/workspace"
 )
 
@@ -45,26 +43,7 @@ func (test02) Check(s *workspace.Snapshot) []engine.Violation {
 		return []engine.Violation{{File: ".", Line: 1, Msg: "输入缺失：没有测试报告（harness.json 的 testReports：" + strings.Join(s.Config.TestReports, ", ") + "）"}}
 	}
 	statics := staticTests(s)
-	passed, failed, other := map[string]bool{}, map[string][]string{}, map[string]string{}
-	inReport := map[string]bool{}
-	for _, tc := range s.Tests {
-		st, ok := reportKind(tc, statics)
-		if ok {
-			inReport[st.File+"\x00"+st.Name] = true
-		}
-		for _, c := range caseRefs(tc.Name) {
-			switch {
-			case !ok || st.Kind != lang.Integration:
-				other[c] = "只被单元测试或无法识别类型的测试引用"
-			case tc.Status == testreport.Passed:
-				passed[c] = true
-			case tc.Status == testreport.Failed:
-				failed[c] = append(failed[c], tc.Name)
-			default:
-				other[c] = "引用它的测试状态为 skipped"
-			}
-		}
-	}
+	r := caseResults(s, statics)
 	var out []engine.Violation
 	var ids []string
 	for id := range scope {
@@ -72,22 +51,12 @@ func (test02) Check(s *workspace.Snapshot) []engine.Violation {
 	}
 	sort.Strings(ids)
 	for _, id := range ids {
-		c := s.Project.Cases[id]
-		switch {
-		case len(failed[id]) > 0:
-			out = append(out, engine.Violation{File: c.File, Line: c.Line,
-				Msg: fmt.Sprintf("用例 %s 的集成测试失败：%s", id, strings.Join(failed[id], ", "))})
-		case !passed[id]:
-			why := "没有引用它的集成测试"
-			if other[id] != "" {
-				why = other[id]
-			}
-			out = append(out, engine.Violation{File: c.File, Line: c.Line,
-				Msg: fmt.Sprintf("用例 %s 未被通过的集成测试覆盖（%s）", id, why)})
+		if v := r.violation(s, id); v != nil {
+			out = append(out, *v)
 		}
 	}
 	for _, st := range statics {
-		if len(caseRefs(st.Name)) > 0 && !inReport[st.File+"\x00"+st.Name] {
+		if len(caseRefs(st.Name)) > 0 && !r.inReport[st.File+"\x00"+st.Name] {
 			out = append(out, engine.Violation{File: st.File, Line: st.Line,
 				Msg: fmt.Sprintf("测试 %s 引用了用例，但没有出现在测试报告中", st.Name)})
 		}

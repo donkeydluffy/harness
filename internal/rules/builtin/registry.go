@@ -41,6 +41,8 @@ func Rules() []engine.Rule {
 		task04{},
 		task05{},
 		task06{},
+		task07{},
+		task08{},
 		commit01{},
 		commit02{},
 		commit03{},

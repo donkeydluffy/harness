@@ -516,13 +516,24 @@ harness 自身的开发受 harness 管理。
 
 对外接口和核心逻辑必须有单元测试。
 
-- AC-021-1: 每个 Active 接口至少有一个测试名包含其编号（IF-n）且状态为 passed 的单元测试。
-- AC-021-2: 单独运行某接口的单元测试并采集覆盖率时，`harness:IF-n` 锚点所在函数的入口行必须被执行，否则判定该测试未真正调用接口。
-- AC-021-3: 架构声明中每个模块可设置行覆盖率阈值；标记为核心的模块必须设置阈值。实际覆盖率低于阈值时失败。
+- AC-021-1: 每个 Active 接口至少有一个测试名包含其编号（如 `TestSave_IF_002`）且状态为 passed 的单元测试。
+  - AC-021-1/N1: IF-002 有通过的单元测试 `TestSave_IF_002`，通过
+  - AC-021-1/E1: IF-002 没有测试名含 IF-002 的单元测试，失败并列出 IF-002
+  - AC-021-1/E2: `TestSave_IF_002` 在报告中为 failed，失败
+- AC-021-2: `harness check unit` 对每个接口单独运行其单元测试并采集覆盖率，结果写入 `.harness/reports/unit.json`；`harness:IF-n` 锚点所在函数的入口行未被执行时，判定该测试没有真正调用接口。全量检查只读取该报告，报告缺失或与当前源码不一致时失败。Release 2 的覆盖率采集只支持 Go，其他语言的项目跳过本条与 AC-021-3，并在检查输出中说明。
+  - AC-021-2/N1: `TestSave_IF_002` 调用了 IF-002 的实现，报告记录入口行已执行，通过
+  - AC-021-2/E1: `TestSave_IF_002` 只调用了别的函数，失败并说明该测试没有调用 IF-002
+  - AC-021-2/E2: 没有 unit 报告，全量检查失败并提示运行 `harness check unit`
+  - AC-021-2/B1: 只有 Python 源码的项目，跳过本条并在输出中说明
+- AC-021-3: 架构声明中模块可用 Coverage 字段设置行覆盖率阈值，Core 为 true 的模块必须设置；`harness check unit` 记录各模块的行覆盖率，低于阈值时失败。
+  - AC-021-3/N1: MOD-01 阈值 60，实际 72，通过
+  - AC-021-3/E1: MOD-01 阈值 60，实际 55，失败并给出两个数值
+  - AC-021-3/E2: Core 为 true 的模块没有 Coverage，失败
+  - AC-021-3/B1: 实际覆盖率恰好等于阈值，通过
 
 ### FR-022 测试有效性
 - Status: Active
-- Release: 2
+- Release: 3
 - Priority: P0
 
 确定性检测无效测试和削弱测试的行为。
@@ -587,7 +598,7 @@ harness 自身的开发受 harness 管理。
 
 ### FR-026 依赖引入闸门
 - Status: Active
-- Release: 2
+- Release: 3
 - Priority: P1
 
 - AC-026-1: 依赖清单文件（package.json、pyproject.toml/requirements*.txt、go.mod、pom.xml/build.gradle*、vcpkg.json/conanfile）相对基线新增的第三方依赖，必须登记在依赖白名单中，并引用一条 ADR，否则失败。
@@ -596,8 +607,9 @@ harness 自身的开发受 harness 管理。
 
 ### FR-027 运行与观察应用
 - Status: Active
-- Release: 2
+- Release: 3
 - Priority: P1
+- Replaces: FR-055
 
 让代理能启动、验证、观察应用，而不只是编译通过。
 
@@ -607,7 +619,7 @@ harness 自身的开发受 harness 管理。
 
 ### FR-028 harness 自测与度量
 - Status: Active
-- Release: 2
+- Release: 3
 - Priority: P1
 
 - AC-028-1: 每条门禁规则至少有一个正例和一个反例测试，证明它会触发也不会误报；规则缺少测试时 harness 自身的构建失败。
@@ -629,10 +641,22 @@ harness 自身的开发受 harness 管理。
 
 确定性发现自由文本文档（README、详细设计说明、入口指令文件、skill）的过期内容，替代定期清理代理。
 
-- AC-030-1: 受检 Markdown 中以代码格式出现的仓库相对路径必须存在，否则失败。
-- AC-030-2: 受检 Markdown 中出现的 `harness <子命令>` 必须是存在的子命令，否则失败。
-- AC-030-3: 受检 Markdown 中引用的编号（FR、NFR、AC、IF、MOD、FLOW、ADR、T、DEBT）必须存在且不是 Removed，否则失败。
+- AC-030-1: 受检 Markdown 为 README.md、AGENTS.md、CLAUDE.md、`.claude/skills/**/SKILL.md` 与 `docs/**/*.md`，不含进度文件（`docs/progress.md`）以及 PRD 的澄清记录与变更日志章节；只检查行内代码，不检查代码块。行内代码中的仓库相对路径（含 `/` 或文件扩展名、不含空白、通配符与 `<…>` 占位符）必须存在，否则失败。
+  - AC-030-1/N1: README 中的 `docs/PRD.md` 存在，通过
+  - AC-030-1/E1: skill 中引用的 `internal/old/x.go` 已不存在，失败并给出文件与行号
+  - AC-030-1/B1: 代码块中出现不存在的路径，不报告
+  - AC-030-1/B2: 行内代码 `docs/<领域>.md` 含占位符，不报告
+- AC-030-2: 受检 Markdown 的行内代码中出现的 `harness <子命令>` 必须是存在的子命令，否则失败。
+  - AC-030-2/N1: `harness check` 存在，通过
+  - AC-030-2/E1: `harness phase list` 在阶段命令删除后仍出现在 skill 中，失败
+- AC-030-3: 受检 Markdown 中引用的编号（FR、NFR、AC、IF、MOD、FLOW、ADR、T、DEBT）必须存在且不是 Removed，也没有被已生效的需求取代（AC-003-6），否则失败。
+  - AC-030-3/N1: 设计说明中引用的 FR-002 存在且为 Active，通过
+  - AC-030-3/E1: README 引用不存在的 IF-099，失败
+  - AC-030-3/E2: skill 引用已被取代且取代已生效的 FR-045，失败
+  - AC-030-3/B1: PRD 变更日志中引用已 Removed 的需求，不报告
 - AC-030-4: 模块路径下的代码在其详细设计文档最后一次修改之后被提交改动超过 N 次（默认 10，可配置）时输出"可能过期"告警，不影响退出码。
+  - AC-030-4/N1: 改动 11 次，输出告警，退出码不变
+  - AC-030-4/B1: 改动恰好 10 次，不告警
 
 ### FR-031 技术债登记
 - Status: Active
@@ -655,7 +679,7 @@ harness 自身的开发受 harness 管理。
 
 ### FR-032 模块健康报告
 - Status: Active
-- Release: 2
+- Release: 3
 - Priority: P2
 
 替代代码质量评级：只列事实，不打分。
@@ -708,12 +732,18 @@ harness 自身的开发受 harness 管理。
 - Release: 2
 - Priority: P1
 
-- AC-035-1: 每个模块在架构声明中列出公开路径（对外接口所在文件或目录）。
-- AC-035-2: 跨模块引用的目标文件不在被引用模块的公开路径内时失败，给出文件和行号。
+- AC-035-1: 每个模块在架构声明中用 Public 字段列出公开路径（对外接口所在文件或目录）。
+  - AC-035-1/N1: 模块声明 `Public: internal/store/store.go`，通过
+  - AC-035-1/E1: 模块没有 Public 字段，失败
+- AC-035-2: 跨模块的 import 指向的目标不在被引用模块的公开路径内时失败，给出文件和行号；Release 2 只检查 Go 代码（import 识别同 FR-053）。
+  - AC-035-2/N1: MOD-02 import MOD-01 的公开包，通过
+  - AC-035-2/E1: MOD-02 import MOD-01 中不在 Public 内的子包，失败并给出文件与行号
+  - AC-035-2/B1: 模块内部 import 自己的非公开包，通过
+  - AC-035-2/B2: 测试文件中的跨模块 import 不检查
 
 ### FR-036 依赖稳定性与扇出
 - Status: Active
-- Release: 2
+- Release: 3
 - Priority: P1
 
 - AC-036-1: 按实际 import 图计算每个模块的不稳定度 I = 出向依赖数 /（出向依赖数 + 入向依赖数）。
@@ -810,6 +840,10 @@ harness 自身的开发受 harness 管理。
 - Priority: P1
 
 - AC-042-1: 源码中的 lint 和类型检查抑制注释（`eslint-disable*`、`@ts-ignore`、`@ts-expect-error`、`# noqa`、`# type: ignore`、`# pylint: disable`、`//nolint`、`@SuppressWarnings`、`// NOLINT`）必须在同一行引用一个 Open 的 DEBT-n，否则失败。
+  - AC-042-1/N1: `//nolint:errcheck // DEBT-014` 且 DEBT-014 为 Open，通过
+  - AC-042-1/E1: `# noqa` 没有引用技术债，失败并给出文件与行号
+  - AC-042-1/E2: 抑制注释引用的 DEBT-005 已 Resolved，失败
+  - AC-042-1/B1: 字符串字面量中出现 `@ts-ignore`，不报告
 
 ### FR-043 CI 集成
 - Status: Active
@@ -1074,6 +1108,24 @@ harness 自身的开发受 harness 管理。
   - AC-054-5/N2: 同一条规则不影响需求的批准
   - AC-054-5/E1: 登记的批准单位类型不存在，`harness check` 失败
 
+### FR-055 启动与冒烟测试命令
+- Status: Active
+- Release: 2
+- Priority: P1
+- Replaced-By: FR-027
+
+让代理能启动并验证应用，而不只是编译通过。性能阈值与截图验收在 Release 3 由 FR-027 完成。
+
+- AC-055-1: 项目配置声明启动命令与冒烟测试命令；任务列表中已有 Done 的任务而缺少声明时失败。没有可启动应用的项目（如库）把启动命令声明为 `none` 并写明原因。
+  - AC-055-1/N1: 声明了启动与冒烟测试命令，通过
+  - AC-055-1/E1: 已有 Done 的任务，项目配置没有冒烟测试命令，失败
+  - AC-055-1/B1: 库项目声明启动命令为 `none` 并写明原因，通过
+  - AC-055-1/E2: 启动命令为 `none` 但没有原因，失败
+- AC-055-2: `harness check smoke` 运行冒烟测试命令，退出码非 0 时失败并输出命令的最后 50 行输出；生成的 CI 配置在 `harness check` 之前运行它。冒烟测试运行外部程序，不计入全量检查。
+  - AC-055-2/N1: 冒烟测试命令退出码 0，通过
+  - AC-055-2/E1: 冒烟测试命令退出码 1，失败并输出最后 50 行
+  - AC-055-2/B1: 生成的 GitHub Actions 配置中冒烟测试步骤位于 `harness check` 之前
+
 ## 4. 非功能需求
 
 ### NFR-001 确定性
@@ -1145,7 +1197,7 @@ harness 自身的开发受 harness 管理。
 
 ### NFR-006 扩展场景：新增一种编程语言
 - Status: Active
-- Release: 2
+- Release: 3
 - Type: Scenario
 - Priority: P1
 - Adds: 一种项目语言的支持
@@ -1329,6 +1381,11 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 - Q: 代码解析类功能（依赖与未归属文件、接口签名、机械改动的 import 识别）在 Release 2 覆盖哪些语言？ A: 只做 Go；其他语言与 OpenAPI、protobuf 契约放 Release 3。FR-008、FR-018 改为 Release 3，由 Release 2 的 FR-053、FR-052 先实现 Go 部分，Release 3 时用 Replaces 取代。
 - Q: 模块负责人通知与 CODEOWNERS（AC-009-2、AC-009-6）需要模块负责人字段，怎么处理？ A: 放 Release 3，不改模块格式；Release 2 的通知清单只列下游模块（AC-052-4）。FR-009 改为 Release 3。
 - Q: 外部命令规则是否在会话结束检查中运行？ A: 外部命令规则放 Release 3（FR-046），Release 2 只做声明式规则与批准前检查（FR-054），全量检查不运行外部程序。
+### 2026-11-26 第 22 轮
+- Q: Release 2 中尚未澄清的 11 条需求怎么分？ A: 保留 FR-021、FR-030、FR-035、FR-042 与 FR-027 的启动、冒烟测试命令（拆为 FR-055）；FR-022、FR-026、FR-028、FR-032、FR-036、NFR-006 与 FR-027 的性能阈值、截图验收改为 Release 3。
+- Q: 按接口运行测试并采集覆盖率要运行外部程序，放在哪里？ A: 与 lint 一致，由 `harness check unit` 运行并写报告，全量检查只读报告；Release 2 只支持 Go（AC-021-2）。
+- Q: 文档引用检查哪些文件？ A: README、AGENTS.md、CLAUDE.md、skill 与 `docs/` 下的 Markdown，只查行内代码；进度文件与 PRD 的澄清记录、变更日志是历史记录，不检查（AC-030-1、AC-030-3）。
+- Q: 没有可启动应用的项目怎么声明？ A: 启动命令写 `none` 并写明原因；冒烟测试不计入全量检查（FR-055）。
 
 ## 8. 变更日志
 
@@ -1370,3 +1427,6 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 | CHG-023 | 2026-11-26 | 新增 | FR-052, FR-053, FR-054 | Release 2 的 Go 接口签名一致、Go 模块依赖约束、声明式自定义规则（第 21 轮） |
 | CHG-023 | 2026-11-26 | 修改 | FR-008, FR-009, FR-018, FR-046 | 改为 Release 3，分别取代 FR-053、FR-052、FR-052、FR-054 |
 | CHG-023 | 2026-11-26 | 修改 | FR-014 | 只有 Go 配置包在 Release 2 声明 import 语法 |
+| CHG-024 | 2026-11-26 | 新增 | FR-055 | 启动与冒烟测试命令（第 22 轮，Release 2） |
+| CHG-024 | 2026-11-26 | 修改 | FR-022, FR-026, FR-027, FR-028, FR-032, FR-036, NFR-006 | 改为 Release 3；FR-027 取代 FR-055 |
+| CHG-024 | 2026-11-26 | 修改 | FR-021, FR-030, FR-035, FR-042 | 补充用例与边界；覆盖率由 `harness check unit` 写报告、Release 2 只支持 Go；文档引用检查的范围与豁免 |

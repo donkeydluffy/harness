@@ -264,7 +264,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 对本仓库执行 `harness init`，提交生成文件与锁文件，启用 hook 与 CI；集成测试对仓库根目录运行 `harness check` 并校验 hook 配置存在。
 
 ### T-027 跨平台构建与发布
-- Status: Blocked
+- Status: InProgress
 - Covers: AC-N002-1, AC-N002-3
 - Design: MOD-01, ADR-001, FLOW-07
 - Scope: cmd/harness/**, .goreleaser.yaml, .github/workflows/release.yml, internal/scaffold/**
@@ -283,7 +283,7 @@ commit-msg、pre-commit hook；GitHub Actions 与 GitLab CI 模板运行 `harnes
 T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门禁 panic 并以退出码 2 拒绝命令；secret.entropy 把含大小写与数字的长路径当作密钥（DEBT-006）。T-027 在本任务完成前为 Blocked。
 
 ### T-029 解析测试不再断言本仓库产物的固定数量
-- Status: InProgress
+- Status: Done
 - Covers: FR-003
 - Design: IF-001
 - Scope: internal/model/model_test.go

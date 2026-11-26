@@ -106,7 +106,7 @@ func TestPerf_AC_N003_1_E1(t *testing.T) {
 
 func TestPerf_AC_N003_2_N1(t *testing.T) {
 	dir := perfRepo(t)
-	// 最后一个源文件放一条不合规的 TODO，确认全部源文件都被扫描。
+	// 最后一个源文件放一条没有引用编号的待办注释，确认全部源文件都被扫描。
 	write(t, dir, "internal/m049/f099.go", "package m049\n\n// TODO 以后再说\n")
 	var r result
 	d := timed(func() { r = runHarness(t, dir, "check") })

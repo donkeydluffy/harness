@@ -4,6 +4,7 @@ package app
 import (
 	"sync"
 
+	"harness/internal/phase"
 	"harness/internal/rules/builtin"
 	"harness/internal/rules/engine"
 )
@@ -16,5 +17,6 @@ func registerRules() {
 		for _, r := range builtin.Rules() {
 			engine.Register(r)
 		}
+		engine.Register(phase.Rule())
 	})
 }

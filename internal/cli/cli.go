@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"harness/internal/app"
+	"harness/internal/phase"
 	"harness/internal/rules/engine"
 )
 
@@ -30,6 +31,8 @@ const usage = `用法：harness <命令> [参数]
                                    --msg-file 传入即将提交的信息（commit-msg hook 使用）
   lock                             产物文档检查通过后更新 harness.lock
   approve <产物>                   由人在终端批准产物（prd 或产物路径），写入批准记录
+  phase list                       列出流程阶段，标出当前阶段
+  phase next                       由人在终端推进到下一阶段（退出与进入规则须通过）
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
 `
 
@@ -51,6 +54,8 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return lockCmd(root, stdout, stderr)
 	case "approve":
 		return approveCmd(root, args[1:], stdout, stderr)
+	case "phase":
+		return phaseCmd(root, args[1:], stdout, stderr)
 	case "trace":
 		return traceCmd(root, args[1:], stdout, stderr)
 	case "help", "-h", "--help":
@@ -178,6 +183,46 @@ func approveCmd(root string, args []string, stdout, stderr io.Writer) int {
 		return ExitViolated
 	default:
 		fmt.Fprintln(stderr, "harness approve: 内部错误：", err)
+		return ExitInternal
+	}
+}
+
+func phaseCmd(root string, args []string, stdout, stderr io.Writer) int {
+	if len(args) != 1 || (args[0] != "list" && args[0] != "next") {
+		fmt.Fprintln(stderr, "用法：harness phase list|next")
+		return ExitInternal
+	}
+	if args[0] == "list" {
+		phases, cur, err := app.PhaseList(root)
+		if err != nil {
+			fmt.Fprintln(stderr, "harness phase list: 内部错误：", err)
+			return ExitInternal
+		}
+		for _, p := range phases {
+			mark := " "
+			if p.Name == cur {
+				mark = "*"
+			}
+			fmt.Fprintf(stdout, "%s %d %s  退出规则：%s\n", mark, p.Order, p.Name, strings.Join(p.Exit, ", "))
+		}
+		return ExitOK
+	}
+	err := app.PhaseNext(root, newTerminal(stdout))
+	var ve *app.ViolationsError
+	switch {
+	case err == nil:
+		_, cur, _ := app.PhaseList(root)
+		fmt.Fprintf(stdout, "已推进到 %s\n", cur)
+		return ExitOK
+	case errors.As(err, &ve):
+		printReport(ve.Report, false, stdout, stderr)
+		fmt.Fprintln(stderr, "harness phase next: 规则未通过，拒绝推进")
+		return ExitViolated
+	case errors.Is(err, phase.ErrLastPhase), errors.Is(err, app.ErrDeclined), errors.Is(err, app.ErrNotInteractive):
+		fmt.Fprintln(stderr, "harness phase next:", err)
+		return ExitViolated
+	default:
+		fmt.Fprintln(stderr, "harness phase next: 内部错误：", err)
 		return ExitInternal
 	}
 }

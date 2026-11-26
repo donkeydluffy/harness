@@ -21,8 +21,8 @@ type Terminal interface {
 	Identity() string
 }
 
-// ErrNotInteractive 表示不在交互式终端中，批准必须由人执行。
-var ErrNotInteractive = errors.New("harness approve 必须由人在交互式终端中执行，标准输入不是终端")
+// ErrNotInteractive 表示不在交互式终端中；批准与阶段推进必须由人执行。
+var ErrNotInteractive = errors.New("必须由人在交互式终端中执行，标准输入不是终端")
 
 // ErrDeclined 表示批准人在确认提示处拒绝。
 var ErrDeclined = errors.New("未确认，产物状态与锁文件均未改变")

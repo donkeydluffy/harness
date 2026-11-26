@@ -144,7 +144,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 - Covers: AC-045-1, AC-045-2
 - Design: FLOW-08, IF-015, IF-016, IF-024, ADR-005
 - Flow: FLOW-08
-- Scope: internal/phase/**, internal/lock/**, internal/cli/**, internal/app/phase.go, internal/app/app.go, internal/app/phase_integration_test.go, internal/app/testdata/phase/**
+- Scope: internal/phase/**, internal/lock/**, internal/cli/**, internal/app/phase.go, internal/app/app.go, internal/app/approve.go, internal/app/phase_integration_test.go, internal/app/testdata/phase/**
 - Depends: T-013
 
 内置四个阶段 JSON、项目配置合并、phase.01（由 phase 模块注册）、`harness phase list|next`（交互式终端、退出与进入规则通过）。AC-045-3 的 `phase next` 在本任务实现并写测试，但其 E3（门禁拒绝代理改阶段）依赖门禁，整条 AC 由 T-016 关联。phase 附 `TestExample_EXT_04` 示例阶段测试。

@@ -244,3 +244,7 @@
 ### 2026-11-26 T-046
 - 结论：项目配置新增 `start`；规则 smoke.01 要求已有 Done 任务的项目声明启动命令与冒烟测试命令，启动命令为 `none` 时须写明原因且不再要求冒烟命令。与 ci.01、cfg.02 一致，只检查存在 `harness.json` 的项目，否则会让没有执行过 init 的测试夹具与用户项目误报。本仓库的 `harness.json` 由人补上 start 与 smoke，登记为 CHG-025。
 - 遗留：无。
+
+### 2026-11-26 T-047
+- 结论：init 按语言配置包生成配置，把各语言默认的格式化与静态检查命令写入 `tools`，并补齐缺失的工具配置文件（ruff.toml、.prettierrc、eslint.config.js、.clang-format），已有文件不改动，cfg.02 也不比对它们。用户项目的 CI 下载固定版本的发布归档，按 checksums.txt 校验后安装，再依次运行 lint、unit、smoke、check 与提交检查；只有 Go 项目与 harness 自身仓库安装 Go 工具链。从源码构建的 harness 不能确定发布版本号，init 拒绝并提示 `--ci-version`，harness 自身仓库照常从源码构建。cfg.02 用 CI 配置中固定的版本重新生成期望内容，本地为发布版本且与固定版本不同时报告两个版本。本仓库的 CI 配置由人删除后用 init 重新生成。
+- 遗留：toolrun 把 `tools` 中的命令一律按 `lines` 解析，init 写入的 `gofmt -l` 等按文件名输出的默认命令因此查不出问题，登记为 T-056；Kotlin 仍没有 ktlint 配置包（T-045 遗留）。

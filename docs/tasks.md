@@ -463,7 +463,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 项目配置的 `start` 字段（`none: <原因>`）与规则 smoke.01；本仓库的 `harness.json` 补上 start（由人修改并登记 CHG）。
 
 ### T-047 init 与 CI：语言配置包、工具配置文件、固定版本
-- Status: Todo
+- Status: Done
 - Covers: AC-014-1, AC-014-6, AC-014-7, AC-055-2, FR-051
 - Design: IF-020, IF-021, IF-026, IF-034, IF-037, FLOW-07
 - Flow: FLOW-07
@@ -551,3 +551,12 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Depends: T-054
 
 删除 `internal/phase/`、scaffold 中的阶段用法与 skill 中的阶段说明；设计中 MOD-10、EXT-04 改为 Removed，去掉对 MOD-10 的依赖与 IF-015、IF-016 的流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。
+
+### T-056 默认工具命令按语言配置包的输出格式解析
+- Status: Todo
+- Covers: AC-014-3, AC-014-4
+- Design: IF-030, IF-034
+- Scope: internal/toolrun/**
+- Depends: T-049
+
+`harness init` 把各语言的默认命令写入 `tools`（AC-014-1），toolrun 却把 `tools` 中的命令一律按 `lines` 解析，`gofmt -l` 这类按文件名输出的默认命令因此查不出问题。`tools` 中的命令与语言配置包的默认命令相同时，沿用配置包声明的输出格式与安装提示。

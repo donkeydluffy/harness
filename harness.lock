@@ -2893,6 +2893,17 @@
         "MOD-10": "sha256:9b5c7bacbb3be56139fa4fa4da7dbdcc65010155017bcd51a430e567497fbefb"
       }
     },
+    "T-056": {
+      "at": "2026-11-26T15:23:32Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:90d39314d0bd47ce55d5d2798d72e35dc8f394146d3122940420cd70b99f5272",
+      "text": "### T-056 默认工具命令按语言配置包的输出格式解析\n- Covers: AC-014-3, AC-014-4\n- Design: IF-030, IF-034\n- Scope: internal/toolrun/**\n- Depends: T-049\n\n`harness init` 把各语言的默认命令写入 `tools`（AC-014-1），toolrun 却把 `tools` 中的命令一律按 `lines` 解析，`gofmt -l` 这类按文件名输出的默认命令因此查不出问题。`tools` 中的命令与语言配置包的默认命令相同时，沿用配置包声明的输出格式与安装提示。",
+      "upstream": {
+        "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
+        "IF-030": "sha256:692b0b050c908f87c589aeff96e7f649ea0ccf6522ef43e3f4a2da0be111ec54",
+        "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4"
+      }
+    },
     "TERM": {
       "at": "2026-11-26T12:17:49Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",

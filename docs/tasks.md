@@ -473,7 +473,7 @@ commit.01 接受只改 `docs/` 与 `harness.lock` 的提交用一个 `Change: CH
 init 改用 IF-034 的语言配置包，缺失时生成工具配置文件；CI 模板依次运行 lint、unit、smoke、check、check commits；用户项目下载固定版本的发布归档并校验，没有发布版本号时拒绝（`--ci-version`）；cfg.02 按 CI 固定版本比对并提示升级。本仓库的 CI 配置用 `harness init` 重新生成。
 
 ### T-048 Go 接口锚点与签名快照
-- Status: InProgress
+- Status: Done
 - Covers: FR-052
 - Design: IF-035, IF-039, IF-014, FLOW-01, FLOW-12
 - Flow: FLOW-01

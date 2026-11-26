@@ -39,7 +39,7 @@ func Lookup(id string) (Rule, bool)
 ```go
 // IF-012
 type Selector struct{ IDs []string; Prefixes []string } // 空选择器表示全部
-type Report struct{ Violations []Violation; Ran []string; Errors []error }
+type Report struct{ Violations, Warnings []Violation; Ran []string; Errors []error } // Warnings：Warn 为 true 的违规，不影响退出码
 
 func Run(s *workspace.Snapshot, sel Selector) Report // 输出按 文件、行号、规则编号 排序
 ```

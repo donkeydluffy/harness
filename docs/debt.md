@@ -16,16 +16,20 @@
 已解决（fd3898e）：模块路径改为 `github.com/donkeydluffy/harness`，modulePath 与本仓库 CI 配置一并修改。
 
 ### DEBT-002 解析诊断未被任何规则报告
-- Status: Open
+- Status: Resolved
 - Module: MOD-05
 
 `workspace.Snapshot.Diags`（代码块未闭合、用例不在验收标准下、用例编号重复）目前没有规则输出，问题会被静默忽略。T-003 起 prd.07 报告用例相关诊断，T-005 起 arch.01 报告架构文档的诊断。adr.01（T-007）、debt.01（T-009）、task.01（T-011）已报告各自文件的诊断。仍未报告的：PRD 中与用例无关的诊断（如代码块未闭合、实体编号重复），以及 `docs/progress.md` 的诊断。
 
+已解决（c780404，T-032）：`diagOwner` 统一判定每条诊断由哪条规则报告，其余诊断（PRD 中未结束的代码块、跨文件重复的编号、进度文件等）由 doc.01 报告；测试确认每条诊断恰好被一条规则报告且归属正确。
+
 ### DEBT-003 task.08 自行维护全量检查的排除列表
-- Status: Open
+- Status: Resolved
 - Module: MOD-05
 
 `engine.FullCheck` 定义了"全量检查"不含的覆盖类规则（test.02、arch.05），会话结束检查与会话开始注入使用它；task.08 仍在 task_08.go 中重复列出这两条规则。T-018 的模块范围不含 MOD-05，没有一并修改。以后修改 task.08 的任务应改为调用 `engine.FullCheck("task.08")`，避免两处列表不一致。
+
+已解决（c780404，T-032）：task.08 改为调用 `engine.FullCheck("task.08")`。
 
 ### DEBT-004 找不到 harness 二进制时 hook 失败放行
 - Status: Resolved
@@ -56,11 +60,12 @@
 task.05 要求文件范围跨模块的任务引用覆盖这些模块的调用流程，task.03 要求范围在关联模块内，commit.03 限制单个提交 400 行。模块路径改名（DEBT-001）这类只改 import 的机械改动跨全部 14 个模块、约 400 行，不对应任何调用流程。T-027 期间由人在终端运行脚本并以 `--no-verify` 提交（fd3898e）。Release 2 应给机械改动一个受约束的通道，例如任务声明 `Kind: mechanical` 时免于 task.05，但提交只能改动 import 路径，由规则校验。
 
 ### DEBT-008 失败的非用例测试不被任何规则报告
-- Status: Open
+- Status: Resolved
 - Module: MOD-05
 
 test.02 只看用例编号的测试，arch.05 只看扩展点编号的测试；名字含 IF 编号或不含编号的测试失败时，`harness check` 与 task.08 都通过。T-028 提交时 `TestParseRepoArtifacts_IF_001` 失败而检查全部通过。应增加一条规则：测试报告中存在失败的测试时报告（或把它纳入完成定义），并给出失败的测试名。
 
+已解决（c780404，T-032）：test.03 报告测试报告中每个失败的测试，计入全量检查，task.08 与会话结束检查随之失败。
 
 ### DEBT-009 门禁不允许代理按 cfg.02 的修复办法重新生成生成文件
 - Status: Resolved
@@ -75,3 +80,16 @@ commit.02/commit.03 豁免生成文件（TERM-026），门禁却按源码路径�
 - Module: MOD-13
 
 生成的 CI 配置用 `go install …/cmd/harness@latest`，而生成文件来自本地那个版本的模板。harness 发布了改动模板的新版本后，用户项目的 CI 会因 cfg.02 失败，本地却通过；代理缓存还会让 `@latest` 落后于最新提交（T-027 中本仓库的 CI 装到了旧提交）。本仓库已改为从源码构建（`SelfHosted`）；用户项目应把版本固定为生成时的 harness 版本（取自构建信息），升级 harness 后由 cfg.02 提示重新生成。
+
+### DEBT-011 测试包构建失败不被任何规则报告
+- Status: Open
+- Module: MOD-08
+
+`go test -json` 的包级结果（如测试包编译失败）在解析时被跳过，只保留测试级结果。包编译失败时其中的测试不出现在报告里：引用用例的测试由 test.02 报告为缺失，单元测试则无人报告。应把包级 fail 记为一条失败结果，由 test.03 报告。
+
+### DEBT-012 门禁按仓库根目录解析命令中的相对路径，不跟随 cd
+- Status: Open
+- Module: MOD-11
+
+`cd internal/x && mkdir -p y` 中的 `y` 被当作仓库根目录下的 `y` 判定。T-032 写规则样本时因此被误拒（改用仓库相对路径后通过）。反方向同样成立：`cd` 到范围外目录后写相对路径，命令前判定会按根目录放行，只能靠命令后比对恢复。应在解析命令时跟踪同一条命令里字面量的 `cd`，无法判定时交给命令后比对。
+

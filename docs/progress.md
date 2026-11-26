@@ -83,3 +83,10 @@
 ### 2026-11-26 T-013 批准补录
 - 用户在终端用 `harness approve` 批准了 26 份产物（PRD、总览、格式规范、调用流程、14 个模块详细设计、8 个 ADR），批准记录写入 harness.lock，approve.01 为 0 条违规。此前回到 Draft 的 formats.md、MOD-01、MOD-02、MOD-04、MOD-05、MOD-09、flows.md 与 PRD 的 CHG-013 ~ CHG-015 一并获批。
 - 之后任何产物内容变化都会使对应批准失效，需用户重新批准。
+
+### 2026-11-26 T-014
+- 结论：Done。phase 模块（内置四个阶段 JSON、order.json、项目配置合并、Current、Next、phase.01）、`harness phase list|next`、`TestExample_EXT_04`。AC-045-1、AC-045-2 共 8 个用例集成测试通过；AC-045-3 的 4 个 `phase next` 用例也已通过。逐一破坏各判定分支后对应用例失败。
+- 规划调整：AC-045-3/E3（门禁拒绝代理修改当前阶段）依赖门禁，AC-045-3 改由 T-016 关联，T-014 只关联 AC-045-1、AC-045-2。AC-045-2/N2 的"项目规则"用内置规则 debt.01 代替，项目规则是 Release 2（FR-046）。
+- 设计补充：formats.md 写明 `phases` 的两种写法（新增阶段用 after，修改已有阶段用 addExit 等、移除须引用 ADR）与规则引用写法；MOD-10 增加 Selector、Rule。两份文档因此回到 Draft，待用户重新批准。
+- 范围：实现中把"非交互终端"错误改为 approve 与 phase 共用，改到了 approve.go；提交检查拦下后先扩大 T-014 范围再提交。
+- 待用户操作：本仓库锁文件中的当前阶段为空，即 requirements。门禁（T-016）启用前需要用户在终端执行三次 `harness phase next` 推进到 implementation。

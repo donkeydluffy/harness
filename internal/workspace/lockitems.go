@@ -22,7 +22,7 @@ func CaseRemoved(text string) bool { return strings.HasPrefix(strings.TrimSpace(
 var chgIDRe = regexp.MustCompile(`^CHG-\d+$`)
 
 // LockItems 计算当前产物应写入锁文件的条目（formats.md 第 7 节）。
-// 键为 FR/NFR、用例、IF、CHG、ADR 编号与 config；已删除的需求和用例值前加 removed:。
+// 键为 FR/NFR、用例、IF、CHG、ADR 编号、config、snapshot:IF-n 与 rule:<编号>；已删除的需求和用例值前加 removed:。
 func (s *Snapshot) LockItems() map[string]string {
 	items := map[string]string{}
 	for _, d := range s.PRDDocs() {
@@ -60,6 +60,11 @@ func (s *Snapshot) LockItems() map[string]string {
 	}
 	for _, e := range s.Project.ByKind["ADR"] {
 		items[e.ID] = lock.Hash(e.Raw)
+	}
+	if sigs, ok := s.Interfaces(); ok {
+		for id, sig := range sigs {
+			items["snapshot:"+id] = lock.Hash(sig)
+		}
 	}
 	if src, err := os.ReadFile(filepath.Join(s.Root, ConfigFile)); err == nil {
 		items["config"] = ConfigHash(src)

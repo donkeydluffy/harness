@@ -35,6 +35,8 @@ var (
 )
 
 // Register 注册语言；名称重复时 panic（IF-004）。
+//
+// harness:IF-004
 func Register(l Language) {
 	mu.Lock()
 	defer mu.Unlock()

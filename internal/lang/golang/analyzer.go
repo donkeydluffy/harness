@@ -87,7 +87,7 @@ func (Lang) Anchors(p string, src []byte) []spec.Decl {
 	return out
 }
 
-// Normalize 把一段 Go 声明规范化为一行：去掉注释，按词法单元重新拼接空白，去掉右括号前多余的分号与逗号。
+// Normalize 把一段 Go 声明规范化为一行：去掉注释与结构体字段标签，按词法单元重新拼接空白，去掉右括号前多余的分号与逗号。
 // 只改空白、注释与换行的两段声明规范化后相同（AC-052-2/B2、AC-052-3/B1）。
 func Normalize(src []byte) string {
 	fset := token.NewFileSet()
@@ -97,15 +97,37 @@ func Normalize(src []byte) string {
 	type tk struct {
 		tok token.Token
 		lit string
+		gap bool // 源码中与前一个词法单元之间有空白
 	}
 	var toks []tk
+	var structs []bool // 每层 { 是否为结构体
+	end := 0
 	for {
-		_, tok, lit := s.Scan()
+		pos, tok, lit := s.Scan()
 		if tok == token.EOF {
 			break
 		}
-		if tok == token.SEMICOLON || !tok.IsLiteral() {
-			lit = tok.String()
+		off := file.Offset(pos)
+		gap := off > end
+		if tok == token.SEMICOLON && lit == "\n" {
+			lit = ";"
+		} else {
+			if !tok.IsLiteral() {
+				lit = tok.String()
+			}
+			end = off + len(lit)
+		}
+		switch tok {
+		case token.LBRACE:
+			structs = append(structs, len(toks) > 0 && toks[len(toks)-1].tok == token.STRUCT)
+		case token.RBRACE:
+			if n := len(structs); n > 0 {
+				structs = structs[:n-1]
+			}
+		case token.STRING:
+			if n := len(structs); n > 0 && structs[n-1] {
+				continue // 结构体字段标签
+			}
 		}
 		closes := tok == token.RPAREN || tok == token.RBRACE || tok == token.RBRACK
 		for closes && len(toks) > 0 && (toks[len(toks)-1].tok == token.SEMICOLON || toks[len(toks)-1].tok == token.COMMA) {
@@ -114,22 +136,23 @@ func Normalize(src []byte) string {
 		if tok == token.SEMICOLON && (len(toks) == 0 || toks[len(toks)-1].tok == token.SEMICOLON || toks[len(toks)-1].tok == token.LBRACE) {
 			continue
 		}
-		toks = append(toks, tk{tok, lit})
+		toks = append(toks, tk{tok, lit, gap})
 	}
 	for len(toks) > 0 && toks[len(toks)-1].tok == token.SEMICOLON {
 		toks = toks[:len(toks)-1]
 	}
 	var b strings.Builder
-	var brackets []bool // 每个 [ 是否跟在标识符之后（类型参数或实例化）
+	var brackets []bool // 每个 [ 是否紧跟标识符（类型参数或实例化）
 	identBracket := false
 	for i, t := range toks {
-		if i > 0 && space(toks[i-1].tok, t.tok, i-1 == 0, identBracket) {
+		indexed := t.tok == token.LBRACK && i > 0 && toks[i-1].tok == token.IDENT && !t.gap
+		if i > 0 && space(toks[i-1].tok, t.tok, i-1 == 0, identBracket, indexed) {
 			b.WriteByte(' ')
 		}
 		identBracket = false
 		switch t.tok {
 		case token.LBRACK:
-			brackets = append(brackets, i > 0 && toks[i-1].tok == token.IDENT)
+			brackets = append(brackets, indexed)
 		case token.RBRACK:
 			if n := len(brackets); n > 0 {
 				identBracket, brackets = brackets[n-1], brackets[:n-1]
@@ -141,8 +164,8 @@ func Normalize(src []byte) string {
 }
 
 // space 判断两个相邻词法单元之间是否写空格；first 表示 prev 是声明的第一个词法单元，
-// afterIdentBracket 表示 prev 是跟在标识符之后的 ] 。
-func space(prev, cur token.Token, first, afterIdentBracket bool) bool {
+// afterIdentBracket 表示 prev 是紧跟标识符的 [ 对应的 ]，indexed 表示 cur 是紧跟标识符的 [。
+func space(prev, cur token.Token, first, afterIdentBracket, indexed bool) bool {
 	switch prev {
 	case token.LPAREN, token.LBRACK, token.PERIOD, token.MUL, token.ELLIPSIS, token.ARROW:
 		return false
@@ -159,9 +182,7 @@ func space(prev, cur token.Token, first, afterIdentBracket bool) bool {
 	case token.LPAREN:
 		return !(prev == token.IDENT || (prev == token.FUNC && !first) || (prev == token.RBRACK && afterIdentBracket))
 	case token.LBRACK:
-		return !(prev == token.IDENT || prev == token.MAP)
-	case token.RBRACE:
-		return true
+		return !(indexed || prev == token.MAP)
 	}
 	return true
 }

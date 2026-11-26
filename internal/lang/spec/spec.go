@@ -17,6 +17,8 @@ type Comment struct {
 }
 
 // Language 描述一种编程语言（IF-003）。
+//
+// harness:IF-003
 type Language interface {
 	Name() string
 	Extensions() []string

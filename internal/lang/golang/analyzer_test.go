@@ -22,6 +22,9 @@ func TestNormalize_IF_035(t *testing.T) {
 		"type M map[string][]int":                                                         "type M map[string][]int",
 		"func F[T any](xs ...T) func(int) <-chan T":                                       "func F[T any](xs ...T) func(int) <-chan T",
 		"type L[T any] struct{}":                                                          "type L[T any] struct {}",
+		"type S struct {\n\tItems  []string `json:\"items\"`\n\tM map[string]int\n}":      "type S struct { Items []string; M map[string]int }",
+		"func f(xs []int, a [3]T) List[T]":                                                "func f(xs []int, a [3]T) List[T]",
+		"const C = \"x\"":                                                                 "const C = \"x\"",
 		"type A interface {\n\tX() /* c */ int\n\tY(a, b string)\n}":                      "type A interface { X() int; Y(a, b string) }",
 	}
 	for in, want := range cases {

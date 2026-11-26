@@ -56,6 +56,8 @@ var ArtifactGlobs = []string{
 }
 
 // Load 读取配置和全部产物并组装项目模型（IF-009）。文件存在但不可读时返回错误。
+//
+// harness:IF-009
 func Load(root string, opt LoadOptions) (*Snapshot, error) {
 	cfg, err := LoadConfig(filepath.Join(root, ConfigFile))
 	if err != nil {
@@ -183,6 +185,8 @@ func DefaultConfig() *Config {
 }
 
 // LoadConfig 读取配置，缺省字段填默认值；文件不存在时返回默认配置（IF-010）。
+//
+// harness:IF-010
 func LoadConfig(path string) (*Config, error) {
 	cfg := DefaultConfig()
 	src, err := os.ReadFile(path)

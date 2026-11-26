@@ -33,6 +33,7 @@ const usage = `用法：harness <命令> [参数]
                                    也可写作 check commits origin/main..HEAD；
                                    --msg-file 传入即将提交的信息（commit-msg hook 使用）
   lock                             产物文档检查通过后更新 harness.lock
+  snapshot                         从接口锚点提取签名，写入 docs/architecture/interfaces.txt
   approve <产物或单位>             由人在终端批准（prd、产物路径或单位编号），写入批准记录
   phase list                       列出流程阶段，标出当前阶段
   phase next                       由人在终端推进到下一阶段（退出与进入规则须通过）
@@ -59,6 +60,13 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return check(root, args[1:], stdout, stderr)
 	case "lock":
 		return lockCmd(root, stdout, stderr)
+	case "snapshot":
+		if err := app.Snapshot(root); err != nil {
+			fmt.Fprintln(stderr, "harness snapshot: 内部错误：", err)
+			return ExitInternal
+		}
+		fmt.Fprintln(stdout, "已更新", app.InterfacesFile)
+		return ExitOK
 	case "approve":
 		return approveCmd(root, args[1:], stdout, stderr)
 	case "phase":

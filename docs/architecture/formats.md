@@ -1,6 +1,6 @@
 # 产物格式规范
 
-- Status: Draft
+- Status: Approved
 - Updated: 2026-11-26
 - Relates: ADR-002, MOD-03
 

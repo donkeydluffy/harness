@@ -1,6 +1,6 @@
 # ADR-009 按单位批准取代阶段
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-047, FR-048, FR-037, MOD-06, MOD-11, MOD-15, FLOW-02, FLOW-08
 
 ## 背景

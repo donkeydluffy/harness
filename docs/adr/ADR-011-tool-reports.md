@@ -1,6 +1,6 @@
 # ADR-011 外部工具只在专用命令中运行，全量检查读报告
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-014, FR-021, FR-055, MOD-02, MOD-08, MOD-16, FLOW-11
 
 ## 背景

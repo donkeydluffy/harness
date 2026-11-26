@@ -1,6 +1,6 @@
 # MOD-18 version 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 接口
 

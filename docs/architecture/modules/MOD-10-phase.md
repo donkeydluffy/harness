@@ -1,6 +1,6 @@
 # MOD-10 phase 详细设计
 
-- Status: Draft
+- Status: Approved
 
 Release 2 删除本模块（FR-048）：`Current-Release` 改为 2 时与 `internal/phase/` 一起删除，模块 Status 改为 Removed。
 

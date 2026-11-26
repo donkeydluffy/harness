@@ -1,6 +1,6 @@
 # MOD-17 custom 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 职责
 

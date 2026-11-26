@@ -1,6 +1,6 @@
 # ADR-010 项目规则不再挂在阶段上
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-054, FR-048, NFR-009, MOD-04, MOD-17, EXT-03
 
 ## 背景

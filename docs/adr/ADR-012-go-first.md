@@ -1,6 +1,6 @@
 # ADR-012 Release 2 的代码分析只做 Go；CI 下载固定版本
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-050, FR-051, FR-052, FR-053, FR-035, MOD-01, MOD-13, MOD-14, MOD-18, EXT-01
 
 ## 背景

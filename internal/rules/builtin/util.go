@@ -8,6 +8,7 @@ import (
 
 	"harness/internal/model"
 	"harness/internal/rules/engine"
+	"harness/internal/vcs"
 	"harness/internal/workspace"
 )
 
@@ -242,4 +243,71 @@ func effective(e *model.Entity) bool {
 // traceRefs 返回设计元素声明的追溯引用（Covers 与 Relates）。
 func traceRefs(e *model.Entity) []string {
 	return append(e.List("Covers"), e.List("Relates")...)
+}
+
+// changeSet 是一个待检查的提交或暂存区改动。
+type changeSet struct {
+	Name   string // 提交短哈希或"暂存区"
+	Commit *vcs.Commit
+	Files  []vcs.FileChange
+	Before func(path string) []byte // 改动前内容，文件不存在时为 nil
+	After  func(path string) []byte // 改动后内容，文件被删除时为 nil
+}
+
+// changeSets 返回要检查的改动：指定提交范围时为范围内每个提交，否则为暂存区。
+// 指定了范围却不是 git 仓库时返回"输入缺失"违规；未指定范围且不是 git 仓库时无可检查内容。
+func changeSets(s *workspace.Snapshot) ([]changeSet, *engine.Violation) {
+	missing := func(msg string) *engine.Violation {
+		return &engine.Violation{File: ".", Line: 1, Msg: "输入缺失：" + msg,
+			Fix: "在 git 仓库中运行，并确认提交范围有效（如 origin/main..HEAD）"}
+	}
+	if s.Repo == nil {
+		if s.CommitRange != "" {
+			return nil, missing("指定了提交范围 " + s.CommitRange + "，但当前目录不是 git 仓库")
+		}
+		return nil, nil
+	}
+	show := func(rev string) func(string) []byte {
+		return func(p string) []byte {
+			b, err := s.Repo.FileAt(rev, p)
+			if err != nil {
+				return nil
+			}
+			return b
+		}
+	}
+	if s.CommitRange == "" {
+		files, err := s.Repo.Staged()
+		if err != nil {
+			return nil, missing(err.Error())
+		}
+		if len(files) == 0 {
+			return nil, nil
+		}
+		return []changeSet{{Name: "暂存区", Files: files, Before: show("HEAD"), After: show("")}}, nil
+	}
+	commits, err := s.Repo.Commits(s.CommitRange)
+	if err != nil {
+		return nil, missing(err.Error())
+	}
+	var out []changeSet
+	for i := range commits {
+		c := commits[i]
+		files, err := s.Repo.Changes(c)
+		if err != nil {
+			return nil, missing(err.Error())
+		}
+		out = append(out, changeSet{Name: c.Hash[:min(8, len(c.Hash))], Commit: &c, Files: files,
+			Before: show(c.Hash + "^"), After: show(c.Hash)})
+	}
+	return out, nil
+}
+
+// parseAt 解析某一版本的 Markdown 文件，内容为空时返回 nil。
+func parseAt(path string, src []byte) *model.Doc {
+	if src == nil {
+		return nil
+	}
+	d, _ := model.ParseMarkdown(path, src)
+	return d
 }

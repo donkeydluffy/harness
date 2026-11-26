@@ -24,5 +24,8 @@ func Rules() []engine.Rule {
 		trace01{},
 		trace02{},
 		trace03{},
+		adr01{},
+		adr02{},
+		adr03{},
 	}
 }

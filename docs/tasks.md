@@ -290,3 +290,41 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 - Depends: T-028
 
 `TestParseRepoArtifacts_IF_001` 用固定数字断言本仓库的需求、模块、接口、任务数量，新增 T-028 后失败。改为下限断言，测试只保证本仓库产物能无诊断地解析。
+
+### T-030 找不到 harness 二进制时 hook 失败即阻断（DEBT-004）
+- Status: InProgress
+- Covers: AC-012-5
+- Design: IF-019, FLOW-02
+- Flow: FLOW-02
+- Scope: internal/adapter/**, internal/app/hookcmd_integration_test.go
+- Depends: T-029
+
+生成的 hook 命令先检查 harness 是否可执行：PreToolUse 找不到时输出拒绝，SessionStart 注入"harness 未安装"，PostToolUse 与 Stop 不阻止。
+
+### T-031 门禁允许删除不属于任何模块的生成文件（DEBT-009）
+- Status: Todo
+- Covers: AC-012-2
+- Design: FLOW-02
+- Flow: FLOW-02
+- Scope: internal/gate/**, internal/app/gate_integration_test.go
+- Depends: T-030
+
+代理可按 cfg.02 的修复办法删除生成文件，再由单独一次 `harness init` 写回；写入其他内容仍按范围判定。
+
+### T-032 报告失败的测试与剩余的解析诊断（DEBT-008、DEBT-002、DEBT-003）
+- Status: Todo
+- Covers: AC-039-2, AC-003-1
+- Design: MOD-05
+- Scope: internal/rules/builtin/**
+- Depends: T-031
+
+新增规则：测试报告中有失败的测试时报告测试名；报告 PRD 与进度文件中尚无规则输出的解析诊断。task.08 改用 `engine.FullCheck`。
+
+### T-033 harness init 忽略门禁运行时目录（DEBT-005）
+- Status: Todo
+- Covers: AC-001-1
+- Design: FLOW-07
+- Scope: internal/scaffold/**, internal/app/init_integration_test.go
+- Depends: T-032
+
+init 在 `.gitignore` 中补上 `.harness/snap/`、`.harness/session/`（缺失时追加，不覆盖已有内容）。

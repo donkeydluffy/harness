@@ -347,3 +347,12 @@ init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它�
 - Depends: T-034
 
 同一条命令中字面量的 `cd <目录>` 之后，相对路径按该目录解析；`cd` 的目标无法静态判定时，之后的写入交给命令后比对。
+
+### T-036 secret.entropy 不把由单词拼成的标识符判为密钥（DEBT-013）
+- Status: InProgress
+- Covers: AC-025-2
+- Design: FLOW-02
+- Scope: internal/gate/**, internal/app/security_integration_test.go
+- Depends: T-035
+
+计算熵之前排除标识符形状的 token：只含字母、数字、下划线，按大小写边界、字母数字边界与 `_` 切开后至少 3 段，且大部分字母落在 3 个字符以上的段中。随机密钥切开后多为一两个字符的碎片，仍按熵判定。

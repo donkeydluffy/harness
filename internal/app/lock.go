@@ -16,10 +16,12 @@ func (e *ViolationsError) Error() string {
 	return fmt.Sprintf("检查未通过（%d 条违规）", len(e.Report.Violations))
 }
 
-// Lock 在全量检查通过后重算哈希写入锁文件；保留批准记录与阶段（IF-023）。
+// Lock 在产物文档检查通过后重算哈希写入锁文件；保留批准记录与阶段（IF-023）。
+// 需要源码、测试报告或 git 的规则不参与：需求阶段就要能锁定 PRD。
 // 检查未通过时返回 *ViolationsError，锁文件不变。
 func Lock(root string) error {
-	rep, err := Check(root, CheckOptions{})
+	registerRules()
+	rep, err := run(root, docRules(), workspace.LoadOptions{})
 	if err != nil {
 		return err
 	}

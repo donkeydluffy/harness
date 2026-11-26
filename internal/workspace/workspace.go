@@ -13,6 +13,7 @@ import (
 
 	"harness/internal/lock"
 	"harness/internal/model"
+	"harness/internal/testreport"
 	"harness/internal/vcs"
 )
 
@@ -25,7 +26,10 @@ type Snapshot struct {
 	Repo    vcs.Repo   // 非 git 仓库时为 nil
 	// CommitRange 是要检查的提交范围；为空时依赖 git 的规则检查暂存区（即将形成的提交）。
 	CommitRange string
-	Diags   []model.Diagnostic
+	Sources     []*SourceFile         // LoadOptions.WithSources 时加载
+	Tests       []testreport.TestCase // LoadOptions.WithTests 时加载
+	Reports     []string              // 读到的测试报告文件；为空表示没有报告
+	Diags       []model.Diagnostic
 }
 
 // LoadOptions 控制加载哪些可选输入；门禁路径使用零值以控制耗时。
@@ -59,6 +63,16 @@ func Load(root string, opt LoadOptions) (*Snapshot, error) {
 	s := &Snapshot{Root: root, Config: cfg, Lock: lk, CommitRange: opt.CommitRange}
 	if r, err := vcs.Open(root); err == nil {
 		s.Repo = r
+	}
+	if opt.WithSources {
+		if s.Sources, err = loadSources(root, cfg.SourcePaths); err != nil {
+			return nil, err
+		}
+	}
+	if opt.WithTests {
+		if s.Reports, s.Tests, err = loadReports(root, cfg.TestReports); err != nil {
+			return nil, err
+		}
 	}
 	var docs []*model.Doc
 	for _, rel := range artifactFiles(root) {

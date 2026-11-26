@@ -24,7 +24,22 @@ func Check(root string, opt CheckOptions) (engine.Report, error) {
 		return engine.Report{}, fmt.Errorf("没有匹配的规则：%s（可用规则：%s）",
 			strings.Join(unknown, ", "), strings.Join(engine.IDs(), ", "))
 	}
-	s, err := workspace.Load(root, workspace.LoadOptions{CommitRange: opt.Commits})
+	return run(root, sel, workspace.LoadOptions{CommitRange: opt.Commits, WithSources: true, WithTests: true})
+}
+
+// docRules 选中只读取产物文档的规则（不需要源码、测试报告、git）。
+func docRules() engine.Selector {
+	var sel engine.Selector
+	for _, id := range engine.IDs() {
+		if r, _ := engine.Lookup(id); engine.Needs(r) == 0 {
+			sel.IDs = append(sel.IDs, id)
+		}
+	}
+	return sel
+}
+
+func run(root string, sel engine.Selector, opt workspace.LoadOptions) (engine.Report, error) {
+	s, err := workspace.Load(root, opt)
 	if err != nil {
 		return engine.Report{}, err
 	}

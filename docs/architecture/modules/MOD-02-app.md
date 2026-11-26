@@ -1,6 +1,6 @@
 # MOD-02 app 详细设计
 
-- Status: Approved
+- Status: Draft
 
 ## 接口
 
@@ -21,7 +21,7 @@ func Trace(root, format string) ([]byte, error) // md / json 覆盖矩阵
 
 ```go
 // IF-023
-func Lock(root string) error // 全量检查通过后重算哈希写入锁文件；保留批准记录与阶段
+func Lock(root string) error // 产物文档规则（不需要源码、测试报告、git 的规则）通过后重算哈希写入锁文件；保留批准记录与阶段
 ```
 
 ### IF-024 Approve

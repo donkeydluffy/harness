@@ -1,6 +1,6 @@
 # MOD-04 engine 详细设计
 
-- Status: Approved
+- Status: Draft
 
 ## 接口
 
@@ -17,6 +17,11 @@ type Rule interface {
 	Check(s *workspace.Snapshot) []Violation
 }
 type Violation struct{ Rule, File string; Line int; Msg, Fix string }
+
+// Needer 是可选接口：规则声明在产物文档之外需要的输入。未实现表示只读产物文档。
+type Input uint8 // InputSources | InputTests | InputGit
+type Needer interface{ Needs() Input }
+func Needs(r Rule) Input
 
 func Register(r Rule) // 编号重复时 panic（构建期即暴露）
 func Lookup(id string) (Rule, bool)

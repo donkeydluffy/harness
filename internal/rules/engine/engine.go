@@ -18,6 +18,27 @@ type Rule interface {
 	Check(s *workspace.Snapshot) []Violation
 }
 
+// Input 是规则在产物文档之外需要的输入。
+type Input uint8
+
+const (
+	InputSources Input = 1 << iota // 源码文件
+	InputTests                     // 测试报告
+	InputGit                       // 提交或暂存区
+)
+
+// Needer 是可选接口：规则声明需要的额外输入。未实现表示只读取产物文档。
+// harness lock 只运行只读产物文档的规则。
+type Needer interface{ Needs() Input }
+
+// Needs 返回规则需要的额外输入。
+func Needs(r Rule) Input {
+	if n, ok := r.(Needer); ok {
+		return n.Needs()
+	}
+	return 0
+}
+
 // Violation 是一条违规。
 type Violation struct {
 	Rule string `json:"rule"`

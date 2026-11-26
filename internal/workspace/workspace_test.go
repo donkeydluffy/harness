@@ -64,3 +64,39 @@ func TestLoad_UnreadableArtifact_IF_009(t *testing.T) {
 		t.Fatal("want error")
 	}
 }
+
+func TestMatch_IF_009(t *testing.T) {
+	cases := []struct {
+		p, f string
+		ok   bool
+	}{
+		{"internal/**", "internal/a/b.go", true},
+		{"internal/**", "internal", true},
+		{"cmd/*.go", "cmd/main.go", true},
+		{"cmd/*.go", "cmd/x/main.go", false},
+		{"**/*_test.go", "a/b/c_test.go", true},
+		{"docs/PRD.md", "docs/PRD.md", true},
+		{"internal/app/**", "internal/apple/x.go", false},
+	}
+	for _, c := range cases {
+		if Match(c.p, c.f) != c.ok {
+			t.Errorf("Match(%q, %q) != %v", c.p, c.f, c.ok)
+		}
+	}
+}
+
+func TestLoadSourcesAndReports_IF_009(t *testing.T) {
+	dir := t.TempDir()
+	write(t, dir, "harness.json", `{"sourcePaths": ["internal/**"]}`)
+	write(t, dir, "internal/a.go", "package a\n")
+	write(t, dir, "internal/a_integration_test.go", "package a\n")
+	write(t, dir, "other/b.go", "package b\n")
+	write(t, dir, ".harness/reports/go.jsonl", `{"Action":"pass","Package":"m/a","Test":"TestA"}`+"\n")
+	s, err := Load(dir, LoadOptions{WithSources: true, WithTests: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(s.Sources) != 2 || s.Sources[1].Kind != 2 || len(s.Tests) != 1 || len(s.Reports) != 1 {
+		t.Fatalf("sources %+v tests %+v reports %v", s.Sources, s.Tests, s.Reports)
+	}
+}

@@ -13,8 +13,9 @@ import (
 // adr03：同一提交中，架构声明的模块增删、允许依赖变化、扩展点变化必须由该提交新增或修改的 ADR 引用。
 type adr03 struct{}
 
-func (adr03) ID() string       { return "adr.03" }
-func (adr03) Covers() []string { return []string{"AC-010-3"} }
+func (adr03) Needs() engine.Input { return engine.InputGit }
+func (adr03) ID() string          { return "adr.03" }
+func (adr03) Covers() []string    { return []string{"AC-010-3"} }
 func (adr03) Fix() string {
 	return "在同一提交中新增或修改一条 ADR，并在其 Relates 中引用变化的模块或扩展点"
 }

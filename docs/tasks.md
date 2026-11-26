@@ -130,7 +130,7 @@ task.02 按 ADR-008 判定覆盖：FR 被直接关联，或其每条 Active AC �
 `harness check commits <范围>`；commit.02 豁免产物文件和生成文件。
 
 ### T-013 人工批准与批准有效性
-- Status: InProgress
+- Status: Done
 - Covers: AC-037-1, AC-037-3
 - Design: FLOW-08, IF-005, IF-006, IF-024
 - Flow: FLOW-01

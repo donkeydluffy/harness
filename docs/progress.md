@@ -73,3 +73,9 @@
 - 结论：Done。commit.01 ~ commit.04；`harness check` 支持 `--commits <范围>`、`check commits <范围>` 与 `--msg-file`（commit-msg hook 传入即将形成的提交信息）。14 个用例（AC-013-1、2、4，AC-034-1）集成测试通过；逐一破坏各判定分支后对应用例失败。
 - 设计澄清：pre-commit 时提交信息尚未写出，依赖 Task 尾注的规则只能在 commit-msg hook 中运行；为此 CheckOptions 增加 MessageFile，LoadOptions 增加 Message。MOD-01、MOD-09、flows.md 因此回到 Draft，待确认。生成文件暂按 TERM-026 列为 harness.json、harness.lock、.claude/settings.json、CODEOWNERS、.github/workflows/harness.yml，T-019 实现 init 后以 scaffold 的清单为准。
 - 自检发现：`harness check commits 552eb0b..HEAD` 报告 24 条违规。11 个"docs: T-00x 完成"提交没有 Task 尾注；T-003、T-006、T-007、T-008、T-010 有 13 处改动超出任务范围（共享测试夹具、T-008 的 engine 接口调整等），当时应先扩大任务范围再改。历史提交不改写，提交规则从 920a059 起生效：此后每个提交（含文档提交）都带 Task 尾注，并在提交前用 `harness check commit adr.03 --msg-file` 检查；T-012 实现过程中已按此先扩大了自身范围（workspace.go、registry_test.go）。
+
+### 2026-11-26 T-013
+- 结论：Done。`harness approve <产物>`、approve.01。7 个用例（AC-037-1、AC-037-3）集成测试通过，交互式终端用系统 `script` 命令提供的伪终端测试；逐一破坏终端判定、确认、检查、哈希比对后对应用例失败。
+- 设计澄清：批准哈希不含文件头 Status 行，否则写入 Approved 本身会让批准失效；可批准产物与哈希计算放在 workspace（approval.go），任务范围相应扩大，MOD-09 增加对应接口。终端判定用 ioctl / GetConsoleMode，`/dev/null` 也是字符设备，只看文件类型会误判为终端。没有提供任何绕过交互的环境变量。
+- 中断：实现过程中磁盘写满，用户清理后继续。
+- 待用户操作：PRD、架构文档、详细设计、ADR 共 26 份产物需要用户在终端用 `harness approve` 补录批准；补录前 approve.01 报告违规，`harness lock` 被挡住。

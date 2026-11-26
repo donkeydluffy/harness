@@ -6,5 +6,7 @@
     "cmd/**",
     "internal/**",
     "pkg/**"
-  ]
+  ],
+  "start": "go run ./cmd/harness version",
+  "smoke": "go run ./cmd/harness version && go run ./cmd/harness check prd"
 }

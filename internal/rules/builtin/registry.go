@@ -54,6 +54,7 @@ func Rules() []engine.Rule {
 		cfg01{},
 		cfg03{},
 		lint01{},
+		smoke01{},
 		ci01{},
 	}
 }

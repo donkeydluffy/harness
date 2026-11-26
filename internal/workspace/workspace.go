@@ -151,6 +151,7 @@ type Config struct {
 	Languages         []string          `json:"languages"`
 	SourcePaths       []string          `json:"sourcePaths"`
 	TestReports       []string          `json:"testReports"`
+	Start             string            `json:"start"` // 启动命令；没有可启动应用时写 none: <原因>（AC-055-1）
 	Smoke             string            `json:"smoke"`
 	SensitivePaths    []string          `json:"sensitivePaths"`
 	SensitiveAllow    []string          `json:"sensitiveAllow"`

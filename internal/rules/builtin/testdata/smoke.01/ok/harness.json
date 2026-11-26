@@ -1,0 +1,4 @@
+{
+  "start": "go run .",
+  "smoke": "go run . version"
+}

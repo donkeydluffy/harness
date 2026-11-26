@@ -28,7 +28,8 @@ const usage = `用法：harness <命令> [参数]
                                    commit 规则默认检查暂存区；--commits 检查范围内每个提交，
                                    也可写作 check commits origin/main..HEAD；
                                    --msg-file 传入即将提交的信息（commit-msg hook 使用）
-  lock                             全量检查通过后更新 harness.lock
+  lock                             产物文档检查通过后更新 harness.lock
+  approve <产物>                   由人在终端批准产物（prd 或产物路径），写入批准记录
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
 `
 
@@ -48,6 +49,8 @@ func Main(args []string, stdout, stderr io.Writer) int {
 		return check(root, args[1:], stdout, stderr)
 	case "lock":
 		return lockCmd(root, stdout, stderr)
+	case "approve":
+		return approveCmd(root, args[1:], stdout, stderr)
 	case "trace":
 		return traceCmd(root, args[1:], stdout, stderr)
 	case "help", "-h", "--help":
@@ -153,4 +156,28 @@ func printReport(rep engine.Report, asJSON bool, stdout, stderr io.Writer) int {
 		return ExitViolated
 	}
 	return ExitOK
+}
+
+func approveCmd(root string, args []string, stdout, stderr io.Writer) int {
+	if len(args) != 1 {
+		fmt.Fprintln(stderr, "用法：harness approve <产物>（prd 或产物路径，如 docs/architecture/overview.md）")
+		return ExitInternal
+	}
+	err := app.Approve(root, args[0], newTerminal(stdout))
+	var ve *app.ViolationsError
+	switch {
+	case err == nil:
+		fmt.Fprintln(stdout, "已批准，批准记录写入 harness.lock")
+		return ExitOK
+	case errors.As(err, &ve):
+		printReport(ve.Report, false, stdout, stderr)
+		fmt.Fprintln(stderr, "harness approve: 检查未通过，拒绝批准")
+		return ExitViolated
+	case errors.Is(err, app.ErrNotInteractive), errors.Is(err, app.ErrDeclined):
+		fmt.Fprintln(stderr, "harness approve:", err)
+		return ExitViolated
+	default:
+		fmt.Fprintln(stderr, "harness approve: 内部错误：", err)
+		return ExitInternal
+	}
 }

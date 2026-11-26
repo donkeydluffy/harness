@@ -59,11 +59,7 @@ func (adr01) Check(s *workspace.Snapshot) []engine.Violation {
 			}
 		}
 	}
-	for _, dg := range s.Diags {
-		if strings.HasPrefix(dg.File, "docs/adr/") {
-			out = append(out, engine.Violation{File: dg.File, Line: dg.Line, Msg: dg.Msg})
-		}
-	}
+	out = append(out, ownDiags(s, "adr.01")...)
 	return out
 }
 

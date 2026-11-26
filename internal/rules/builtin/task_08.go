@@ -23,9 +23,6 @@ func (task08) Fix() string {
 
 const progressFile = "docs/progress.md"
 
-// 不计入完成定义中"全量检查"的规则。
-var dodExcluded = []string{"test.02", "arch.05", "task.08"}
-
 var progressHeadRe = regexp.MustCompile(`^### \d{4}-\d{2}-\d{2} (T-\d+)\b`)
 
 func (task08) Check(s *workspace.Snapshot) []engine.Violation {
@@ -74,15 +71,10 @@ func (task08) Check(s *workspace.Snapshot) []engine.Violation {
 				Msg: fmt.Sprintf("%s 的进度记录缺少：%s", t.ID, strings.Join(miss, "、"))})
 		}
 	}
-	var ids []string
-	for _, id := range engine.IDs() {
-		if !contains(dodExcluded, id) {
-			ids = append(ids, id)
-		}
-	}
-	if rep := engine.Run(s, engine.Selector{IDs: ids}); len(rep.Violations) > 0 {
+	excluded := append(append([]string{}, engine.CoverageRules...), "task.08")
+	if rep := engine.Run(s, engine.FullCheck("task.08")); len(rep.Violations) > 0 {
 		out = append(out, engine.Violation{File: tasksFile, Line: 1,
-			Msg: fmt.Sprintf("全量检查（不含 %s）有 %d 条失败项，Done 的任务不满足完成定义：%s", strings.Join(dodExcluded, "、"), len(rep.Violations), strings.Join(done, ", "))})
+			Msg: fmt.Sprintf("全量检查（不含 %s）有 %d 条失败项，Done 的任务不满足完成定义：%s", strings.Join(excluded, "、"), len(rep.Violations), strings.Join(done, ", "))})
 	}
 	return out
 }

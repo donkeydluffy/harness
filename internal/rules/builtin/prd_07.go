@@ -54,10 +54,6 @@ func (prd07) Check(s *workspace.Snapshot) []engine.Violation {
 			}
 		}
 	}
-	for _, d := range s.Diags {
-		if strings.Contains(d.Msg, "用例") {
-			out = append(out, engine.Violation{File: d.File, Line: d.Line, Msg: d.Msg})
-		}
-	}
+	out = append(out, ownDiags(s, "prd.07")...)
 	return out
 }

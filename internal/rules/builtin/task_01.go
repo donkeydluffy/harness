@@ -58,11 +58,7 @@ func (task01) Check(s *workspace.Snapshot) []engine.Violation {
 			}
 		}
 	}
-	for _, dg := range s.Diags {
-		if dg.File == tasksFile {
-			out = append(out, engine.Violation{File: dg.File, Line: dg.Line, Msg: dg.Msg})
-		}
-	}
+	out = append(out, ownDiags(s, "task.01")...)
 	return out
 }
 

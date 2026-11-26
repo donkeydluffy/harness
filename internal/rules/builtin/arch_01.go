@@ -107,11 +107,7 @@ func (arch01) Check(s *workspace.Snapshot) []engine.Violation {
 			}
 		}
 	}
-	for _, d := range s.Diags {
-		if strings.HasPrefix(d.File, "docs/architecture/") {
-			out = append(out, engine.Violation{File: d.File, Line: d.Line, Msg: d.Msg})
-		}
-	}
+	out = append(out, ownDiags(s, "arch.01")...)
 	return out
 }
 

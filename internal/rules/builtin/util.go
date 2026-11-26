@@ -669,3 +669,33 @@ func taskCases(s *workspace.Snapshot, t *model.Entity) []string {
 	}
 	return out
 }
+
+// diagOwner 返回负责报告解析诊断 d 的规则编号：各产物的结构规则报告各自文件的诊断，
+// prd.07 报告用例相关的诊断，其余由 doc.01 报告，保证每条诊断恰好被一条规则报告。
+func diagOwner(d model.Diagnostic) string {
+	switch {
+	case strings.HasPrefix(d.File, "docs/adr/"):
+		return "adr.01"
+	case strings.HasPrefix(d.File, "docs/architecture/"):
+		return "arch.01"
+	case d.File == debtFile:
+		return "debt.01"
+	case d.File == tasksFile:
+		return "task.01"
+	case strings.Contains(d.Msg, "用例"):
+		return "prd.07"
+	default:
+		return "doc.01"
+	}
+}
+
+// ownDiags 返回由规则 id 负责报告的解析诊断（见 diagOwner）。
+func ownDiags(s *workspace.Snapshot, id string) []engine.Violation {
+	var out []engine.Violation
+	for _, d := range s.Diags {
+		if diagOwner(d) == id {
+			out = append(out, engine.Violation{File: d.File, Line: d.Line, Msg: d.Msg})
+		}
+	}
+	return out
+}

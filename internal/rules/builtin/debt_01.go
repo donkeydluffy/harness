@@ -41,11 +41,7 @@ func (debt01) Check(s *workspace.Snapshot) []engine.Violation {
 			out = append(out, at(e, "%s 缺少描述", e.ID))
 		}
 	}
-	for _, dg := range s.Diags {
-		if dg.File == debtFile {
-			out = append(out, engine.Violation{File: dg.File, Line: dg.Line, Msg: dg.Msg})
-		}
-	}
+	out = append(out, ownDiags(s, "debt.01")...)
 	return out
 }
 

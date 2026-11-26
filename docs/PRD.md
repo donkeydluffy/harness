@@ -382,10 +382,44 @@ harness 的目标：用一套 skill 引导流程，用一个确定性的检查�
 - Release: 2
 - Priority: P0
 
-为每种支持的语言提供格式化、静态检查、编码规范配置，`harness check lint` 统一调用。
+为每种支持的语言提供格式化、静态检查、编码规范配置，`harness check lint` 统一调用。默认工具：
 
-- AC-014-1: 支持 TypeScript/JavaScript、Python、Go、Java/Kotlin、C/C++。
+| 语言 | 格式化检查 | 静态检查 |
+|---|---|---|
+| Go | `gofmt -l` | `go vet ./...` |
+| TypeScript/JavaScript | `prettier --check` | `eslint` |
+| Python | `ruff format --check` | `ruff check` |
+| Java | `google-java-format --dry-run --set-exit-if-changed` | `pmd check` |
+| Kotlin | `ktlint` | `ktlint` |
+| C/C++ | `clang-format --dry-run -Werror` | `clang-tidy` |
+
+- AC-014-1: 支持 TypeScript/JavaScript、Python、Go、Java/Kotlin、C/C++。每种语言的配置包声明源码路径、测试命令、格式化检查与静态检查命令，以及 import 语句的语法（供 FR-050 使用）。
+  - AC-014-1/N1: `harness init --lang go,python` 生成的项目配置包含两种语言的格式化与静态检查命令
+  - AC-014-1/E1: `harness init --lang rust`，退出码非 0 并列出支持的语言
 - AC-014-2: 语言工具缺失时给出安装提示并失败，不静默跳过。
+  - AC-014-2/N1: 工具齐全且代码合规，`harness check lint` 通过
+  - AC-014-2/E1: Python 项目未安装 ruff，`harness check lint` 失败并给出 ruff 的安装命令
+  - AC-014-2/B1: 项目把 Python 的静态检查改为 `flake8` 且未安装，提示安装的是 flake8 而不是 ruff
+- AC-014-3: 项目配置可按语言覆盖格式化检查与静态检查命令；未覆盖的使用默认工具。
+  - AC-014-3/N1: Go 项目未覆盖时，`harness check lint` 运行 `gofmt -l` 与 `go vet ./...`
+  - AC-014-3/N2: 项目把 Go 的静态检查改为 `staticcheck ./...`，lint 运行 staticcheck 而不运行 go vet
+  - AC-014-3/E1: 覆盖配置中出现项目未声明的语言，`harness check` 失败
+- AC-014-4: `harness check lint` 运行各语言的格式化检查与静态检查，把发现的问题（文件、行号、工具、消息）与生成时源码的内容哈希写入 `.harness/reports/lint.json`；有问题时退出码非 0。
+  - AC-014-4/N1: 一个未格式化的 Go 文件，报告中列出该文件与工具 gofmt
+  - AC-014-4/N2: `go vet` 发现的问题带文件与行号写入报告
+  - AC-014-4/B1: 项目声明了 Python 但没有 Python 源文件，不运行 Python 工具，通过
+- AC-014-5: 全量检查（任务完成定义、会话结束检查）读取 lint 报告，不运行外部工具：报告缺失、报告中的源码哈希与当前源码不一致（报告过期）、或报告含问题时失败。
+  - AC-014-5/N1: 报告与当前源码一致且没有问题，通过
+  - AC-014-5/E1: 报告含问题，失败并给出文件与行号
+  - AC-014-5/E2: 没有 lint 报告，失败并提示运行 `harness check lint`
+  - AC-014-5/B1: 生成报告后又改动了源码，报告过期，失败
+- AC-014-6: `harness init` 在缺失时生成各工具的配置文件（如 `.prettierrc`、`ruff.toml`、`.clang-format`），已有的不覆盖；这些文件归项目所有，不是生成文件，不受 cfg.02 校验。
+  - AC-014-6/N1: 空目录中 `harness init --lang python` 生成 `ruff.toml`
+  - AC-014-6/B1: 已有 `ruff.toml` 时 init 不改动它，内容逐字节不变
+  - AC-014-6/B2: 修改生成的 `ruff.toml` 后 `harness check` 不报告 cfg.02
+- AC-014-7: `harness init` 生成的 CI 配置在 `harness check` 之前运行 `harness check lint`。
+  - AC-014-7/N1: 生成的 GitHub Actions 配置中 lint 步骤位于 `harness check` 之前
+  - AC-014-7/B1: 生成的 GitLab CI 配置同样包含 lint 步骤
 
 ### FR-015 UI 设计规范
 - Status: Active
@@ -1205,6 +1239,11 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 - Q: 机械改动的提交允许改哪些行？ A: 只限 import 路径与模块声明行，且须符合声明的 Rewrite；import 语法由语言配置包提供，新语言随 NFR-006 的扩展场景加入，不另预留扩展。
 - Q: 用户项目的 CI 怎么安装 harness？ A: 下载生成时版本的发布包并用 checksums.txt 校验，不需要 Go 工具链（FR-051）。
 - Q: 生成 CI 的 harness 没有发布版本号时怎么办？ A: init 拒绝并提示改用发布版或 `--ci-version`；harness 自身仓库照旧从源码构建。
+### 2026-11-26 第 20 轮
+- Q: 各语言默认用哪些格式化与静态检查工具？ A: 每种语言一套主流默认（见 FR-014 表格），项目配置可按语言覆盖（AC-014-3）。
+- Q: init 是否生成这些工具的配置文件？ A: 只在缺失时生成，已有的不动；归项目所有，不是生成文件（AC-014-6）。
+- Q: lint 是否计入任务完成定义与会话结束检查？ A: 计入，与测试一样读报告：`harness check lint` 运行工具写报告，全量检查只读报告，报告用源码内容哈希判断是否过期（AC-014-4、AC-014-5）。
+- Q: 未来会增加哪些语言？ A: 新语言随 NFR-006 的扩展场景加入，不另预留扩展。FR-015（UI 设计规范）为 Release 3，本轮不澄清。
 
 ## 8. 变更日志
 
@@ -1242,3 +1281,4 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 | CHG-019 | 2026-11-26 | 修改 | FR-038, FR-045, NFR-008, FR-047, FR-048 | 标注取代关系：FR-047 取代 FR-038、AC-037-3、AC-024-1，FR-048 取代 FR-045、NFR-008 |
 | CHG-020 | 2026-11-26 | 新增 | FR-049 | 版本信息（第 18 轮，Release 2） |
 | CHG-021 | 2026-11-26 | 新增 | FR-050, FR-051 | 机械改动任务、CI 固定 harness 版本（第 19 轮，Release 2；DEBT-007、DEBT-010） |
+| CHG-022 | 2026-11-26 | 修改 | FR-014 | 默认工具、项目覆盖、lint 报告与过期判断、配置文件生成、CI 步骤（第 20 轮） |

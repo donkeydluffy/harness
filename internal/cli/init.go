@@ -9,19 +9,22 @@ import (
 
 	"github.com/donkeydluffy/harness/internal/app"
 	"github.com/donkeydluffy/harness/internal/scaffold"
+	"github.com/donkeydluffy/harness/internal/version"
 )
 
-// initCmd：harness init --lang <语言列表> [--agent <代理列表>]。
+// initCmd：harness init --lang <语言列表> [--agent <代理列表>] [--ci github|gitlab] [--ci-version <版本>]。
 func initCmd(root string, args []string, stdout, stderr io.Writer) int {
 	fl := flag.NewFlagSet("init", flag.ContinueOnError)
 	fl.SetOutput(stderr)
 	langs := fl.String("lang", "", "项目语言，逗号分隔（"+strings.Join(scaffold.Languages(), ", ")+"）")
 	agents := fl.String("agent", "claudecode", "编程代理，逗号分隔")
 	ci := fl.String("ci", "", "CI 配置模板：github（默认）或 gitlab")
+	ciVersion := fl.String("ci-version", "", "CI 中固定的 harness 发布版本（默认为当前版本；从源码构建时必须指定）")
 	if err := fl.Parse(args); err != nil {
 		return ExitInternal
 	}
-	res, err := app.Init(root, scaffold.InitOptions{Languages: split(*langs), Agents: split(*agents), CI: *ci})
+	res, err := app.Init(root, scaffold.InitOptions{Languages: split(*langs), Agents: split(*agents), CI: *ci,
+		Version: version.Current(), CIVersion: *ciVersion})
 	for _, p := range res.Written {
 		fmt.Fprintln(stdout, "写入", p)
 	}
@@ -30,7 +33,8 @@ func initCmd(root string, args []string, stdout, stderr io.Writer) int {
 	}
 	if err != nil {
 		var ue *scaffold.UnsupportedError
-		if errors.As(err, &ue) {
+		var ve *scaffold.VersionError
+		if errors.As(err, &ue) || errors.As(err, &ve) {
 			fmt.Fprintln(stderr, "harness init:", err)
 			return ExitViolated
 		}

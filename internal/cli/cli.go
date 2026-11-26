@@ -37,7 +37,7 @@ const usage = `用法：harness <命令> [参数]
   phase list                       列出流程阶段，标出当前阶段
   phase next                       由人在终端推进到下一阶段（退出与进入规则须通过）
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
-  init --lang <语言列表> [--agent <代理列表>] [--ci github|gitlab]
+  init --lang <语言列表> [--agent <代理列表>] [--ci github|gitlab] [--ci-version <版本>]
                                    生成项目骨架；已存在且内容不同的文件跳过不覆盖
   gate <代理> <事件>               代理 hook 入口：从标准输入读取 hook 输入，输出门禁判定
   version                          输出 harness 版本（也可写作 --version）

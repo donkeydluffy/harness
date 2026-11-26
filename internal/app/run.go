@@ -33,6 +33,9 @@ func Run(root, kind string) (engine.Report, error) {
 	case "unit":
 		_, err = toolrun.Unit(s)
 	case "smoke":
+		if strings.TrimSpace(s.Config.Smoke) == "" {
+			break // 未声明冒烟测试命令：是否必须声明由 smoke.01 判定（AC-055-1）
+		}
 		var code int
 		var tail []string
 		code, tail, err = toolrun.Smoke(s)

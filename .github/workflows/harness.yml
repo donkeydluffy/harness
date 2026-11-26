@@ -15,6 +15,12 @@ jobs:
         run: go install ./cmd/harness
       - name: 测试（go）
         run: mkdir -p .harness/reports && go test -json ./... > .harness/reports/go.jsonl
+      - name: harness check lint
+        run: harness check lint
+      - name: harness check unit
+        run: harness check unit
+      - name: harness check smoke
+        run: harness check smoke
       - name: harness check
         run: harness check
       - name: harness check commits

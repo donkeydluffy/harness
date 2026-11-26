@@ -64,7 +64,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 模块、接口、流程、扩展点必填字段与模块路径不重叠，依赖无环，流程步骤与依赖一致。
 
 ### T-006 需求到设计追溯与覆盖矩阵
-- Status: InProgress
+- Status: Done
 - Covers: FR-007, AC-003-5
 - Design: FLOW-01, IF-014, IF-022
 - Flow: FLOW-01
@@ -74,7 +74,7 @@ Release 1 的任务，按执行顺序编号。字段格式见 `docs/architecture
 trace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型脚本 selfcheck.py。
 
 ### T-007 git 访问与架构决策记录检查
-- Status: Todo
+- Status: InProgress
 - Covers: FR-010
 - Design: FLOW-01, IF-007, IF-009, IF-014
 - Flow: FLOW-01

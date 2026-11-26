@@ -34,3 +34,9 @@
 - 结论：Done。arch.01（模块、接口、流程、扩展点字段，模块路径不重叠，模块接口列表与接口所属模块一致）、arch.02（依赖环，含自依赖）、arch.03（流程步骤与依赖一致）。20 个用例（FR-006、AC-033-2）集成测试通过；去掉"调用自身接口"的豁免后 B1 等测试失败。本仓库架构 0 条违规。
 - 过程问题：又一次提交超过 400 行（511 行），已拆分；之后提交前用 scratchpad 中的 commitsize.sh 核对。
 - 遗留：DEBT-002 继续缩小范围。
+
+### 2026-11-26 T-006
+- 结论：Done。trace.01（含 AC-003-5 的 Release 范围）、trace.02、trace.03、`harness trace --format md|json`。18 个用例（FR-007、AC-003-5）集成测试通过；让 Superseded 的 ADR 计入覆盖后 AC-007-1/B1 失败。本仓库 0 条违规。
+- 调整：锁文件测试的夹具补充架构（`harness lock` 先跑全量检查，trace.01 上线后纯 PRD 夹具不再通过）；新增需求夹具改为 Release 2。
+- 原型脚本：selfcheck.py 的追溯、悬空、环、流程检查已由 trace.*、arch.* 取代；扩展点关联检查保留到 T-010（arch.04），扇出检查属于 Release 2（FR-036）。taskcheck.py 保留到 T-011。
+- 遗留：无。

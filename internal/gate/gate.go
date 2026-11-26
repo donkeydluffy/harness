@@ -46,9 +46,17 @@ func deny(rule, format string, a ...any) Decision {
 	return Decision{Rule: rule, Reason: fmt.Sprintf(format, a...)}
 }
 
-// Decide 按判定顺序给出结论（IF-017）：gate.protect → gate.command（写入目标）→ gate.artifact → gate.write。
+// Decide 按判定顺序给出结论（IF-017）：gate.protect → gate.sensitive → gate.secret → gate.command
+// （命令中的写入目标再按前述顺序与 gate.artifact、gate.write 判定）→ gate.artifact → gate.write。
 func Decide(s *workspace.Snapshot, req Request) Decision {
 	switch req.Kind {
+	case Read:
+		for _, p := range req.Paths {
+			if sensitive(s, p) {
+				return denySensitive(p)
+			}
+		}
+		return allow()
 	case Write:
 		for _, p := range req.Paths {
 			if d := decideWrite(s, p, req.Content); !d.Allow {
@@ -78,6 +86,17 @@ func decideWrite(s *workspace.Snapshot, p, content string) Decision {
 		return deny("gate.protect", "%s 只能由人或 harness 命令修改（锁文件、项目配置、hook 配置、门禁状态）", p)
 	case workspace.Approvable(p) && content != "" && approvesStatus(s, p, content):
 		return deny("gate.protect", "代理不能把 %s 的状态改为 %s；批准须由人在终端执行 harness approve", p, workspace.ApprovedStatus(p))
+	case sensitive(s, p):
+		return denySensitive(p)
+	}
+	if content != "" {
+		if id, desc := findSecret(addedText(s.Root, p, content)); id != "" {
+			return denySecret("写入 "+p+" 的内容", id, desc)
+		}
+	}
+	switch {
+	case strings.HasPrefix(p, "../") || p == "..":
+		return allow()
 	case strings.HasPrefix(p, ".harness/"):
 		return allow() // 测试报告等运行产物
 	case strings.HasPrefix(p, "docs/"):
@@ -171,6 +190,15 @@ func hasPrefix(p string, prefixes []string) bool {
 
 // Clean 规范化仓库相对路径。
 func Clean(p string) string { return path.Clean(strings.TrimPrefix(p, "./")) }
+
+// AfterAllowed 返回命令后比对时允许保留的改动：整条命令只调用一次 harness（如 harness lock、harness init）时，
+// 允许它改写锁文件、项目配置与 hook 配置；其余路径按 Allowed 判定。
+func AfterAllowed(s *workspace.Snapshot, cmd string) func(string) bool {
+	harness := onlyHarness(cmd)
+	return func(p string) bool {
+		return (harness && contains(protectedFiles, p)) || Allowed(s, p)
+	}
+}
 
 // Allowed 判断代理对路径 p 的写入是否放行；命令后比对（IF-018 After）用它决定哪些改动保留。
 func Allowed(s *workspace.Snapshot, p string) bool { return decideWrite(s, p, "").Allow }

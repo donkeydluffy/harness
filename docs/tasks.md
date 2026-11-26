@@ -174,7 +174,7 @@ gate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解
 - Covers: FR-025
 - Design: FLOW-02, IF-017
 - Flow: FLOW-02
-- Scope: internal/gate/**, internal/app/security_integration_test.go, internal/app/testdata/security/**
+- Scope: internal/gate/**, internal/app/gate.go, internal/app/security_integration_test.go, internal/app/testdata/security/**
 - Depends: T-016
 
 gate.sensitive、gate.secret、gate.command；敏感路径、密钥规则、危险命令可配置。

@@ -30,7 +30,7 @@ func Gate(root string, req gate.Request) gate.Decision {
 		if req.Command == "" {
 			return gate.Decision{Allow: true}
 		}
-		changes, err := gate.After(root, req.SessionID, func(p string) bool { return gate.Allowed(s, p) })
+		changes, err := gate.After(root, req.SessionID, gate.AfterAllowed(s, req.Command))
 		if err != nil {
 			return gate.Decision{Rule: "gate.error", Reason: "命令后比对失败：" + err.Error()}
 		}

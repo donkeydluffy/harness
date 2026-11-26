@@ -12,6 +12,12 @@ import (
 // decideCommand 解析 Bash 命令（ADR-003）：拒绝 harness approve / phase next，
 // 对能静态判定的写入目标逐个按写入判定。无法静态判定的命令放行，由命令后比对（IF-018）兜底。
 func decideCommand(s *workspace.Snapshot, cmd string) Decision {
+	if id, desc := findSecret(cmd); id != "" {
+		return denySecret("命令", id, desc)
+	}
+	if pat := dangerous(s, cmd); pat != "" {
+		return deny("gate.command", "命令命中危险命令模式 %q（harness.json 的 dangerousCommands）", pat)
+	}
 	f, err := syntax.NewParser().Parse(strings.NewReader(cmd), "")
 	if err != nil {
 		return allow() // 语法无法解析时同样交给命令后比对
@@ -23,6 +29,10 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 		}
 		switch n := n.(type) {
 		case *syntax.Redirect:
+			if p, ok := literal(n.Word); ok && sensitive(s, Resolve(s.Root, s.Root, p)) {
+				d = denySensitive(Resolve(s.Root, s.Root, p))
+				return false
+			}
 			if n.Op == syntax.RdrOut || n.Op == syntax.AppOut || n.Op == syntax.RdrAll || n.Op == syntax.AppAll || n.Op == syntax.ClbOut {
 				if p, ok := literal(n.Word); ok {
 					d = decideWrite(s, Resolve(s.Root, s.Root, p), "")
@@ -33,6 +43,16 @@ func decideCommand(s *workspace.Snapshot, cmd string) Decision {
 			if humanOnly(args) {
 				d = deny("gate.protect", "harness approve 与 harness phase next 只能由人在终端执行")
 				return false
+			}
+			if what, ok := recursiveRemoveOutside(s.Root, n); ok {
+				d = deny("gate.command", "递归删除仓库外或无法静态判定的路径：%s", what)
+				return false
+			}
+			for _, a := range args[1:] {
+				if a != "" && !strings.HasPrefix(a, "-") && sensitive(s, Resolve(s.Root, s.Root, a)) {
+					d = denySensitive(Resolve(s.Root, s.Root, a))
+					return false
+				}
 			}
 			for _, p := range writeTargets(args) {
 				if d = decideWrite(s, Resolve(s.Root, s.Root, p), ""); !d.Allow {
@@ -97,6 +117,25 @@ func humanOnly(args []string) bool {
 		}
 		if args[i+1] == "approve" || (args[i+1] == "phase" && i+2 < len(args) && args[i+2] == "next") {
 			return true
+		}
+	}
+	return false
+}
+
+// onlyHarness 判断整条命令只有一个简单命令且调用 harness。
+func onlyHarness(cmd string) bool {
+	f, err := syntax.NewParser().Parse(strings.NewReader(cmd), "")
+	if err != nil || len(f.Stmts) != 1 || f.Stmts[0].Redirs != nil {
+		return false
+	}
+	call, ok := f.Stmts[0].Cmd.(*syntax.CallExpr)
+	if !ok {
+		return false
+	}
+	args := words(call.Args)
+	for i, a := range args {
+		if filepath.Base(a) == "harness" {
+			return i == 0 || (i == 2 && args[0] == "go" && args[1] == "run")
 		}
 	}
 	return false

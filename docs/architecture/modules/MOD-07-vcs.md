@@ -1,6 +1,6 @@
 # MOD-07 vcs 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 接口
 

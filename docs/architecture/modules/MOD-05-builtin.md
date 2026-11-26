@@ -1,6 +1,6 @@
 # MOD-05 builtin 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 接口
 

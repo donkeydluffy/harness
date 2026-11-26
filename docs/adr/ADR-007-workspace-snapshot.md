@@ -1,6 +1,6 @@
 # ADR-007 规则只读一次性加载的项目快照
 
-- Status: Proposed
+- Status: Accepted
 - Relates: NFR-003, FR-028, MOD-09, MOD-04
 
 ## 背景

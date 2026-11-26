@@ -1,6 +1,6 @@
 # PRD: harness
 
-- Status: Draft
+- Status: Approved
 - Version: 1.0-rc2
 - Current-Release: 1
 - Updated: 2026-11-25
@@ -1028,6 +1028,8 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 - Q: 外部命令规则无法保证确定性怎么办？ A: 允许，但必须登记入锁文件并提供违规/合规样本自检。
 - Q: 架构产物格式？ A: Markdown 字段格式 + JSON 配置，零第三方依赖。
 - Q: Bash 写入判定？ A: 事前 shell 解析 + 事后快照比对回滚。
+### 2026-11-26 第 12 轮
+- 用户批准 PRD 1.0-rc2 与架构设计（总览、格式规范、14 个模块详细设计、调用流程、ADR-001 ~ ADR-007）。`harness approve` 实现后由用户在终端补录批准哈希。
 
 ## 8. 变更日志
 

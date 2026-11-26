@@ -1,6 +1,6 @@
 # ADR-005 阶段与规则可注册、可配置
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-045, FR-046, NFR-008, NFR-009, MOD-04, MOD-05, MOD-10, EXT-03, EXT-04
 
 ## 背景

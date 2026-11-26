@@ -1,6 +1,6 @@
 # ADR-002 产物用 Markdown 字段格式，配置用 JSON
 
-- Status: Proposed
+- Status: Accepted
 - Relates: NFR-005, FR-003, FR-006, MOD-03, MOD-09
 
 ## 背景

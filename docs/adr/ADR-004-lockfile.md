@@ -1,6 +1,6 @@
 # ADR-004 锁文件记录哈希、批准与当前阶段
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-004, FR-037, FR-041, FR-045, MOD-06
 
 ## 背景

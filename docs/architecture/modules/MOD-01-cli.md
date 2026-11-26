@@ -1,6 +1,6 @@
 # MOD-01 cli 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 命令
 

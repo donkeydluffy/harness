@@ -1,6 +1,6 @@
 # ADR-003 Bash 写入判定：事前解析加事后比对
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-012, FR-025, MOD-11
 
 ## 背景

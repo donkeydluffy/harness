@@ -1,6 +1,6 @@
 # ADR-006 门禁判定与代理协议分离
 
-- Status: Proposed
+- Status: Accepted
 - Relates: FR-012, FR-044, NFR-007, MOD-11, MOD-12, EXT-02
 
 ## 背景

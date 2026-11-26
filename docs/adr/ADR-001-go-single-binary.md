@@ -1,6 +1,6 @@
 # ADR-001 检查工具用 Go 单二进制实现
 
-- Status: Proposed
+- Status: Accepted
 - Relates: NFR-001, NFR-002, MOD-01
 
 ## 背景

@@ -1,6 +1,6 @@
 # MOD-13 scaffold 详细设计
 
-- Status: Draft
+- Status: Approved
 
 ## 接口
 

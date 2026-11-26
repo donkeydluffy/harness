@@ -179,6 +179,24 @@
       "at": "2026-11-26T11:01:03Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:b693cabefd649a0fa6ddf1fe7e1384927ef8216a771b08ef30ba91536fb942b0"
+    },
+    {
+      "artifact": "docs/architecture/formats.md",
+      "at": "2026-11-26T11:06:30Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2cae12f53fa323cd172826ccea717da571e4b761f5387a192f6af3c89834dc80"
+    },
+    {
+      "artifact": "docs/architecture/flows.md",
+      "at": "2026-11-26T11:06:31Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:0304b832858674b2bbd87ede4df9c39031838fd5b1a71b0c6f36cf2de79ba029"
+    },
+    {
+      "artifact": "docs/architecture/modules/MOD-05-builtin.md",
+      "at": "2026-11-26T11:06:32Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:b2c1d68a2115109a9f6574c6ae56a9dd05ae79885ae81cb6933592a2e4756159"
     }
   ],
   "audit": {},

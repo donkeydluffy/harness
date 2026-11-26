@@ -50,6 +50,7 @@
 |---|---|---|
 | FR / NFR | Status, Release, Priority | Active / Removed；正整数；P0 / P1 / P2 |
 | NFR | Type | Quantitative / Constraint / Scenario |
+| FR / NFR（可选） | Replaces, Replaced-By | Replaces 列出被取代的需求或验收标准编号；被取代的需求用 Replaced-By 指回取代者，两边须互相对应（prd.12）。取代者的 Release 不大于 Current-Release 时，被取代的条目按 Removed 判定：覆盖类规则（trace.01、task.02、test.02）不再要求它，trace.03 报告对它的引用；在此之前被取代的条目照常有效 |
 | NFR（Scenario） | Adds, Allowed-Paths, Closed-Modules | 文字 |
 | OQ | Status；Closed 时 Resolution；可选 Relates（关联的需求编号，task.07 据此判定） | Open / Closed |
 | MOD | Status, Paths, Public, Depends, Interfaces, Covers, Core, Coverage | Paths/Public 为 glob 列表；Core 为 true/false；Coverage 为 0-100 |

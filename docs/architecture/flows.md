@@ -50,7 +50,7 @@ app 先确认交互式终端，再运行检查；approve 记录产物哈希与�
 - Covers: FR-010, FR-013, FR-034
 - Steps: MOD-01 -> IF-022, MOD-02 -> IF-009, MOD-09 -> IF-007, MOD-02 -> IF-012
 
-git 的 commit-msg hook 调用 `harness check commit adr.03 --msg-file <信息文件>`，检查暂存区与即将形成的提交信息；CI 调用 `harness check commits <范围>`，检查范围内每个提交。快照中的 Repo 提供提交与改动，规则 `commit.*`、`adr.03` 判定。pre-commit 时提交信息尚未写出，不运行依赖 Task 尾注的规则。
+git 的 commit-msg hook 调用 `harness check commit adr.03 --msg-file <信息文件>`，检查暂存区与即将形成的提交信息；CI 调用 `harness check commits <范围>`，检查范围内每个提交。快照中的 Repo 提供提交与改动，规则 `commit.*`、`adr.03` 判定。pre-commit 时提交信息尚未写出，不运行依赖 Task 尾注的规则。只改产物与锁文件的需求提交可用 Change 尾注代替 Task 尾注（AC-013-5），此时依赖任务的 `commit.02`、`commit.04` 不适用。
 
 ### FLOW-10 锁定
 - Covers: FR-004, FR-041

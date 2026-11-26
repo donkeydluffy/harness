@@ -358,7 +358,7 @@ init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它�
 计算熵之前排除标识符形状的 token：只含字母、数字、下划线，按大小写边界、字母数字边界与 `_` 切开后至少 3 段，且大部分字母落在 3 个字符以上的段中。随机密钥切开后多为一两个字符的碎片，仍按熵判定。
 
 ### T-037 需求提交使用 Change 尾注
-- Status: InProgress
+- Status: Done
 - Covers: AC-013-5
 - Design: FLOW-09, IF-014
 - Flow: FLOW-01

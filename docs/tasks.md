@@ -328,3 +328,22 @@ T-027 期间发现：只含变量赋值的命令（如 `d=$(mktemp -d)`）使门
 - Depends: T-032
 
 init 写入 `.harness/.gitignore`，忽略门禁的 `snap/`、`session/` 与它自身：不改项目根目录的 `.gitignore`，不需要提交；已有项目重新运行 `harness init` 即补上。
+
+### T-034 测试包构建失败记为失败结果（DEBT-011）
+- Status: InProgress
+- Covers: AC-020-2
+- Design: IF-008
+- Scope: internal/testreport/**
+- Depends: T-033
+
+`go test -json` 中某个包失败、而该包没有任何失败的测试时（构建失败、TestMain 失败、测试外的 panic、超时），解析结果增加一条该包的失败记录，由 test.03 报告。
+
+### T-035 门禁解析命令时跟随 cd（DEBT-012）
+- Status: Todo
+- Covers: AC-012-2
+- Design: FLOW-02
+- Flow: FLOW-02
+- Scope: internal/gate/**, internal/app/gate_integration_test.go
+- Depends: T-034
+
+同一条命令中字面量的 `cd <目录>` 之后，相对路径按该目录解析；`cd` 的目标无法静态判定时，之后的写入交给命令后比对。

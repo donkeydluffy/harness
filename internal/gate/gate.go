@@ -8,7 +8,6 @@ import (
 
 	"github.com/donkeydluffy/harness/internal/approval"
 	"github.com/donkeydluffy/harness/internal/model"
-	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
@@ -111,7 +110,7 @@ func decideWrite(s *workspace.Snapshot, p, content string) Decision {
 	case strings.HasPrefix(p, ".harness/"):
 		return allow() // 测试报告等运行产物
 	case strings.HasPrefix(p, "docs/"):
-		return decideArtifact(s, p)
+		return allow() // 产物任何时候可写，批准状态由批准链体现（AC-048-2）
 	default:
 		return decideSource(s, p)
 	}
@@ -129,28 +128,7 @@ func approvesStatus(s *workspace.Snapshot, p, content string) bool {
 	return d == nil || workspace.HeaderStatus(d) != want
 }
 
-// decideArtifact：docs/ 下的写入须在当前阶段的可写路径内（gate.artifact）。
-// 锁文件为第 2 版时 docs/ 任何时候可写（AC-048-2），批准状态由批准链体现。
-func decideArtifact(s *workspace.Snapshot, p string) Decision {
-	if s.Lock.ByUnit() {
-		return allow()
-	}
-	phases, err := phase.Load(s)
-	if err != nil {
-		return deny("gate.artifact", "阶段定义有误，无法判定 %s 是否可写：%v", p, err)
-	}
-	cur, err := phase.Current(s, phases)
-	if err != nil {
-		return deny("gate.artifact", "无法确定当前阶段：%v", err)
-	}
-	if workspace.MatchAny(cur.Writable, p) {
-		return allow()
-	}
-	return deny("gate.artifact", "当前阶段 %s 不允许写入 %s；可写路径：%s", cur.Name, p, strings.Join(cur.Writable, ", "))
-}
-
-// decideSource：源码写入须有 InProgress 任务且路径在其范围内（gate.write）；锁文件为第 2 版时
-// 该任务的批准链还须全部有效（AC-047-4）。
+// decideSource：源码写入须有 InProgress 任务且路径在其范围内，该任务的批准链还须全部有效（gate.write，AC-047-4）。
 func decideSource(s *workspace.Snapshot, p string) Decision {
 	var active []string
 	var broken *Decision
@@ -161,9 +139,6 @@ func decideSource(s *workspace.Snapshot, p string) Decision {
 		active = append(active, t.ID)
 		if !workspace.MatchAny(t.List("Scope"), p) {
 			continue
-		}
-		if !s.Lock.ByUnit() {
-			return allow()
 		}
 		bad := brokenChain(s, t.ID)
 		if len(bad) == 0 {

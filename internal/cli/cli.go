@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/donkeydluffy/harness/internal/app"
-	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
 	"github.com/donkeydluffy/harness/internal/version"
 )
@@ -35,8 +34,6 @@ const usage = `用法：harness <命令> [参数]
   lock                             产物文档检查通过后更新 harness.lock
   snapshot                         从接口锚点提取签名，写入 docs/architecture/interfaces.txt
   approve <产物或单位>             由人在终端批准（prd、产物路径或单位编号），写入批准记录
-  phase list                       列出流程阶段，标出当前阶段
-  phase next                       由人在终端推进到下一阶段（退出与进入规则须通过）
   trace [--format md|json]         输出需求 × 设计元素覆盖矩阵
   init --lang <语言列表> [--agent <代理列表>] [--ci github|gitlab] [--ci-version <版本>]
                                    生成项目骨架；已存在且内容不同的文件跳过不覆盖
@@ -73,7 +70,7 @@ func Main(args []string, stdout, stderr io.Writer) int {
 	case "approve":
 		return approveCmd(root, args[1:], stdout, stderr)
 	case "phase":
-		return phaseCmd(root, args[1:], stdout, stderr)
+		return phaseCmd(stderr)
 	case "trace":
 		return traceCmd(root, args[1:], stdout, stderr)
 	case "init":
@@ -239,42 +236,8 @@ func approveCmd(root string, args []string, stdout, stderr io.Writer) int {
 	}
 }
 
-func phaseCmd(root string, args []string, stdout, stderr io.Writer) int {
-	if len(args) != 1 || (args[0] != "list" && args[0] != "next") {
-		fmt.Fprintln(stderr, "用法：harness phase list|next")
-		return ExitInternal
-	}
-	if args[0] == "list" {
-		phases, cur, err := app.PhaseList(root)
-		if err != nil {
-			fmt.Fprintln(stderr, "harness phase list: 内部错误：", err)
-			return ExitInternal
-		}
-		for _, p := range phases {
-			mark := " "
-			if p.Name == cur {
-				mark = "*"
-			}
-			fmt.Fprintf(stdout, "%s %d %s  退出规则：%s\n", mark, p.Order, p.Name, strings.Join(p.Exit, ", "))
-		}
-		return ExitOK
-	}
-	err := app.PhaseNext(root, newTerminal(stdout))
-	var ve *app.ViolationsError
-	switch {
-	case err == nil:
-		_, cur, _ := app.PhaseList(root)
-		fmt.Fprintf(stdout, "已推进到 %s\n", cur)
-		return ExitOK
-	case errors.As(err, &ve):
-		printReport(ve.Report, false, stdout, stderr)
-		fmt.Fprintln(stderr, "harness phase next: 规则未通过，拒绝推进")
-		return ExitViolated
-	case errors.Is(err, phase.ErrLastPhase), errors.Is(err, app.ErrDeclined), errors.Is(err, app.ErrNotInteractive):
-		fmt.Fprintln(stderr, "harness phase next:", err)
-		return ExitViolated
-	default:
-		fmt.Fprintln(stderr, "harness phase next: 内部错误：", err)
-		return ExitInternal
-	}
+// phaseCmd：阶段已取消（AC-048-1），提示改由批准状态判定。
+func phaseCmd(stderr io.Writer) int {
+	fmt.Fprintln(stderr, "harness phase: 阶段已取消，改由批准状态判定（FR-048）；运行 harness check approve 查看批准状态")
+	return ExitViolated
 }

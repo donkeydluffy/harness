@@ -1,10 +1,9 @@
-// Package app 是用例编排层：check、trace、lock、approve、phase next、门禁、init（MOD-02）。
+// Package app 是用例编排层：check、trace、lock、approve、门禁、init（MOD-02）。
 package app
 
 import (
 	"sync"
 
-	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/rules/builtin"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
 	"github.com/donkeydluffy/harness/internal/scaffold"
@@ -18,7 +17,6 @@ func registerRules() {
 		for _, r := range builtin.Rules() {
 			engine.Register(r)
 		}
-		engine.Register(phase.Rule())
 		engine.Register(scaffold.Rule())
 	})
 }

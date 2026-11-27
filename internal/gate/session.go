@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/donkeydluffy/harness/internal/approval"
-	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
 	"github.com/donkeydluffy/harness/internal/workspace"
 )
@@ -182,8 +181,6 @@ func splitUnfinished(s string) (rest, section string) {
 	return strings.Join(keep, "\n"), strings.TrimSpace(strings.Join(sec, "\n"))
 }
 
-var phaseTitles = map[string]string{"requirements": "需求", "architecture": "架构", "planning": "规划", "implementation": "实现"}
-
 // sessionStart 向代理注入项目状态（AC-024-1）与冒烟测试结果（AC-024-3）；上次会话的未完成项最先注入。
 func sessionStart(s *workspace.Snapshot) Decision {
 	var parts []string
@@ -192,11 +189,7 @@ func sessionStart(s *workspace.Snapshot) Decision {
 			parts = append(parts, "上次会话遗留：\n"+sec)
 		}
 	}
-	if s.Lock.ByUnit() {
-		parts = append(parts, summaryLines(approval.Summarize(s))...)
-	} else {
-		parts = append(parts, phaseLine(s))
-	}
+	parts = append(parts, summaryLines(approval.Summarize(s))...)
 	rep := engine.Run(s, engine.FullCheck())
 	if n := len(rep.Violations) + len(rep.Errors); n > 0 {
 		parts = append(parts, fmt.Sprintf("未通过的检查：%d 条（运行 harness check 查看）", n))
@@ -239,31 +232,7 @@ func runSmoke(root, cmd string) string {
 	return fmt.Sprintf("冒烟失败（%v），输出最后 %d 行：\n%s", err, len(lines), strings.Join(lines, "\n"))
 }
 
-// phaseLine 是锁文件为第 1 版时的阶段与进行中任务。
-func phaseLine(s *workspace.Snapshot) string {
-	name := "未知"
-	if phases, err := phase.Load(s); err == nil {
-		if cur, err := phase.Current(s, phases); err == nil {
-			name = cur.Name
-			if t, ok := phaseTitles[name]; ok {
-				name = t
-			}
-		}
-	}
-	var active []string
-	for _, t := range tasks(s) {
-		if t.Fields["Status"] == "InProgress" {
-			active = append(active, t.ID)
-		}
-	}
-	line := "阶段：" + name + "，无进行中任务"
-	if len(active) > 0 {
-		line = "阶段：" + name + "，进行中任务：" + strings.Join(active, "、")
-	}
-	return line
-}
-
-// summaryLines 是锁文件为第 2 版时的批准状态摘要与建议的 skill（AC-048-3）。
+// summaryLines 是批准状态摘要与建议的 skill（AC-048-3）。
 func summaryLines(sum approval.Summary) []string {
 	none := func(l []string) string {
 		if len(l) == 0 {

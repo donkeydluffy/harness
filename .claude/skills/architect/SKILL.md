@@ -10,10 +10,10 @@ check: harness check arch trace adr term
 
 ## 产物
 
-- `docs/architecture/overview.md`：模块 `### MOD-01 名称`，字段 Status、Paths、Public、Depends、Interfaces、Covers、Core、Coverage；扩展点 `### EXT-01 名称`，字段 Status、Interface、Paths、Closed、Relates（Relates 指向 Scenario 类 NFR）。
-- `docs/architecture/modules/*.md`：接口 `### IF-001 名称`，字段 Module、Covers，加一个首行为 `// IF-001` 的签名代码块。
-- `docs/architecture/flows.md`：流程 `### FLOW-01 名称`，字段 Covers、Steps，步骤写作 `MOD-01 -> IF-002, MOD-02 -> IF-005`。
-- `docs/adr/ADR-001.md`：一文件一条决策，字段 Status（Proposed / Accepted / Superseded）、Relates，正文含 `## 背景`、`## 决策`、`## 后果`。
+- `docs/architecture/overview.md`：模块 `### MOD-n 名称`，字段 Status、Paths、Public、Depends、Interfaces、Covers、Core、Coverage；扩展点 `### EXT-01 名称`，字段 Status、Interface、Paths、Closed、Relates（Relates 指向 Scenario 类 NFR）。
+- `docs/architecture/modules/*.md`：接口 `### IF-n 名称`，字段 Module、Covers，加一个首行为 `// IF-n` 的签名代码块。
+- docs/architecture/flows.md：流程 `### FLOW-n 名称`，字段 Covers、Steps，步骤写作 `<调用方模块> -> <接口>, <调用方模块> -> <接口>`，如 `MOD-n -> IF-n`。
+- `docs/adr/ADR-<n>-<标题>.md`：一文件一条决策，字段 Status（Proposed / Accepted / Superseded）、Relates，正文含 `## 背景`、`## 决策`、`## 后果`。
 
 ## 要求
 

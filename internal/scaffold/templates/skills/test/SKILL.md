@@ -12,7 +12,7 @@ PRD 中每个当前 Release 的用例都要有一个状态为 passed 的集成�
 
 | 语言 | 集成测试文件 | 测试名示例 |
 |---|---|---|
-| go | `internal/order/order_integration_test.go` | `TestCreate_AC_001_1_N1` |
+| go | `internal/<模块>/order_integration_test.go` | `TestCreate_AC_001_1_N1` |
 | typescript | `tests/integration/order.test.ts` | `create AC_001_1_N1` |
 | python | `tests/integration/test_order.py` | `test_create_AC_001_1_N1` |
 | java | `src/test/java/OrderIT.java` | `create_AC_001_1_N1` |
@@ -22,7 +22,7 @@ PRD 中每个当前 Release 的用例都要有一个状态为 passed 的集成�
 
 ## 单元测试对应接口与核心模块
 
-- 接口测试名写接口编号：`IF-004` 写作 `IF_004`，如 `TestEnqueue_IF_004`。
+- 接口测试名写接口编号：`IF-n` 写作 `IF_n`，如 `TestEnqueue_IF_004`。
 - 扩展点至少有一个示例扩展测试，测试名写扩展点编号，如 `TestExample_EXT_01`。
 
 ## 测试要能失败

@@ -14,4 +14,4 @@ Maven surefire/failsafe 或 Gradle 的 JUnit XML 报告复制到 `.harness/repor
 
 ## 注释
 
-TODO、FIXME、HACK、XXX 注释必须在同一行引用 Open 的 DEBT-n 或未完成的 T-n，例如 `// TODO(DEBT-1): 重试`。
+TODO、FIXME、HACK、XXX 注释必须在同一行引用 Open 的 DEBT-n 或未完成的 T-n，例如 `// TODO(DEBT-n): 重试`。

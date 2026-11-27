@@ -515,10 +515,10 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 ### T-052 文档引用检查
 - Status: Todo
 - Covers: FR-030
-- Design: IF-012, IF-014, IF-022, IF-009, FLOW-01
+- Design: IF-007, IF-012, IF-014, IF-022, IF-009, FLOW-01
 - Flow: FLOW-01
-- Scope: internal/rules/builtin/doc_0*.go, internal/rules/builtin/testdata/doc.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/workspace/**, internal/app/**, internal/cli/**
-- Depends: T-051
+- Scope: internal/rules/builtin/doc_0*.go, internal/rules/builtin/testdata/doc.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/vcs/**, internal/workspace/**, internal/app/**, internal/cli/**
+- Depends: T-051, T-060
 
 规则 doc.02 ~ doc.05：受检 Markdown 行内代码中的路径、`harness` 子命令、编号引用，以及详细设计可能过期的告警；cli 把子命令名传入 CheckOptions。修正本仓库文档中被报告的过期引用。
 
@@ -585,3 +585,12 @@ scaffold 的非测试代码已不 import MOD-10，MOD-13 的 Depends 随 T-050 �
 - Design: MOD-02, IF-024
 - Scope: internal/app/approveunit.go, internal/app/api_test.go
 - Depends: T-050
+
+### T-060 脚手架模板的示例改为占位写法
+- Status: Done
+- Covers: AC-016-1
+- Design: MOD-13
+- Scope: internal/scaffold/templates/**
+- Depends: T-059
+
+skill 与产物骨架中的示例编号改为 `MOD-n`、`IF-n`、`T-n` 这类占位写法，尚未创建的产物路径不用行内代码，使 `harness init` 生成的项目通过 doc.02 ~ doc.04（AC-030-1/B4 由 T-052 验证）；本仓库的 `.claude/skills` 同步修改。

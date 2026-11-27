@@ -276,3 +276,7 @@
 ### 2026-11-27 T-051
 - 结论：任务可声明 `Kind: mechanical`、`Rewrite: <旧前缀> -> <新前缀>` 并在 Relates 中引用 ADR（task.09），此时 Design 可为空，task.03、task.05、commit.03 不再约束它；commit.05 经 Analyzer 识别 import 行与 go.mod 的 module 行，其余行须逐行不变，这些行按 Rewrite 替换后须与改动后一一对应（顺序可变），新增、删除文件失败，产物与生成文件豁免。暂存区没有提交信息时，按唯一的 InProgress 任务判断是否为机械改动。
 - 遗留：import 识别只支持 Go（FR-014 的其他语言在 Release 3）；go.mod 中 require、replace 行里的旧模块路径不在允许改动之列。
+
+### 2026-11-27 T-060
+- 结论：skill 与产物骨架模板中的示例编号改为 `MOD-n`、`IF-n`、`T-n`、`DEBT-n` 这类占位写法，尚未创建的 flows.md 不再写成行内代码，测试 skill 的示例路径与 TypeScript 语言说明的示例文件名改用 `<…>` 占位符；本仓库的 `.claude/skills` 由人按模板同步。`harness init` 生成的全语言项目运行 doc.02 ~ doc.04 没有违规（AC-030-1/B4，由 T-052 的集成测试验证）。
+- 遗留：无。

@@ -55,7 +55,7 @@ func runHookCommand(t *testing.T, dir, command, path string, in map[string]any) 
 // 找不到 harness 时 hook 失败即阻断（AC-012-5，T-030）：PreToolUse 拒绝，SessionStart 注入说明，
 // PostToolUse 与 Stop 不阻止；找得到时交给 harness 判定。
 func TestGate_MissingBinaryFailsClosed(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	cmds := hookCommands(t)
 	noHarness := "/usr/bin:/bin"
 

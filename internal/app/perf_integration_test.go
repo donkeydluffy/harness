@@ -27,13 +27,17 @@ func perfRepo(t *testing.T) string {
 		if i == 1 {
 			status = "InProgress"
 		}
-		tasks = append(tasks, task(fmt.Sprintf("T-%03d", i), status, "FR-001", "MOD-01", fmt.Sprintf("internal/m%03d/**", i%50), "", ""))
+		tasks = append(tasks, task(fmt.Sprintf("T-%03d", i), status, "FR-001", "MOD-01", fmt.Sprintf("internal/api/m%03d/**", i%50), "", ""))
 	}
-	files["docs/tasks.md"] = taskDoc(tasks...)
 	dir := writeTree(t, files)
+	if r := runHarness(t, dir, "lock"); r.Code != 0 {
+		t.Fatalf("harness lock 失败：%s%s", r.Stdout, r.Stderr)
+	}
+	writeFile(t, dir, "docs/tasks.md", taskDoc(tasks...))
+	mustApprove(t, dir, "prd", "MOD-02", "MOD-01", "T-001") // T-001 的批准链有效，门禁放行其范围内的写入
 	body := strings.Repeat("\nfunc helper%d(x int) int {\n\t// 普通注释\n\treturn x + %d\n}\n", 6)
 	for m := 0; m < 50; m++ {
-		d := filepath.Join(dir, fmt.Sprintf("internal/m%03d", m))
+		d := filepath.Join(dir, fmt.Sprintf("internal/api/m%03d", m))
 		os.MkdirAll(d, 0o755)
 		for f := 0; f < 100; f++ {
 			src := fmt.Sprintf("package m%03d\n\n// TODO(T-001): 示例\n", m) + fmt.Sprintf(body, f, f, f+1, f, f+2, f, f+3, f, f+4, f, f+5, f)
@@ -78,7 +82,7 @@ func TestPerf_AC_N003_1_N1(t *testing.T) {
 	var ds []time.Duration
 	for i := 0; i < 40; i++ {
 		ds = append(ds, timed(func() {
-			wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/m001/new.go", "package m001\n")))
+			wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/m001/new.go", "package m001\n")))
 		}))
 	}
 	if msg := overLimit("PreToolUse 门禁 p95", p95(ds), gateP95Limit); msg != "" {
@@ -107,10 +111,10 @@ func TestPerf_AC_N003_1_E1(t *testing.T) {
 func TestPerf_AC_N003_2_N1(t *testing.T) {
 	dir := perfRepo(t)
 	// 最后一个源文件放一条没有引用编号的待办注释，确认全部源文件都被扫描。
-	write(t, dir, "internal/m049/f099.go", "package m049\n\n// TODO 以后再说\n")
+	write(t, dir, "internal/api/m049/f099.go", "package m049\n\n// TODO 以后再说\n")
 	var r result
 	d := timed(func() { r = runHarness(t, dir, "check") })
-	if r.Code == 2 || !strings.Contains(r.Stdout, "internal/m049/f099.go:3: [debt.02]") {
+	if r.Code == 2 || !strings.Contains(r.Stdout, "internal/api/m049/f099.go:3: [debt.02]") {
 		t.Fatalf("全量检查没有扫描到最后一个源文件：%d %s", r.Code, r.Stderr)
 	}
 	if msg := overLimit("5000 个源文件的全量检查", d, fullCheckLimit); msg != "" {

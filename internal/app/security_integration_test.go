@@ -11,10 +11,11 @@ func readTool(dir, rel string) map[string]any {
 	return map[string]any{"tool_name": "Read", "tool_input": map[string]any{"file_path": filepath.Join(dir, rel)}}
 }
 
-// secDir 返回实现阶段、T-001 可写 internal/api/** 与 build/** 的项目。
+// secDir 返回 T-001 可写 internal/api/** 与 build/**（均属 MOD-01）且批准链有效的项目。
 func secDir(t *testing.T) string {
 	t.Helper()
-	return gateDir(t, "implementation", taskDoc(task("T-001", "InProgress", "FR-001", "MOD-01", "internal/api/**, build/**", "", "")))
+	return gateDir(t, true, taskDoc(task("T-001", "InProgress", "FR-001", "MOD-01", "internal/api/**, build/**", "", "")),
+		"overview.md", "- Paths: internal/api/**\n", "- Paths: internal/api/**, build/**\n")
 }
 
 // ---- AC-025-1 敏感路径 ----

@@ -117,27 +117,6 @@ func TestGate_AC_012_4_B2(t *testing.T) {
 	wantDeny(t, stopHook(t, dir), "第 1 次阻止")
 }
 
-// ---- AC-024-1 会话开始注入 ----
-
-func TestGate_AC_024_1_N1(t *testing.T) {
-	dir := sessionDir(t, nil)
-	write(t, dir, "docs/tasks.md", activeTasks)
-	edit(t, dir, "## 8. 变更日志", oq003)
-	breakPRD(t, dir)
-	r := startHook(t, dir).Reason
-	for _, want := range []string{"阶段：需求", "进行中任务：T-001", "未通过的检查：", "Open 待澄清项：OQ-003"} {
-		if !strings.Contains(r, want) {
-			t.Fatalf("注入内容缺少 %q：\n%s", want, r)
-		}
-	}
-}
-
-func TestGate_AC_024_1_B1(t *testing.T) {
-	if r := startHook(t, sessionDir(t, nil)).Reason; r != "阶段：需求，无进行中任务" {
-		t.Fatalf("注入内容：%q", r)
-	}
-}
-
 // ---- AC-024-3 冒烟测试 ----
 
 func TestGate_AC_024_3_N1(t *testing.T) {

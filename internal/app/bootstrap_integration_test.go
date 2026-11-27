@@ -14,7 +14,7 @@ const repoRoot = "../.."
 
 // selfCheckRules 是对本仓库根目录运行的检查：除依赖测试报告（报告正由本次 go test 重写）与暂存区的规则外的全部规则。
 var selfCheckRules = []string{"prd", "term", "arch.01", "arch.02", "arch.03", "arch.04", "trace", "adr", "debt",
-	"task.01", "task.02", "task.03", "task.04", "task.05", "task.06", "task.07", "approve", "phase", "cfg", "ci"}
+	"task.01", "task.02", "task.03", "task.04", "task.05", "task.06", "task.07", "approve", "cfg", "ci"}
 
 // repoFiles 读取本仓库中 dir 下的全部文件（仓库相对路径 → 内容）。
 func repoFiles(t *testing.T, dirs ...string) map[string]string {

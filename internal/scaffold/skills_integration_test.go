@@ -12,7 +12,6 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/donkeydluffy/harness/internal/phase"
 	"github.com/donkeydluffy/harness/internal/rules/builtin"
 	"github.com/donkeydluffy/harness/internal/rules/engine"
 	"github.com/donkeydluffy/harness/internal/workspace"
@@ -25,7 +24,6 @@ func registerRules() {
 		for _, r := range builtin.Rules() {
 			engine.Register(r)
 		}
-		engine.Register(phase.Rule())
 	})
 }
 
@@ -108,14 +106,6 @@ func skill(t *testing.T, name string) string {
 func TestSkills_AC_016_1_N1(t *testing.T) {
 	if p := skillProblems(skillsFS(t)); len(p) > 0 {
 		t.Fatal(strings.Join(p, "\n"))
-	}
-	// 每个内置阶段引用的 skill 都存在。
-	phases, err := phase.Load(&workspace.Snapshot{Config: workspace.DefaultConfig()})
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, ph := range phases {
-		skill(t, ph.Skill)
 	}
 }
 

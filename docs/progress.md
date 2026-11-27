@@ -253,15 +253,6 @@
 - 结论：Go 分析器实现 Imports、ModuleDecl、Anchors、Resolve 与 Coverage（Coverage 原计划在 T-049，因 IF-035 的接口须与设计一致而提前实现，T-049 直接使用）。签名按词法单元规范化为一行，去掉注释、函数体与结构体字段标签，`[` 前是否留空格按源码原有空白区分类型参数与切片类型。`harness snapshot` 写 `docs/architecture/interfaces.txt`，锁文件记录 `snapshot:IF-n`。规则 if.01 ~ if.04 只检查路径内有 Go 源文件的模块；if.04 在锁文件还没有接口快照时视为空基线。设计中全部 39 个接口都已有锚点；Approve 的参数名改为与设计一致的 target。IF-012 的设计补上 Report.Warnings，formats.md 写明 `rule:<编号>` 的哈希包含规则定义，两处需人重新批准。
 - 遗留：IF-006 的锚点放在 `Read` 上：代码中的 `Lock` 结构体还有 Phase 字段，设计已是删除后的形态，T-054 删除 Phase 后把锚点移回 `Lock`。本仓库锁文件的接口快照基线需人运行 `harness lock` 写入。
 
-## 未完成
-
-2026-11-27 会话 a913c174-9c27-4f97-b4b8-c6854aba3779 结束时未通过的检查（已连续阻止 3 次后放行；相关任务不能标为 Done）：
-
-.:1 [test.03] 测试 TestRulesSamples_IF_014（github.com/donkeydluffy/harness/internal/rules/builtin） 失败
-docs/architecture/modules/MOD-05-builtin.md:7 [unit.01] IF-014 的单元测试在报告中为 failed：TestRulesSamples_IF_014
-docs/architecture/overview.md:96 [unit.03] MOD-06 的行覆盖率为 87.6%，低于阈值 90%
-docs/tasks.md:1 [task.08] 全量检查（不含 test.02、arch.05、task.08）有 3 条失败项，Done 的任务不满足完成定义：T-001, T-002, T-003, T-004, T-005, T-006, T-007, T-008, T-009, T-010, T-011, T-012, T-013, T-014, T-015, T-016, T-017, T-018, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028, T-029, T-030, T-031, T-032, T-033, T-034, T-035, T-036, T-037, T-038, T-039, T-040, T-041, T-042, T-043, T-044, T-045, T-046, T-047, T-048
-
 ### 2026-11-27 T-057
 - 结论：锁文件模块补了 `LastApproval`、字段为 null 时补空集合、读目录与写入不存在的目录报错的测试，单元测试行覆盖率从 81.5% 升到 92.3%。
 - 遗留：`Marshal` 的编码失败分支无法构造，未覆盖。
@@ -269,3 +260,7 @@ docs/tasks.md:1 [task.08] 全量检查（不含 test.02、arch.05、task.08）�
 ### 2026-11-27 T-049
 - 结论：`harness check unit` 对每个带锚点的接口单独运行测试名含其编号的单元测试，只运行声明了匹配测试的包（本仓库 39 个接口从 4 分 40 秒降到 41 秒）；再全量运行一次测试统计模块行覆盖率，集成测试启动的子进程经 `HARNESS_COVERDIR` 计入（ADR-014），本仓库全量约 80 秒。Analyzer.Coverage 增加含语句的行（ADR-013），入口行取函数体第一条语句，右括号所在行不计入语句块。规则 unit.01 ~ unit.03；补齐 IF-004、IF-022 ~ IF-024、IF-026、IF-039 的单元测试；MOD-06 的覆盖率由 T-057 补到阈值以上。
 - 遗留：只算单元测试时 cli、app、gate 的覆盖率很低，阈值靠集成测试达到；用户项目的子进程覆盖率需按 ADR-014 的约定使用 `HARNESS_COVERDIR`。先改设计的接口签名无法批准、InProgress 任务无法重新批准，登记为 DEBT-017。
+
+### 2026-11-27 T-058
+- 结论：pre-commit 模板的检查列表去掉 `phase`，skill 测试不再注册阶段规则、不再逐个检查阶段 skill；scaffold 与 MOD-10 不再有任何引用，T-055 不再涉及 scaffold。
+- 遗留：已安装的 `.git/hooks/pre-commit` 仍是旧模板生成的，含 `phase`；T-055 删除阶段规则前需重新运行 `harness init --lang go`。

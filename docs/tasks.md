@@ -498,7 +498,7 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Design: IF-035, IF-014, FLOW-01
 - Flow: FLOW-01
 - Scope: internal/lang/**, internal/rules/builtin/deps_0*.go, internal/rules/builtin/testdata/deps.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**
-- Depends: T-049
+- Depends: T-049, T-058
 
 规则 deps.01 ~ deps.04：跨模块 import 须在 Depends 中且指向 Public，sourcePaths 内的源文件须有归属，Depends 中的模块须被使用。
 
@@ -545,9 +545,9 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 ### T-055 删除阶段模块，Release 2 生效
 - Status: Todo
 - Covers: FR-048
-- Design: MOD-10, EXT-04, IF-020, FLOW-07
-- Flow: FLOW-07
-- Scope: internal/phase/**, internal/scaffold/**, internal/app/**, internal/cli/**
+- Design: MOD-10, EXT-04, IF-020, FLOW-02
+- Flow: FLOW-02
+- Scope: internal/phase/**, internal/app/**, internal/cli/**
 - Depends: T-054
 
 删除 `internal/phase/`、scaffold 中的阶段用法与 skill 中的阶段说明；设计中 MOD-10、EXT-04 改为 Removed，去掉对 MOD-10 的依赖与 IF-015、IF-016 的流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。
@@ -569,3 +569,12 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Depends:
 
 计入集成测试后 MOD-06 的行覆盖率为 87.6%，低于阈值 90%：`LastApproval`、`Read` 的读取失败与字段缺失、`Write` 的写入失败没有测试。T-049 的 unit.03 依赖本任务通过。
+
+### T-058 脚手架去掉对阶段的引用
+- Status: Done
+- Covers: AC-016-1
+- Design: MOD-13
+- Scope: internal/scaffold/skills_integration_test.go, internal/scaffold/templates/githooks/pre-commit
+- Depends:
+
+scaffold 的非测试代码已不 import MOD-10，MOD-13 的 Depends 随 T-050 去掉 MOD-10，FLOW-07 也去掉 `MOD-13 -> IF-015`。剩下两处引用一并去掉：pre-commit 模板的检查列表中的 `phase`，skill 测试中注册阶段规则并逐个检查阶段 skill 的部分。T-055 删除 MOD-10 时不再涉及 scaffold。

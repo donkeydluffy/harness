@@ -15,6 +15,7 @@ type CheckOptions struct {
 	Commits     string   // 提交范围，如 origin/main..HEAD；为空时检查暂存区
 	MessageFile string   // 即将形成的提交的信息文件（commit-msg hook 的参数）
 	JSON        bool
+	Commands    []string // cli 的全部子命令名（AC-030-2）
 }
 
 // Check 加载项目快照并运行选中的规则（IF-022）。
@@ -36,6 +37,7 @@ func Check(root string, opt CheckOptions) (engine.Report, error) {
 	if err != nil {
 		return engine.Report{}, err
 	}
+	s.Commands = opt.Commands
 	rules, bad := projectRules(s)
 	var unknown []string
 	for _, u := range sel.Unknown() {

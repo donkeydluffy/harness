@@ -44,6 +44,9 @@ const usage = `用法：harness <命令> [参数]
   version                          输出 harness 版本（也可写作 --version）
 `
 
+// commands 是全部子命令名，传给文档引用检查（AC-030-2）；与 Main 中的分支一致。
+var commands = []string{"check", "lock", "snapshot", "approve", "phase", "trace", "init", "gate", "version", "help"}
+
 // Main 执行命令并返回退出码。
 func Main(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
@@ -94,7 +97,7 @@ func Main(args []string, stdout, stderr io.Writer) int {
 }
 
 func check(root string, args []string, stdout, stderr io.Writer) int {
-	var opt app.CheckOptions
+	opt := app.CheckOptions{Commands: commands}
 	for i := 0; i < len(args); i++ {
 		a := args[i]
 		switch {

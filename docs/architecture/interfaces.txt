@@ -17,7 +17,7 @@ IF-006
 func Read(path string) (*Lock, error)
 
 IF-007
-type Repo interface { Root() string; Commits(rangeSpec string) ([]Commit, error); Changes(c Commit) ([]FileChange, error); Staged() ([]FileChange, error); FileAt(rev, path string) ([]byte, error); CommitsTouching(paths []string, since string) (int, error) }
+type Repo interface { Root() string; Commits(rangeSpec string) ([]Commit, error); Changes(c Commit) ([]FileChange, error); Staged() ([]FileChange, error); FileAt(rev, path string) ([]byte, error); CommitsTouching(paths []string, since string) (int, error); LastCommit(paths []string) (string, error) }
 
 IF-008
 func ParseJUnit(r io.Reader) ([]TestCase, error)

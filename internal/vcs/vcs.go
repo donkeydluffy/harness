@@ -24,6 +24,7 @@ type Repo interface {
 	Staged() ([]FileChange, error)
 	FileAt(rev, path string) ([]byte, error) // rev 为空表示暂存区
 	CommitsTouching(paths []string, since string) (int, error)
+	LastCommit(paths []string) (string, error) // 最后一次改动 paths 的提交；没有时为空串（AC-030-4）
 }
 
 // Commit 是一个提交。
@@ -161,4 +162,12 @@ func (r *repo) CommitsTouching(paths []string, since string) (int, error) {
 		return 0, err
 	}
 	return strconv.Atoi(strings.TrimSpace(string(out)))
+}
+
+func (r *repo) LastCommit(paths []string) (string, error) {
+	out, err := run(r.root, append([]string{"log", "-1", "--format=%H", "--"}, paths...)...)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(out)), nil
 }

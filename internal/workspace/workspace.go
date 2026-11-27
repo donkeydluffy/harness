@@ -34,6 +34,7 @@ type Snapshot struct {
 	LintErr     error                  // lint 报告无法读取或解析
 	Unit        *testreport.UnitReport // LoadOptions.WithTests 时读取 unit 报告；不存在时为 nil
 	UnitErr     error                  // unit 报告无法读取或解析
+	Commands    []string               // cli 的子命令名，由 app 从 CheckOptions 填入；为空时不检查子命令（AC-030-2）
 	Diags       []model.Diagnostic
 }
 

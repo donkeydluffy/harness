@@ -63,6 +63,12 @@ func TestRepo_IF_007(t *testing.T) {
 	if n, err := r.CommitsTouching([]string{"b.txt"}, "HEAD~1"); err != nil || n != 1 {
 		t.Fatalf("touching: %d %v", n, err)
 	}
+	if h, err := r.LastCommit([]string{"b.txt"}); err != nil || h != all[1].Hash {
+		t.Fatalf("last commit: %q %v", h, err)
+	}
+	if h, err := r.LastCommit([]string{"none.txt"}); err != nil || h != "" {
+		t.Fatalf("no commit: %q %v", h, err)
+	}
 }
 
 func TestParseTrailers_IF_007(t *testing.T) {

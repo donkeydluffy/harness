@@ -2,6 +2,7 @@ package lang
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/donkeydluffy/harness/internal/lang/spec"
@@ -112,4 +113,17 @@ func TestPackFor_IF_034(t *testing.T) {
 	if _, ok := PackFor("rust"); ok {
 		t.Error("未注册的语言没有配置包")
 	}
+}
+
+func TestRegister_IF_004(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil || !strings.Contains(fmt.Sprint(r), "重复注册 go") {
+			t.Fatalf("重复注册同名语言应 panic：%v", r)
+		}
+	}()
+	g, ok := ForPath("a.go")
+	if !ok {
+		t.Fatal("go 应已注册")
+	}
+	Register(g)
 }

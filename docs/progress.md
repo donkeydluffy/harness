@@ -268,3 +268,18 @@
 ### 2026-11-27 T-050
 - 结论：规则 deps.01 ~ deps.04 经 Analyzer 读取非测试 Go 文件的 import，按 go.mod 解析到仓库目录，目录归属取 Paths 匹配前缀最长的模块；跨模块 import 须在 Depends 中且目标包含有 Public 文件，sourcePaths 内的源文件须有归属，Depends 须被非测试代码使用。本仓库按代码修正了 5 个模块的 Depends 与 FLOW-07、FLOW-12（ADR-015），scaffold 对阶段的引用由 T-058 去掉。
 - 遗留：ADR-015 待人批准。依赖识别只支持 Go，其他语言在 Release 3（FR-008）。
+
+## 未完成
+
+2026-11-27 会话 a913c174-9c27-4f97-b4b8-c6854aba3779 结束时未通过的检查（已连续阻止 3 次后放行；相关任务不能标为 Done）：
+
+.:1 [test.03] 测试 TestCheck_AC_017_1_N1（github.com/donkeydluffy/harness/internal/app） 失败
+.:1 [test.03] 测试 TestInit_AC_N002_2_E1（github.com/donkeydluffy/harness/internal/app） 失败
+.:1 [test.03] 测试 TestInit_AC_N002_2_N1（github.com/donkeydluffy/harness/internal/app） 失败
+docs/tasks.md:1 [task.08] 全量检查（不含 test.02、arch.05、task.08）有 3 条失败项，Done 的任务不满足完成定义：T-001, T-002, T-003, T-004, T-005, T-006, T-007, T-008, T-009, T-010, T-011, T-012, T-013, T-014, T-015, T-016, T-017, T-018, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028, T-029, T-030, T-031, T-032, T-033, T-034, T-035, T-036, T-037, T-038, T-039, T-040, T-041, T-042, T-043, T-044, T-045, T-046, T-047, T-048, T-049, T-050, T-057, T-058
+docs/tasks.md:192 [task.08] T-019 为 Done，但这些用例没有通过的集成测试：AC-N002-2/N1, AC-N002-2/E1
+docs/tasks.md:257 [task.08] T-026 为 Done，但这些用例没有通过的集成测试：AC-017-1/N1
+
+### 2026-11-27 T-059
+- 结论：批准前检查不再运行 if.03（设计签名与代码一致）与 task.07（任务批准有效），两者只由全量检查要求；设计签名先于代码修改的接口、批准失效的 InProgress 任务都能直接批准。DEBT-017 已解决。
+- 遗留：DEBT-018（已存在的钩子无法随 harness 升级更新）、DEBT-019（门禁把含 docs/PRD.md 的子目录当作项目根）。

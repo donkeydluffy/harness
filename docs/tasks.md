@@ -508,7 +508,7 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Design: IF-035, IF-014, FLOW-09
 - Flow: FLOW-09
 - Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**
-- Depends: T-050
+- Depends: T-050, T-059
 
 `Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。
 
@@ -578,3 +578,10 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Depends:
 
 scaffold 的非测试代码已不 import MOD-10，MOD-13 的 Depends 随 T-050 去掉 MOD-10，FLOW-07 也去掉 `MOD-13 -> IF-015`。剩下两处引用一并去掉：pre-commit 模板的检查列表中的 `phase`，skill 测试中注册阶段规则并逐个检查阶段 skill 的部分。T-055 删除 MOD-10 时不再涉及 scaffold。
+
+### T-059 批准前检查不等待下游
+- Status: Done
+- Covers: AC-047-2
+- Design: MOD-02, IF-024
+- Scope: internal/app/approveunit.go, internal/app/api_test.go
+- Depends: T-050

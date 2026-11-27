@@ -131,8 +131,22 @@ T-028 只豁免以 `/`、`./`、`~/` 开头的路径。`docs/architecture/module
 
 
 ### DEBT-017 先改设计的接口签名无法批准
-- Status: Open
+- Status: Resolved
 - Module: MOD-02
 
 `harness approve IF-n` 对待批准单位运行 if.03，要求设计签名与代码一致；而代码要等任务的批准链有效后才能修改（gate.write、task.07）。先改设计时两边互相等待，只能先回退设计、改代码、再恢复设计（2026-11-27 改 IF-035 时遇到）。修复方向：if.03 比对的是下游的代码，像其他要求下游覆盖的规则一样不参与批准前检查，只由全量检查要求一致；补"设计先改的接口能批准"的用例。
 同类问题：InProgress 任务的批准因上游变化失效后，`harness approve T-n` 被 task.07 拒绝（task.07 报的正是这次批准要解决的失效），只能先把任务改回 Todo 再批准。task.07 也不应参与该任务自身的批准前检查。
+
+已解决（T-059）：批准前检查不再运行 if.03 与 task.07，签名与代码的一致、任务批准的有效仍由全量检查要求。IF-024 的单元测试覆盖签名先改的接口与 InProgress 任务的重新批准。
+
+### DEBT-018 已存在的 Git 钩子无法随 harness 升级更新
+- Status: Open
+- Module: MOD-13
+
+`harness init` 不覆盖内容不同的已有文件，`.git/hooks/pre-commit` 也按此跳过；harness 升级后钩子中的规则列表（如 T-058 去掉的 phase）不会更新，只能删掉钩子再运行 init（2026-11-27 遇到）。钩子由 harness 生成、不由人编辑，可考虑让 init 识别自己生成的旧版钩子并替换，或让钩子只调用一个不带规则列表的子命令。
+
+### DEBT-019 门禁把含 docs/PRD.md 的子目录当作项目根
+- Status: Open
+- Module: MOD-11
+
+在 `internal/scaffold/templates/artifacts/docs` 下执行命令时，门禁向上找到 `templates/artifacts/docs/PRD.md`，把 `templates/artifacts` 当作项目根，在其中写入 `.harness/snap/<会话>/`；这些文件随后被嵌入模板，init 的集成测试失败（2026-11-27 遇到）。项目根应以 harness.json 或 git 仓库根判定，不以 docs/PRD.md 判定。

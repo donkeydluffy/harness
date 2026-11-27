@@ -900,6 +900,20 @@
         "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2"
       }
     },
+    "ADR-015": {
+      "at": "2026-11-27T05:08:35Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:e0148eac4c186e5a36c037d88ce5ce6b1ac1f2df5e6c2e2da8dd0fd3e6b3a46c",
+      "text": "# ADR-015 模块 Depends 按代码的实际 import 修正\n\n- Status: Proposed\n- Relates: FR-053, MOD-01, MOD-02, MOD-11, MOD-13, MOD-17\n\n## 背景\n\nT-050 的规则 deps.01、deps.03 第一次对照本仓库的 Go import 与架构声明，发现 10 处不一致：cli 直接 import engine、phase、gate、scaffold；app 与 gate import model；scaffold import engine；而 app 对 lang、scaffold 对 phase、custom 对 model 的声明依赖在非测试代码中没有使用。\n\n## 决策\n\n- 按代码修正声明：MOD-01 加入 MOD-04、MOD-10、MOD-11、MOD-13；MOD-02 加入 MOD-03、去掉 MOD-14；MOD-11 加入 MOD-03；MOD-13 加入 MOD-04、去掉 MOD-10；MOD-17 去掉 MOD-03。依赖仍然无环。\n- FLOW-07 去掉 `MOD-13 -> IF-015`；FLOW-12 中调用 IF-035 的是 MOD-09（app 经 workspace 提取锚点）。\n- 被否决的方案：改代码使 cli 只经 app 调用下层模块。要改 cli、gate、scaffold 的多处调用，超出 T-050 的范围，收益只是依赖图更窄。\n\n## 后果\n\n- cli 的依赖面变宽：engine、gate、scaffold 的公开接口变化会直接影响 cli。\n- 此后依赖的变化由 deps.01、deps.03 在每次全量检查中发现，修改 Depends 须同时登记 ADR（adr.03）。",
+      "upstream": {
+        "FR-053": "sha256:cc50039cd3243ab909132397cdc4c457a2bceb209f80df4ce78d85e1c64e4b7b",
+        "MOD-01": "sha256:972839844dae374e47845ea47d952212c75d363736b3e353a1c7c5c9a80c9f18",
+        "MOD-02": "sha256:5c0c4d87b73e204a984712c4a112c44e1d55c09d1d31d5aad14fcb67a679c9f9",
+        "MOD-11": "sha256:1e3c314f639ee0938068b5ee96314d61e77308be3d7c582ab68eb32f02bfcb9e",
+        "MOD-13": "sha256:db3eaafbf8fcf6bced232c9cfea5b7370dab91d492a4a1973ef1fb3b8a54f177",
+        "MOD-17": "sha256:930d9674a0a2f513a0678fc12cdf41c6857da203ef16a51db17a5e4e67eae150"
+      }
+    },
     "EXT-01": {
       "at": "2026-11-26T12:17:50Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
@@ -2892,10 +2906,10 @@
       }
     },
     "T-051": {
-      "at": "2026-11-27T02:03:54Z",
+      "at": "2026-11-27T05:20:38Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:5c2f6b6600ed3029ca85c04f7429aaa09ebe754edd33fbdd179bf47fee2c7389",
-      "text": "### T-051 机械改动任务\n- Covers: FR-050\n- Design: IF-035, IF-014, FLOW-09\n- Flow: FLOW-09\n- Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-050\n\n`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。",
+      "hash": "sha256:7c5ac5d842020dbb786274f3777aba8a5ed87f7c306216f8e24d73fdc75cd9f8",
+      "text": "### T-051 机械改动任务\n- Covers: FR-050\n- Design: IF-035, IF-014, FLOW-09\n- Flow: FLOW-09\n- Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-050, T-059\n\n`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。",
       "upstream": {
         "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
         "FR-050": "sha256:816ac65f0cc05099c0ea0f75ae029ef40ac4ad4b821812fa2fd60df7668f566c",
@@ -2984,6 +2998,17 @@
       "upstream": {
         "FR-016": "sha256:bc571b5bdd87db8fb418fa6d277dc61574bc2440909ca301c0edd03095f7ff7a",
         "MOD-13": "sha256:db3eaafbf8fcf6bced232c9cfea5b7370dab91d492a4a1973ef1fb3b8a54f177"
+      }
+    },
+    "T-059": {
+      "at": "2026-11-27T05:20:36Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:2d89410a802251c3703ab2d37b08d72ceef44aec55ecd32d0919530fc2654fda",
+      "text": "### T-059 批准前检查不等待下游\n- Covers: AC-047-2\n- Design: MOD-02, IF-024\n- Scope: internal/app/approveunit.go, internal/app/api_test.go\n- Depends: T-050",
+      "upstream": {
+        "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
+        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+        "MOD-02": "sha256:5c0c4d87b73e204a984712c4a112c44e1d55c09d1d31d5aad14fcb67a679c9f9"
       }
     },
     "TERM": {
@@ -3302,10 +3327,10 @@
       "upstream": {}
     },
     "docs/architecture/modules/MOD-15-approval.md#正文": {
-      "at": "2026-11-26T12:17:58Z",
+      "at": "2026-11-27T05:20:32Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:244d6904a9693e290d6b0ed44a1dce519fb6b9cd9b6d629eee8f487091b9da80",
-      "text": "# MOD-15 approval 详细设计\n\n## 职责\n\n按批准单位（TERM-027）计算内容哈希、批准链与批准状态，生成批准记录（ADR-009）。只读快照，不写文件；写锁文件由 app 完成。\n\n## 接口\n\n## 内部设计\n\n- 单位的范围：需求为 FR、NFR 实体（含其验收标准与用例）；术语为统一语言表格的一行；待澄清项、设计元素（MOD、IF、FLOW、EXT）、ADR、任务为各自的实体；每个产物文件中实体之外的文字为 `<文件路径>#正文`。\n- 批准前检查（IF-024 调用）：只运行待批准单位自身所在文件的结构规则、上游必须 approved（AC-047-3），以及项目登记在该单位类型上的自定义规则（AC-054-5）；不运行覆盖类规则。\n- 状态由 Evaluate 一次算出并缓存于调用方，门禁路径只为当前 InProgress 任务调用 Chain，保持 NFR-003 的耗时要求。",
+      "hash": "sha256:99bdc162fccc61b07526df9cbdfec147681f547bdaa517de71762575ed9cbbeb",
+      "text": "# MOD-15 approval 详细设计\n\n## 职责\n\n按批准单位（TERM-027）计算内容哈希、批准链与批准状态，生成批准记录（ADR-009）。只读快照，不写文件；写锁文件由 app 完成。\n\n## 接口\n\n## 内部设计\n\n- 单位的范围：需求为 FR、NFR 实体（含其验收标准与用例）；术语为统一语言表格的一行；待澄清项、设计元素（MOD、IF、FLOW、EXT）、ADR、任务为各自的实体；每个产物文件中实体之外的文字为 `<文件路径>#正文`。\n- 批准前检查（IF-024 调用）：只运行待批准单位自身所在文件的结构规则、上游必须 approved（AC-047-3），以及项目登记在该单位类型上的自定义规则（AC-054-5）；不运行覆盖类规则，也不运行 if.03（设计签名与代码一致，属于下游）和 task.07（任务批准有效，正是这次批准要解决的）。\n- 状态由 Evaluate 一次算出并缓存于调用方，门禁路径只为当前 InProgress 任务调用 Chain，保持 NFR-003 的耗时要求。",
       "upstream": {}
     },
     "docs/architecture/modules/MOD-16-toolrun.md#正文": {

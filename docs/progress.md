@@ -280,3 +280,7 @@
 ### 2026-11-27 T-060
 - 结论：skill 与产物骨架模板中的示例编号改为 `MOD-n`、`IF-n`、`T-n`、`DEBT-n` 这类占位写法，尚未创建的 flows.md 不再写成行内代码，测试 skill 的示例路径与 TypeScript 语言说明的示例文件名改用 `<…>` 占位符；本仓库的 `.claude/skills` 由人按模板同步。`harness init` 生成的全语言项目运行 doc.02 ~ doc.04 没有违规（AC-030-1/B4，由 T-052 的集成测试验证）。
 - 遗留：无。
+
+### 2026-11-27 T-052
+- 结论：规则 doc.02 ~ doc.05 检查受检 Markdown（README、AGENTS、CLAUDE、skill、docs 下除进度文件外的文档）代码块之外的行：行内代码中的仓库路径须存在（首段不在仓库中的、`.harness` 下的、文件名后缀不算），`harness <子命令>` 须是 cli 传入的子命令，FR、AC、IF 等编号须存在、未 Removed、未被已生效的需求取代；用例行、字段行、PRD 的澄清记录与变更日志、Release 大于 Current-Release 的需求不检查（CHG-026）。doc.05 用新增的 Repo.LastCommit（ADR-016）取详细设计的最后提交，模块代码此后的提交超过 staleCommits 时告警。修正了文档中 `harness hook`、`internal/version.injected` 等过期引用。
+- 遗留：MOD-02、MOD-05 的详细设计被 doc.05 告警可能过期，需对照代码更新。T-056 把 Current-Release 改为 2 后，Release 2 的需求开始受检，可能出现新的命中。DEBT-020、DEBT-021 待修。

@@ -513,7 +513,7 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 `Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。
 
 ### T-052 文档引用检查
-- Status: InProgress
+- Status: Done
 - Covers: FR-030
 - Design: IF-007, IF-012, IF-014, IF-022, IF-009, FLOW-01
 - Flow: FLOW-01

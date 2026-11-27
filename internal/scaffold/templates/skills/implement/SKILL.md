@@ -1,6 +1,6 @@
 ---
 name: implement
-description: 实现阶段：按任务列表逐个实现任务，直到任务满足完成定义。
+description: 实现任务：按任务列表逐个实现已批准的任务，直到任务满足完成定义。
 check: harness check
 ---
 

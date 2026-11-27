@@ -1,6 +1,6 @@
 ---
 name: plan
-description: 规划阶段：把已批准的需求与设计拆成任务，写入 docs/tasks.md。
+description: 任务规划：把已批准的需求与设计拆成任务，写入 docs/tasks.md。
 check: harness check task
 ---
 
@@ -10,7 +10,7 @@ check: harness check task
 
 ## 需求或设计不清时
 
-需求或设计不清时登记待澄清项并停止规划：在 PRD 中新增 `Status: Open` 的 OQ，用 `Relates` 写明关联的需求，告诉人需要回到需求或架构阶段澄清。不要为不清楚的需求生成任务，也不要自行假设答案。
+需求或设计不清时登记待澄清项并停止规划：在 PRD 中新增 `Status: Open` 的 OQ，用 `Relates` 写明关联的需求，告诉人需要先澄清需求或修改设计，并重新批准。不要为不清楚的需求生成任务，也不要自行假设答案。
 
 ## 任务格式
 

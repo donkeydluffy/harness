@@ -615,7 +615,7 @@ skill 与产物骨架中的示例编号改为 `MOD-n`、`IF-n`、`T-n` 这类占
 arch.01、trace.02、trace.03 不检查 Removed 的设计元素与 Superseded 的 ADR 自身，task.03 把 Removed 模块的 Paths 计入归属，task.03、task.05 不检查 Done 的任务；doc.04 在 ADR 与 Done 的任务中只检查编号存在；内置规则的 Covers 去掉已被取代的验收标准。
 
 ### T-063 skill 模板去掉阶段说明
-- Status: Todo
+- Status: Done
 - Covers: FR-048
 - Design: MOD-13
 - Scope: internal/scaffold/templates/**

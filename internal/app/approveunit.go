@@ -15,8 +15,9 @@ import (
 // ErrNothingPending 表示范围内没有待批准的单位（AC-047-2/B1）。
 var ErrNothingPending = errors.New("没有待批准的内容")
 
-// downstreamRules 要求下游已覆盖上游，批准单位时不运行（AC-047-2）。
-var downstreamRules = []string{"trace.01", "task.02"}
+// downstreamRules 要求下游已覆盖上游或与上游一致，批准单位时不运行（AC-047-2）：
+// if.03 比对的是代码；task.07 要求任务的批准有效，正是批准任务要解决的问题。
+var downstreamRules = []string{"trace.01", "task.02", "if.03", "task.07"}
 
 // approveUnits 按批准单位批准（锁文件第 2 版，ADR-009）：列出 target 范围内待批准的单位与差异，
 // 运行这些单位自身的检查并要求上游已批准，确认后写入批准记录。不修改产物文件。

@@ -10,7 +10,7 @@ type commit03 struct{}
 
 func (commit03) Needs() engine.Input { return engine.InputGit }
 func (commit03) ID() string          { return "commit.03" }
-func (commit03) Covers() []string    { return []string{"AC-013-4"} }
+func (commit03) Covers() []string    { return []string{"AC-013-4", "AC-050-2"} }
 func (commit03) Fix() string {
 	return "把提交拆成几个各自独立的小提交（如接口、实现、测试分开）"
 }
@@ -23,6 +23,9 @@ func (commit03) Check(s *workspace.Snapshot) []engine.Violation {
 	limit := s.Config.CommitMaxLines
 	var out []engine.Violation
 	for _, cs := range sets {
+		if mechanical(changeTask(s, cs)) {
+			continue // 机械改动任务免于行数限制，由 commit.05 逐行校验（AC-050-2）
+		}
 		n := 0
 		for _, f := range cs.Files {
 			if !exemptFile(f.Path) {

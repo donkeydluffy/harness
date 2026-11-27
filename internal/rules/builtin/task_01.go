@@ -32,7 +32,7 @@ func (task01) Check(s *workspace.Snapshot) []engine.Violation {
 			out = append(out, at(t, "%s 的 Status 取值 %q 不合法，合法取值：Todo、InProgress、Done、Blocked", t.ID, st))
 		}
 		for _, f := range []string{"Covers", "Design", "Scope"} {
-			if len(t.List(f)) == 0 {
+			if len(t.List(f)) == 0 && !(f == "Design" && mechanical(t)) { // 机械改动任务的 Design 可为空（AC-050-1）
 				out = append(out, at(t, "%s 缺少 %s", t.ID, f))
 			}
 		}

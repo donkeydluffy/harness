@@ -710,3 +710,52 @@ func ownDiags(s *workspace.Snapshot, id string) []engine.Violation {
 	}
 	return out
 }
+
+// mechanical 判断任务是否为机械改动任务（AC-050-1）。
+func mechanical(t *model.Entity) bool {
+	return t != nil && strings.TrimSpace(t.Fields["Kind"]) == "mechanical"
+}
+
+// rewrite 是机械改动任务声明的一条路径前缀替换。
+type rewrite struct{ from, to string }
+
+// rewrites 解析 Rewrite 字段（逗号分隔的 `<旧前缀> -> <新前缀>`），bad 为格式不对的项。
+func rewrites(t *model.Entity) (out []rewrite, bad []string) {
+	for _, item := range t.List("Rewrite") {
+		from, to, ok := strings.Cut(item, "->")
+		from, to = strings.TrimSpace(from), strings.TrimSpace(to)
+		if !ok || from == "" || to == "" || from == to {
+			bad = append(bad, item)
+			continue
+		}
+		out = append(out, rewrite{from, to})
+	}
+	return out, bad
+}
+
+// applyRewrite 把路径中第一条匹配的旧前缀（按路径段对齐）替换为新前缀；没有匹配时原样返回。
+func applyRewrite(rs []rewrite, p string) string {
+	for _, r := range rs {
+		if p == r.from || strings.HasPrefix(p, r.from+"/") {
+			return r.to + p[len(r.from):]
+		}
+	}
+	return p
+}
+
+// changeTask 返回改动所属的任务：有提交信息时取 Task 尾注，否则（暂存区）取唯一的 InProgress 任务。
+func changeTask(s *workspace.Snapshot, cs changeSet) *model.Entity {
+	if cs.Commit != nil {
+		return commitTask(s, cs)
+	}
+	var cur *model.Entity
+	for _, t := range tasks(s) {
+		if t.Fields["Status"] == "InProgress" {
+			if cur != nil {
+				return nil
+			}
+			cur = t
+		}
+	}
+	return cur
+}

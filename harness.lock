@@ -2906,10 +2906,10 @@
       }
     },
     "T-051": {
-      "at": "2026-11-27T05:20:38Z",
+      "at": "2026-11-27T08:13:24Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:7c5ac5d842020dbb786274f3777aba8a5ed87f7c306216f8e24d73fdc75cd9f8",
-      "text": "### T-051 机械改动任务\n- Covers: FR-050\n- Design: IF-035, IF-014, FLOW-09\n- Flow: FLOW-09\n- Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-050, T-059\n\n`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。",
+      "hash": "sha256:206b63491a0210b06b9c354d55d044a7cc72e913ae0ca60a25133d4a8a324045",
+      "text": "### T-051 机械改动任务\n- Covers: FR-050\n- Design: IF-035, IF-014, FLOW-09\n- Flow: FLOW-09\n- Scope: internal/lang/**, internal/rules/builtin/task_01.go, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-050, T-059\n\n`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。",
       "upstream": {
         "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
         "FR-050": "sha256:816ac65f0cc05099c0ea0f75ae029ef40ac4ad4b821812fa2fd60df7668f566c",

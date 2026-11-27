@@ -41,6 +41,9 @@ func TestRulesSamples_IF_014(t *testing.T) {
 			if err != nil {
 				t.Fatalf("%s: %v", d, err)
 			}
+			if b, err := os.ReadFile(filepath.Join(d, "commands")); err == nil {
+				s.Commands = strings.Fields(string(b)) // cli 的子命令名（doc.03）
+			}
 			name := filepath.Base(d)
 			samples = append(samples, engine.Sample{Name: name, Snapshot: s, WantViolation: !strings.HasPrefix(name, "ok")})
 		}

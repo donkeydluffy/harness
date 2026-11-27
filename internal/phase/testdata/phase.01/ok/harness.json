@@ -1,1 +1,0 @@
-{"phases": [{"name": "release", "after": "implementation", "entry": [], "exit": ["prd.*"], "writable": ["docs/release/**"], "skill": "release"}]}

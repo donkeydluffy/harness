@@ -20,5 +20,5 @@ func Release(v string) bool
 
 ## 内部设计
 
-- 叶子模块，只用 `runtime/debug.ReadBuildInfo`。发布配置（`.goreleaser.yaml`，MOD-01）注入 `internal/version.injected`。
+- 叶子模块，只用 `runtime/debug.ReadBuildInfo`。发布配置（`.goreleaser.yaml`，MOD-01）注入 `internal/version` 包的变量 `injected`。
 - `go install module@v0.2.0` 构建的二进制，模块版本为 `v0.2.0`，输出去掉前缀 `v`。

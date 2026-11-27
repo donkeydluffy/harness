@@ -7,9 +7,9 @@
 | 框架 | 产物 | ID / 变更 | 确定性校验 | 任务→需求 |
 |---|---|---|---|---|
 | GitHub spec-kit v1.4.4 | `specs/###-feature/{spec,plan,research,data-model,tasks}.md`、`contracts/`、`memory/constitution.md` | `FR-001`、`SC-001`、`US1`、`T001`；`/clarify` 结果追加到 spec 的 Clarifications 段，无增删改 delta | 只有脚手架脚本；`/analyze` 覆盖率表由 LLM 推断 | 只标 `[US1]`，不标 FR |
-| AWS Kiro | `requirements.md`（EARS）、`design.md`、`tasks.md`、`.kiro/steering/`、`.kiro/hooks/` | 直接改文件，无 delta/归档 | hooks 可跑 shell；Analyze 靠 LLM | 未验证 |
+| AWS Kiro | requirements.md（EARS）、design.md、`tasks.md`、`.kiro/steering/`、`.kiro/hooks/` | 直接改文件，无 delta/归档 | hooks 可跑 shell；Analyze 靠 LLM | 未验证 |
 | OpenSpec v2.2.0 | `openspec/specs/<cap>/spec.md` + `openspec/changes/<id>/{proposal,design,tasks}.md` + delta，归档到 `changes/archive/` | 需求无数字 ID，按标题定位；`ADDED/MODIFIED/REMOVED/RENAMED` delta | `openspec validate --strict` 是真校验器（SHALL/MUST、Scenario、delta 合法性） | 任务不引用需求 |
-| BMAD v6/v7 | PRD/SRS、initiative/epic/story、架构决策 `AD-n` | `FR-3`、`CAP-4`；有 withdrawn 状态 | `check_ids.py`（悬空/重复/撤回仍引用）、`lint_spine.py`（ADR 字段），但退出码恒 0，交给 LLM 决定 | 部分 |
+| BMAD v6/v7 | PRD/SRS、initiative/epic/story、架构决策 `AD-n` | `FR-<n>`、`CAP-<n>`；有 withdrawn 状态 | check_ids.py（悬空/重复/撤回仍引用）、lint_spine.py（ADR 字段），但退出码恒 0，交给 LLM 决定 | 部分 |
 | Agent OS v3 / Tessl | standards 注入 / spec registry | — | 未见校验器 | — |
 
 来源：github.com/github/spec-kit、kiro.dev/docs/specs、github.com/Fission-AI/OpenSpec、github.com/bmad-code-org/BMAD-METHOD、github.com/buildermethods/agent-os、tessl.io。

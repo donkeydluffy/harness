@@ -6,7 +6,7 @@
 
 ### IF-007 Repo
 - Module: MOD-07
-- Covers: FR-010, FR-013, FR-034
+- Covers: FR-010, FR-013, FR-030, FR-034
 
 ```go
 // IF-007
@@ -17,6 +17,7 @@ type Repo interface {
 	Staged() ([]FileChange, error)                    // pre-commit 使用
 	FileAt(rev, path string) ([]byte, error)
 	CommitsTouching(paths []string, since string) (int, error)
+	LastCommit(paths []string) (string, error)        // 最后一次改动 paths 的提交；没有时为空串（AC-030-4）
 }
 type Commit struct{ Hash, Message string; Trailers map[string][]string }
 type FileChange struct{ Path string; Added, Deleted int; Status string }

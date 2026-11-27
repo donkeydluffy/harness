@@ -22,7 +22,13 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	harnessBin = filepath.Join(dir, "harness")
-	if out, err := exec.Command("go", "build", "-o", harnessBin, "github.com/donkeydluffy/harness/cmd/harness").CombinedOutput(); err != nil {
+	args := []string{"build", "-o", harnessBin}
+	if d := os.Getenv("HARNESS_COVERDIR"); d != "" {
+		// harness check unit 采集覆盖率：子进程的覆盖率写入该目录，计入模块覆盖率（ADR-014）
+		args = append(args, "-cover", "-coverpkg=github.com/donkeydluffy/harness/...")
+		os.Setenv("GOCOVERDIR", d)
+	}
+	if out, err := exec.Command("go", append(args, "github.com/donkeydluffy/harness/cmd/harness")...).CombinedOutput(); err != nil {
 		fmt.Fprintf(os.Stderr, "构建 harness 失败：%v\n%s", err, out)
 		os.Exit(2)
 	}

@@ -107,23 +107,40 @@ func TestCoverage_IF_035(t *testing.T) {
 		"go.mod":      "module example.com/m\n\ngo 1.21\n",
 		"a/a.go":      "package a\n\nfunc A(x int) int {\n\tif x > 0 {\n\t\treturn 1\n\t}\n\treturn 0\n}\n\nfunc B() {}\n",
 		"a/a_test.go": "package a\n\nimport \"testing\"\n\nfunc TestA_IF_001(t *testing.T) { A(1); B() }\n\nfunc TestA_AC_001_1_N1(t *testing.T) { A(0) }\n",
+		// 集成测试以 -cover 构建并运行 main：main 只在子进程中执行
+		"c/main.go": "package main\n\nfunc main() {\n\tprintln(\"c\")\n}\n",
+		"c/main_test.go": "package main\n\nimport (\n\t\"os\"\n\t\"os/exec\"\n\t\"path/filepath\"\n\t\"testing\"\n)\n\n" +
+			"func TestRun_AC_001_1_N2(t *testing.T) {\n\tbin := filepath.Join(t.TempDir(), \"c\")\n" +
+			"\tif out, err := exec.Command(\"go\", \"build\", \"-cover\", \"-o\", bin, \".\").CombinedOutput(); err != nil {\n\t\tt.Fatal(err, string(out))\n\t}\n" +
+			"\tcmd := exec.Command(bin)\n\tcmd.Env = append(os.Environ(), \"GOCOVERDIR=\"+os.Getenv(\"HARNESS_COVERDIR\"))\n" +
+			"\tif err := cmd.Run(); err != nil {\n\t\tt.Fatal(err)\n\t}\n}\n",
 	}
 	for p, c := range files {
 		os.MkdirAll(filepath.Join(dir, filepath.Dir(p)), 0o755)
 		os.WriteFile(filepath.Join(dir, p), []byte(c), 0o644)
 	}
 	passed, tests, executed, statements, err := Lang{}.Coverage(dir, "")
-	if err != nil || !passed || !reflect.DeepEqual(tests, []string{"TestA_IF_001"}) {
-		t.Fatalf("应只运行单元测试：%v %v %v", passed, tests, err)
+	if err != nil || !passed || !reflect.DeepEqual(tests, []string{"TestA_AC_001_1_N1", "TestA_IF_001", "TestRun_AC_001_1_N2"}) {
+		t.Fatalf("应运行全部测试：%v %v %v", passed, tests, err)
 	}
 	// 空函数体 B 是语句数为 0 的块：执行过，但不算含语句的行
-	if got := executed["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 6, 10}) {
+	if got := executed["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 7, 10}) {
 		t.Fatalf("已执行的行：%v", executed)
 	}
-	if got := statements["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 6, 7}) {
+	if got := statements["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 7}) {
 		t.Fatalf("含语句的行：%v", statements)
+	}
+	if got := executed["c/main.go"]; !reflect.DeepEqual(got, []int{4}) {
+		t.Fatalf("子进程执行的行应合并进结果：%v", executed)
 	}
 	if _, tests, _, _, _ := (Lang{}).Coverage(dir, "TestA_AC"); !reflect.DeepEqual(tests, []string{"TestA_AC_001_1_N1"}) {
 		t.Fatalf("pattern：%v", tests)
+	}
+	// 没有包声明匹配的测试时不运行 go test
+	if passed, tests, executed, _, err := (Lang{}).Coverage(dir, "IF_999"); passed || tests != nil || len(executed) != 0 || err != nil {
+		t.Fatalf("没有匹配的测试：%v %v %v %v", passed, tests, executed, err)
+	}
+	if got := testPackages(dir, "TestA_IF"); !reflect.DeepEqual(got, []string{"./a"}) {
+		t.Fatalf("匹配的包：%v", got)
 	}
 }

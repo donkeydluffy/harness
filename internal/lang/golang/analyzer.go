@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/scanner"
 	"go/token"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path"
@@ -209,7 +211,9 @@ func (l Lang) Resolve(root, importPath string) (string, bool) {
 }
 
 // Coverage 运行 go test -coverprofile -coverpkg=./...，返回是否全部通过、运行过的测试名、已执行的行与含语句的行。
-// pattern 为空时运行全部单元测试：名称含 _AC_ 的集成测试被跳过。
+// pattern 不为空时只运行声明了匹配测试的包。pattern 为空时运行全部测试（含集成测试），并设置环境变量 HARNESS_COVERDIR：
+// 测试以 go build -cover 构建子进程、并把子进程的 GOCOVERDIR 设为该目录时，子进程的覆盖率合并进结果（ADR-014）。
+// go test -cover 会改写测试进程的 GOCOVERDIR，且不合并子进程的数据，所以另用一个变量传递目录。
 func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, map[string][]int, error) {
 	prof, err := os.CreateTemp("", "harness-cover-*.out")
 	if err != nil {
@@ -218,13 +222,23 @@ func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, 
 	prof.Close()
 	defer os.Remove(prof.Name())
 	args := []string{"test", "-count=1", "-json", "-coverprofile=" + prof.Name(), "-coverpkg=./..."}
+	pkgs := []string{"./..."}
 	if pattern != "" {
 		args = append(args, "-run", pattern)
-	} else {
-		args = append(args, "-skip", "_AC_")
+		if pkgs = testPackages(root, pattern); len(pkgs) == 0 {
+			return false, nil, map[string][]int{}, map[string][]int{}, nil
+		}
 	}
-	cmd := exec.Command("go", append(args, "./...")...)
+	cmd := exec.Command("go", append(args, pkgs...)...)
 	cmd.Dir = root
+	var covdir string
+	if pattern == "" {
+		if covdir, err = os.MkdirTemp("", "harness-covdata-"); err != nil {
+			return false, nil, nil, nil, err
+		}
+		defer os.RemoveAll(covdir)
+		cmd.Env = append(os.Environ(), "HARNESS_COVERDIR="+covdir)
+	}
 	out, runErr := cmd.Output()
 	if _, ok := runErr.(*exec.ExitError); runErr != nil && !ok {
 		return false, nil, nil, nil, runErr
@@ -244,6 +258,13 @@ func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, 
 	profile, err := os.ReadFile(prof.Name())
 	if err != nil {
 		return false, tests, nil, nil, err
+	}
+	if covdir != "" {
+		sub, err := subprocessProfile(root, covdir)
+		if err != nil {
+			return false, tests, nil, nil, err
+		}
+		profile = append(append(profile, '\n'), sub...)
 	}
 	executed, statements := l.lines(root, profile)
 	return runErr == nil, tests, executed, statements, nil
@@ -269,7 +290,11 @@ func (l Lang) lines(root string, profile []byte) (map[string][]int, map[string][
 		ranges := strings.SplitN(f[0], ",", 2)
 		a, _ = strconv.Atoi(strings.SplitN(ranges[0], ".", 2)[0])
 		if len(ranges) == 2 {
-			b, _ = strconv.Atoi(strings.SplitN(ranges[1], ".", 2)[0])
+			end := strings.SplitN(ranges[1], ".", 2)
+			b, _ = strconv.Atoi(end[0])
+			if len(end) == 2 && end[1] == "1" && b > a {
+				b-- // 块在该行第 1 列之前结束（如右括号所在行），该行不属于块
+			}
 		}
 		mark(hit, file, a, b, f[2] != "0")
 		mark(stmt, file, a, b, f[1] != "0")
@@ -298,4 +323,61 @@ func sorted(m map[string]map[int]bool) map[string][]int {
 		sort.Ints(out[file])
 	}
 	return out
+}
+
+// testPackages 返回声明了名称匹配 pattern 的测试的包（"./" 开头的相对目录，升序），只运行这些包以缩短耗时。
+// pattern 不是合法正则时返回 ./...，交给 go test 报错。
+func testPackages(root, pattern string) []string {
+	re, err := regexp.Compile(pattern)
+	if err != nil {
+		return []string{"./..."}
+	}
+	dirs := map[string]bool{}
+	filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return nil
+		}
+		name := d.Name()
+		if d.IsDir() {
+			if p != root && (strings.HasPrefix(name, ".") || strings.HasPrefix(name, "_") || name == "testdata" || name == "vendor") {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if !strings.HasSuffix(name, "_test.go") {
+			return nil
+		}
+		src, err := os.ReadFile(p)
+		if err != nil {
+			return nil
+		}
+		for _, t := range (Lang{}).TestNames(src) {
+			if re.MatchString(t) {
+				rel, _ := filepath.Rel(root, filepath.Dir(p))
+				dirs["./"+filepath.ToSlash(rel)] = true
+				break
+			}
+		}
+		return nil
+	})
+	out := make([]string, 0, len(dirs))
+	for d := range dirs {
+		out = append(out, d)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// subprocessProfile 把 HARNESS_COVERDIR 中子进程写入的覆盖率数据转换为覆盖率文件格式；目录为空时返回 nil。
+func subprocessProfile(root, covdir string) ([]byte, error) {
+	if entries, _ := os.ReadDir(covdir); len(entries) == 0 {
+		return nil, nil
+	}
+	out := filepath.Join(covdir, "profile.txt")
+	cmd := exec.Command("go", "tool", "covdata", "textfmt", "-i="+covdir, "-o="+out)
+	cmd.Dir = root
+	if b, err := cmd.CombinedOutput(); err != nil {
+		return nil, fmt.Errorf("go tool covdata textfmt：%v：%s", err, b)
+	}
+	return os.ReadFile(out)
 }

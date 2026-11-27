@@ -606,7 +606,7 @@ skill 与产物骨架中的示例编号改为 `MOD-n`、`IF-n`、`T-n` 这类占
 锁文件结构去掉 phase 字段（读到时忽略，`harness lock` 写出后消失），新建的锁文件为第 2 版，不再写出 Release 1 的按文件批准记录。
 
 ### T-062 Removed 的设计元素与历史记录
-- Status: InProgress
+- Status: Done
 - Covers: AC-007-5, AC-030-3
 - Design: MOD-05, FLOW-01
 - Flow: FLOW-01

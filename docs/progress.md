@@ -288,3 +288,7 @@
 ### 2026-11-27 T-053
 - 结论：规则 supp.01 在语言配置包提取的注释中识别 eslint-disable、@ts-ignore、@ts-expect-error、noqa、type: ignore、pylint: disable、nolint、NOLINT，在去掉字符串字面量（双引号、单引号、反引号）与行尾注释后的代码行中识别 Java 的 @SuppressWarnings 注解；同一行须引用 Open 的 DEBT，引用已关闭的技术债时报告其状态。
 - 遗留：只认同一行的引用；多行块注释中抑制标记与引用不在同一行时仍报告。
+
+### 2026-11-27 T-062
+- 结论：Removed 的设计元素与 Superseded 的 ADR 不再检查自身的必填字段、孤儿与引用，仍有效的元素引用它们时照常报告；Removed 模块的 Paths 仍计入任务范围的归属，task.03、task.05 不检查 Done 的任务；doc.04 在 ADR 与 Done 的任务一节中只报告不存在的编号（AC-007-5、AC-030-3，CHG-027）。规则 Covers 去掉已被取代的 AC-011-3、AC-011-6、AC-013-4、AC-037-3、AC-038-1 ~ AC-038-3。
+- 遗留：阶段删除拆为两步：本次先让规则能处理历史记录；设计中阶段模块改为 Removed、Current-Release 改为 2 随 T-054、T-055 一起提交，需人批准。

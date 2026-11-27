@@ -503,7 +503,7 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 规则 deps.01 ~ deps.04：跨模块 import 须在 Depends 中且指向 Public，sourcePaths 内的源文件须有归属，Depends 中的模块须被使用。
 
 ### T-051 机械改动任务
-- Status: InProgress
+- Status: Done
 - Covers: FR-050
 - Design: IF-035, IF-014, FLOW-09
 - Flow: FLOW-09

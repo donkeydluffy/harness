@@ -272,3 +272,7 @@
 ### 2026-11-27 T-059
 - 结论：批准前检查不再运行 if.03（设计签名与代码一致）与 task.07（任务批准有效），两者只由全量检查要求；设计签名先于代码修改的接口、批准失效的 InProgress 任务都能直接批准。DEBT-017 已解决。
 - 遗留：DEBT-018（已存在的钩子无法随 harness 升级更新）、DEBT-019（门禁把含 docs/PRD.md 的子目录当作项目根）、DEBT-020（清除"未完成"段时连带删掉其后的进度记录）。
+
+### 2026-11-27 T-051
+- 结论：任务可声明 `Kind: mechanical`、`Rewrite: <旧前缀> -> <新前缀>` 并在 Relates 中引用 ADR（task.09），此时 Design 可为空，task.03、task.05、commit.03 不再约束它；commit.05 经 Analyzer 识别 import 行与 go.mod 的 module 行，其余行须逐行不变，这些行按 Rewrite 替换后须与改动后一一对应（顺序可变），新增、删除文件失败，产物与生成文件豁免。暂存区没有提交信息时，按唯一的 InProgress 任务判断是否为机械改动。
+- 遗留：import 识别只支持 Go（FR-014 的其他语言在 Release 3）；go.mod 中 require、replace 行里的旧模块路径不在允许改动之列。

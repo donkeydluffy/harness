@@ -52,15 +52,6 @@ func Lint(s *workspace.Snapshot) (*testreport.LintReport, error) {
 	return rep, rep.Write(filepath.Join(s.Root, testreport.LintFile))
 }
 
-// Unit 写入单元测试报告（IF-031）。Release 2 的覆盖率采集由 T-049 接入 Go；在此之前全部语言记为 Skipped。
-//
-// harness:IF-031
-func Unit(s *workspace.Snapshot) (*testreport.UnitReport, error) {
-	rep := &testreport.UnitReport{SourceHash: s.SourceHash(), Interfaces: map[string]testreport.IFCoverage{},
-		Modules: map[string]float64{}, Skipped: append([]string{}, s.Config.Languages...)}
-	return rep, rep.Write(filepath.Join(s.Root, testreport.UnitFile))
-}
-
 // Smoke 运行项目配置的冒烟测试命令，返回退出码与输出的最后 50 行（AC-055-2）。没有声明命令时返回错误。
 //
 // harness:IF-032

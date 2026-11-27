@@ -32,6 +32,8 @@ type Snapshot struct {
 	Reports     []string               // 读到的测试报告文件；为空表示没有报告
 	Lint        *testreport.LintReport // LoadOptions.WithTests 时读取 lint 报告；不存在时为 nil
 	LintErr     error                  // lint 报告无法读取或解析
+	Unit        *testreport.UnitReport // LoadOptions.WithTests 时读取 unit 报告；不存在时为 nil
+	UnitErr     error                  // unit 报告无法读取或解析
 	Diags       []model.Diagnostic
 }
 
@@ -81,6 +83,7 @@ func Load(root string, opt LoadOptions) (*Snapshot, error) {
 			return nil, err
 		}
 		s.Lint, s.LintErr = testreport.ReadLint(filepath.Join(root, testreport.LintFile))
+		s.Unit, s.UnitErr = testreport.ReadUnit(filepath.Join(root, testreport.UnitFile))
 	}
 	var docs []*model.Doc
 	for _, rel := range artifactFiles(root) {

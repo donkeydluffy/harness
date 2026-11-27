@@ -2,7 +2,10 @@ package toolrun
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
+	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -48,14 +51,49 @@ func TestLint_IF_030(t *testing.T) {
 	}
 }
 
+const (
+	unitOverview = "# 架构总览\n\n### MOD-01 a\n- Status: Active\n- Paths: internal/a/**\n- Public: internal/a/a.go\n- Depends:\n- Interfaces: IF-001, IF-002\n- Covers: FR-001\n- Core: false\n- Coverage: 60\n"
+	unitModules  = "# 模块详细设计\n\n### IF-001 A\n- Module: MOD-01\n- Covers: FR-001\n\n### IF-002 B\n- Module: MOD-01\n- Covers: FR-001\n"
+	unitGo       = "package a\n\n// harness:IF-001\nfunc A(x int) int {\n\tif x > 0 {\n\t\treturn 1\n\t}\n\treturn 0\n}\n\n// harness:IF-002\nfunc B() int {\n\treturn 2\n}\n"
+	// TestB_IF_002 只调用了 A：IF-002 的入口行（第 13 行）未执行
+	unitTest = "package a\n\nimport \"testing\"\n\nfunc TestA_IF_001(t *testing.T) { A(1) }\n\nfunc TestB_IF_002(t *testing.T) { A(0) }\n"
+)
+
 func TestUnit_IF_031(t *testing.T) {
-	s := snapshot(t, map[string]string{"harness.json": `{"languages": ["go"]}`, "a.go": "package a\n"})
-	rep, err := Unit(s)
-	if err != nil || strings.Join(rep.Skipped, ",") != "go" || rep.SourceHash != s.SourceHash() {
-		t.Fatalf("Release 2 尚未接入覆盖率，全部语言记为 Skipped：%v %+v", err, rep)
+	if _, err := exec.LookPath("go"); err != nil {
+		t.Skip("没有 go")
 	}
-	if r, _ := testreport.ReadUnit(filepath.Join(s.Root, testreport.UnitFile)); r == nil {
+	s := snapshot(t, map[string]string{
+		"harness.json": `{"languages": ["go", "python"], "sourcePaths": ["internal/**"]}`, "go.mod": "module demo\n\ngo 1.21\n",
+		"docs/architecture/overview.md": unitOverview, "docs/architecture/modules/a.md": unitModules,
+		"internal/a/a.go": unitGo, "internal/a/a_test.go": unitTest, "internal/b/b.py": "x = 1\n",
+	})
+	rep, err := Unit(s)
+	if err != nil || rep.SourceHash != s.SourceHash() || strings.Join(rep.Skipped, ",") != "python" {
+		t.Fatalf("没有 Analyzer 的语言记为 Skipped：%v %+v", err, rep)
+	}
+	want := map[string]testreport.IFCoverage{
+		"IF-001": {Tests: []string{"TestA_IF_001"}, Passed: true, EntryHit: true},
+		"IF-002": {Tests: []string{"TestB_IF_002"}, Passed: true, EntryHit: false},
+	}
+	if !reflect.DeepEqual(rep.Interfaces, want) {
+		t.Fatalf("接口：%+v", rep.Interfaces)
+	}
+	// 含语句的行 5、6、8、13，全量运行执行了前 3 行
+	if got := rep.Modules["MOD-01"]; got != 75 {
+		t.Fatalf("模块覆盖率：%v", rep.Modules)
+	}
+	if r, _ := testreport.ReadUnit(filepath.Join(s.Root, testreport.UnitFile)); r == nil || !reflect.DeepEqual(r.Interfaces, want) {
 		t.Fatal("应写入 unit 报告")
+	}
+}
+
+func TestTestPattern(t *testing.T) {
+	re := regexp.MustCompile(testPattern("IF-002"))
+	for name, want := range map[string]bool{"TestSave_IF_002": true, "TestSave_IF_002_Empty": true, "TestSave_IF_0021": false, "TestSave_IF_001": false} {
+		if re.MatchString(name) != want {
+			t.Errorf("%s 应为 %v", name, want)
+		}
 	}
 }
 

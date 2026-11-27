@@ -654,7 +654,7 @@ trace.03 检查 ADR 的 Relates 时只要求编号存在，不再报告 Removed�
 去掉代码与测试中阶段的残留：注释中关于阶段的说法（覆盖类规则改为说明由 CI 中的全量检查保证）；"新增流程阶段"这一已被取代的扩展场景的测试；确定性测试中的 `harness phase list`；harness.json 中未使用的 `phases` 字段（存在时仍被忽略）。AC-048-1 要求的 `harness phase` 提示与锁文件中旧 `phase` 字段的处理及其测试保留。
 
 ### T-067 门禁去掉 harness phase next 的拦截
-- Status: Todo
+- Status: Done
 - Covers: FR-048
 - Design: MOD-11, IF-017, FLOW-02
 - Flow: FLOW-02

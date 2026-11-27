@@ -233,5 +233,5 @@ func TestGate_AC_037_2_E1(t *testing.T) {
 func TestGate_AC_037_2_E2(t *testing.T) {
 	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("cd . && harness approve prd")), "gate.protect")
-	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("go run ./cmd/harness phase next")), "gate.protect")
+	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("go run ./cmd/harness approve prd")), "gate.protect")
 }

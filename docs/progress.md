@@ -320,3 +320,7 @@
 ### 2026-11-27 T-066
 - 结论：去掉代码与测试中阶段的残留：app、lock、engine、builtin 中关于阶段的注释（覆盖类规则改为说明由 CI 中的全量检查保证）；"新增流程阶段"扩展场景的示例与两个测试；确定性测试中的 `harness phase list`；workspace 配置中未使用的 `phases` 字段（harness.json 中存在时仍被忽略）。AC-048-1 要求的 `harness phase` 提示与锁文件旧 `phase` 字段的处理及其测试保留。
 - 遗留：门禁对 `harness phase next` 的拦截由 T-067 删除。
+
+### 2026-11-27 T-067
+- 结论：门禁只拦截 harness approve，去掉对已不存在的 `harness phase next` 的拦截；测试中 `go run ./cmd/harness` 形式改用 approve 验证。
+- 遗留：无。

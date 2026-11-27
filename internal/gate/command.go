@@ -9,7 +9,7 @@ import (
 	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
-// decideCommand 解析 Bash 命令（ADR-003）：拒绝 harness approve / phase next，
+// decideCommand 解析 Bash 命令（ADR-003）：拒绝 harness approve，
 // 对能静态判定的写入目标逐个按写入判定。无法静态判定的命令放行，由命令后比对（IF-018）兜底。
 func decideCommand(s *workspace.Snapshot, cmd, dir string) Decision {
 	if id, desc := findSecret(cmd); id != "" {
@@ -64,7 +64,7 @@ func decideCommand(s *workspace.Snapshot, cmd, dir string) Decision {
 				return true
 			}
 			if humanOnly(args) {
-				d = deny("gate.protect", "harness approve 与 harness phase next 只能由人在终端执行")
+				d = deny("gate.protect", "harness approve 只能由人在终端执行")
 				return false
 			}
 			if what, ok := recursiveRemoveOutside(s.Root, wd, n); ok {
@@ -180,13 +180,13 @@ func words(ws []*syntax.Word) []string {
 	return out
 }
 
-// humanOnly 判断命令是否调用 harness approve 或 harness phase next（含 go run ./cmd/harness 形式）。
+// humanOnly 判断命令是否调用 harness approve（含 go run ./cmd/harness 形式）。
 func humanOnly(args []string) bool {
 	for i, a := range args {
 		if filepath.Base(a) != "harness" || i+1 >= len(args) {
 			continue
 		}
-		if args[i+1] == "approve" || (args[i+1] == "phase" && i+2 < len(args) && args[i+2] == "next") {
+		if args[i+1] == "approve" {
 			return true
 		}
 	}

@@ -106,10 +106,10 @@ func TestCheck_AC_011_3_N1(t *testing.T) {
 }
 
 func TestCheck_AC_011_3_E1(t *testing.T) {
-	t1 := task("T-001", "Done", "FR-001", "MOD-01", "internal/api/**, internal/gate/x.go", "", "")
+	t1 := task("T-001", "Todo", "FR-001", "MOD-01", "internal/api/**, internal/gate/x.go", "", "")
 	wantViolation(t, checkTasks(t, basePRD, taskDoc(t1, t002)), "task.03", "T-001", "internal/gate/x.go")
 	// 路径属于存在但未关联的模块 MOD-02，同样失败。
-	t1 = task("T-001", "Done", "FR-001", "MOD-01", "internal/api/**, internal/store/x.go", "", "")
+	t1 = task("T-001", "Todo", "FR-001", "MOD-01", "internal/api/**, internal/store/x.go", "", "")
 	wantViolation(t, checkTasks(t, basePRD, taskDoc(t1, t002)), "task.03", "T-001", "internal/store/x.go")
 }
 

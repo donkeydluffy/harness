@@ -51,7 +51,7 @@ func TestCheck_AC_050_2_N1(t *testing.T) {
 }
 
 func TestCheck_AC_050_2_E1(t *testing.T) {
-	t1 := task("T-001", "Done", "FR-001", "MOD-01", "internal/api/**, internal/gate/x.go", "", "")
+	t1 := task("T-001", "Todo", "FR-001", "MOD-01", "internal/api/**, internal/gate/x.go", "", "")
 	wantViolation(t, checkTasks(t, basePRD, taskDoc(t1, t002)), "task.03", "T-001", "internal/gate/x.go")
 }
 

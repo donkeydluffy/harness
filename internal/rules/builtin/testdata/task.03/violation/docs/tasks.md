@@ -1,7 +1,7 @@
 # 任务列表
 
 ### T-001 任务
-- Status: Done
+- Status: Todo
 - Covers: AC-001-1
 - Design: MOD-01
 - Scope: internal/gate/x.go

@@ -44,7 +44,7 @@ PostToolUse 写入产物文件后，gate 按文件类型选择规则前缀（如
 
 ### FLOW-07 初始化
 - Covers: FR-001, FR-013, FR-014, FR-016, FR-043, FR-051
-- Steps: MOD-01 -> IF-037, MOD-01 -> IF-026, MOD-02 -> IF-020, MOD-13 -> IF-004, MOD-13 -> IF-034, MOD-13 -> IF-019, MOD-13 -> IF-015, MOD-13 -> IF-037
+- Steps: MOD-01 -> IF-037, MOD-01 -> IF-026, MOD-02 -> IF-020, MOD-13 -> IF-004, MOD-13 -> IF-034, MOD-13 -> IF-019, MOD-13 -> IF-037
 
 cli 取当前版本放入 InitOptions；scaffold 按语言配置包生成配置与缺失的工具配置文件，CI 固定版本不是发布版本号时拒绝。
 
@@ -74,6 +74,6 @@ Release 2：锁文件为 Release 1 格式时经 IF-029 Migrate 迁移为按单�
 
 ### FLOW-12 接口快照
 - Covers: FR-052
-- Steps: MOD-01 -> IF-039, MOD-02 -> IF-009, MOD-02 -> IF-035
+- Steps: MOD-01 -> IF-039, MOD-02 -> IF-009, MOD-09 -> IF-035
 
-`harness snapshot`：app 对 sourcePaths 内的 Go 文件提取锚点声明，按接口编号排序写入 `docs/architecture/interfaces.txt`。
+`harness snapshot`：app 经 workspace 对 sourcePaths 内的 Go 文件提取锚点声明，按接口编号排序写入 `docs/architecture/interfaces.txt`。

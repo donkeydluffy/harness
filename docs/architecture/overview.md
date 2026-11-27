@@ -37,7 +37,7 @@ L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MO
 - Status: Active
 - Paths: cmd/harness/**, internal/cli/**, go.mod, go.sum, .goreleaser.yaml, .github/workflows/release.yml
 - Public: cmd/harness/main.go
-- Depends: MOD-02, MOD-12, MOD-18
+- Depends: MOD-02, MOD-04, MOD-10, MOD-11, MOD-12, MOD-13, MOD-18
 - Interfaces:
 - Covers: FR-001, FR-007, FR-012, FR-037, FR-048, FR-049, NFR-002
 - Core: false
@@ -49,7 +49,7 @@ L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MO
 - Status: Active
 - Paths: internal/app/**
 - Public: internal/app/app.go
-- Depends: MOD-04, MOD-05, MOD-06, MOD-09, MOD-10, MOD-11, MOD-13, MOD-14, MOD-15, MOD-16, MOD-17
+- Depends: MOD-03, MOD-04, MOD-05, MOD-06, MOD-09, MOD-10, MOD-11, MOD-13, MOD-15, MOD-16, MOD-17
 - Interfaces: IF-022, IF-023, IF-024, IF-025, IF-026, IF-038, IF-039
 - Covers: FR-001, FR-004, FR-007, FR-012, FR-014, FR-017, FR-021, FR-037, FR-047, FR-052, FR-054, FR-055
 - Core: true
@@ -157,7 +157,7 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Status: Active
 - Paths: internal/gate/**
 - Public: internal/gate/gate.go
-- Depends: MOD-04, MOD-09, MOD-10, MOD-15
+- Depends: MOD-03, MOD-04, MOD-09, MOD-10, MOD-15
 - Interfaces: IF-017, IF-018
 - Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048
 - Core: true
@@ -181,7 +181,7 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Status: Active
 - Paths: internal/scaffold/**
 - Public: internal/scaffold/scaffold.go
-- Depends: MOD-09, MOD-10, MOD-12, MOD-14, MOD-18
+- Depends: MOD-04, MOD-09, MOD-12, MOD-14, MOD-18
 - Interfaces: IF-020, IF-021
 - Covers: FR-001, FR-002, FR-013, FR-014, FR-016, FR-041, FR-043, FR-048, FR-051, FR-055
 - Core: false
@@ -229,7 +229,7 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Status: Active
 - Paths: internal/rules/custom/**
 - Public: internal/rules/custom/custom.go
-- Depends: MOD-03, MOD-04, MOD-09
+- Depends: MOD-04, MOD-09
 - Interfaces: IF-036
 - Covers: FR-054
 - Core: false

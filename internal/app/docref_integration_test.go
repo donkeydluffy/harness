@@ -56,6 +56,10 @@ func TestDoc_AC_030_1_B3(t *testing.T) {
 	wantPass(t, checkDocs(t, docRepo(t, map[string]string{"docs/PRD.md": prd, "docs/tasks.md": tasks})))
 }
 
+func TestDoc_AC_030_1_B4_LocalDirs(t *testing.T) {
+	wantPass(t, checkDocs(t, docRepo(t, map[string]string{"README.md": "# demo\n\n钩子在 `.git/hooks/pre-commit`，报告在 `.harness/reports/go.jsonl`。\n"})))
+}
+
 func TestDoc_AC_030_1_B4(t *testing.T) {
 	dir := t.TempDir()
 	if r := runHarness(t, dir, "init", "--lang", "go", "--ci-version", "0.2.0"); r.Code != 0 {

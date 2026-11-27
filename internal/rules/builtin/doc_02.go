@@ -69,8 +69,13 @@ func pathRef(c string) (string, bool) {
 	}
 	p, _, _ := strings.Cut(c, "#")
 	p = strings.TrimSuffix(lineSufRe.ReplaceAllString(p, ""), "/")
-	if p == "" || p == "." || p == ".harness" || strings.HasPrefix(p, ".harness/") {
-		return "", false // .harness 下是 harness 运行时生成的文件
+	for _, local := range []string{".harness", ".git"} {
+		if p == local || strings.HasPrefix(p, local+"/") {
+			return "", false // harness 运行时生成的文件与 git 的本地目录（如钩子）随克隆而异
+		}
+	}
+	if p == "" || p == "." {
+		return "", false
 	}
 	if first, _, ok := strings.Cut(p, "/"); ok {
 		if strings.Contains(first, ".") && !strings.HasPrefix(first, ".") {

@@ -62,3 +62,18 @@ func TestDoc_AC_030_3_B2(t *testing.T) {
 	files["docs/adr/ADR-001.md"] = adrText + "\n接口见 IF-099。\n"
 	wantViolation(t, checkDocs(t, docRepo(t, files)), "doc.04", "IF-099", "不存在")
 }
+
+// adrRemoving 是决定删除扩展点 ext 的 ADR。
+func adrRemoving(ext string) string {
+	return "# ADR-001 删除旧扩展点\n\n- Status: Proposed\n- Relates: FR-001, " + ext +
+		"\n\n## 背景\n\n旧扩展点不再需要。\n\n## 决策\n\n删除它。\n\n## 后果\n\n不再支持。\n"
+}
+
+func TestCheck_AC_007_5_B3(t *testing.T) {
+	files := historyRepo(t)
+	files["docs/architecture/overview.md"] += "\n### EXT-09 旧扩展点\n- Status: Removed\n- Interface: IF-001\n- Paths: internal/old/**\n- Closed: MOD-01\n- Relates: NFR-001\n"
+	files["docs/adr/ADR-001-remove-ext.md"] = adrRemoving("EXT-09")
+	wantPass(t, checkJSON(t, writeTree(t, files), "trace", "adr"))
+	files["docs/adr/ADR-001-remove-ext.md"] = adrRemoving("EXT-99")
+	wantViolation(t, checkJSON(t, writeTree(t, files), "trace"), "trace.03", "ADR-001", "不存在的 EXT-99")
+}

@@ -8,6 +8,7 @@ import (
 )
 
 // trace03：设计元素中的引用必须指向存在且有效的编号；引用 Superseded 的 ADR 时提示改引取代它的 ADR。
+// ADR 记录当时的决定，其引用只要求编号存在（AC-007-5）。
 type trace03 struct{}
 
 func (trace03) ID() string       { return "trace.03" }
@@ -33,6 +34,9 @@ func (trace03) Check(s *workspace.Snapshot) []engine.Violation {
 					continue // 非编号文字由各自的字段规则检查
 				}
 				t := target(s, r)
+				if e.Kind == "ADR" && t != "" {
+					continue
+				}
 				if by := replacedBy(s, r); by != "" && t != "" {
 					out = append(out, at(e, "%s 的 %s 引用了已被 %s 取代的 %s", e.ID, f, by, r))
 					continue

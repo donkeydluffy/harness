@@ -67,6 +67,29 @@ func TestApproved_IF_006(t *testing.T) {
 	if !l.Approved("a", "h2") || l.Approved("a", "h1") || l.Approved("b", "h2") {
 		t.Fatal("approved")
 	}
+	if a := l.LastApproval("a"); a == nil || a.Hash != "h2" {
+		t.Fatalf("最近一次批准：%+v", a)
+	}
+	if l.LastApproval("b") != nil {
+		t.Fatal("没有批准记录时返回 nil")
+	}
+}
+
+// 字段缺失的锁文件读出后各集合不为 nil；路径不可读或不可写时返回错误。
+func TestReadEmptyFields_IF_006(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, File)
+	os.WriteFile(p, []byte(`{"items": null, "legacy": null, "audit": null}`), 0o644)
+	l, err := Read(p)
+	if err != nil || l.Items == nil || l.Legacy == nil || l.Audit == nil {
+		t.Fatalf("%v %+v", err, l)
+	}
+	if _, err := Read(dir); err == nil {
+		t.Fatal("路径是目录时应返回错误")
+	}
+	if err := New().Write(filepath.Join(dir, "missing", File)); err == nil {
+		t.Fatal("目录不存在时写入应返回错误")
+	}
 }
 
 func TestReadMalformed_IF_006(t *testing.T) {

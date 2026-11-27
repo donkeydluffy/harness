@@ -488,7 +488,7 @@ Go Analyzer 的 Imports、Anchors、Resolve；`harness snapshot` 写 `docs/archi
 - Design: IF-031, IF-033, IF-035, IF-014, FLOW-11
 - Flow: FLOW-11
 - Scope: internal/lang/**, internal/toolrun/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/unit_0*.go, internal/rules/builtin/testdata/unit.0*/**, internal/rules/builtin/registry.go
-- Depends: T-048
+- Depends: T-048, T-057
 
 Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆盖率；规则 unit.01 ~ unit.03。补齐 IF-004、IF-022 ~ IF-026 的单元测试；模块覆盖率低于阈值时补测试。
 
@@ -560,3 +560,12 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Depends: T-049
 
 `harness init` 把各语言的默认命令写入 `tools`（AC-014-1），toolrun 却把 `tools` 中的命令一律按 `lines` 解析，`gofmt -l` 这类按文件名输出的默认命令因此查不出问题。`tools` 中的命令与语言配置包的默认命令相同时，沿用配置包声明的输出格式与安装提示。
+
+### T-057 锁文件模块补单元测试
+- Status: Done
+- Covers: AC-021-3
+- Design: MOD-06, IF-006
+- Scope: internal/lock/lock_test.go
+- Depends:
+
+计入集成测试后 MOD-06 的行覆盖率为 87.6%，低于阈值 90%：`LastApproval`、`Read` 的读取失败与字段缺失、`Write` 的写入失败没有测试。T-049 的 unit.03 依赖本任务通过。

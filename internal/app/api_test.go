@@ -117,7 +117,6 @@ func approvedRepo(t *testing.T, sig, code string, tasks string) string {
 	if err := Lock(dir); err != nil {
 		t.Fatal(err)
 	}
-	replaceIn(t, dir, lock.File, `"version": 1`, `"version": 2`)
 	files := map[string]string{
 		"go.mod":                                "module demo\n\ngo 1.21\n",
 		"docs/architecture/overview.md":         approveOverview,

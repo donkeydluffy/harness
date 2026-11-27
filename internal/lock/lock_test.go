@@ -27,7 +27,6 @@ func TestReadWrite_IF_006(t *testing.T) {
 	if err != nil || l.Version != 1 || len(l.Items) != 0 || Exists(p) {
 		t.Fatalf("missing file: %+v %v", l, err)
 	}
-	l.Phase = "planning"
 	l.Items["FR-002"] = "sha256:b"
 	l.Items["FR-001"] = "sha256:a"
 	l.Legacy = append(l.Legacy, Approval{Artifact: "docs/PRD.md", Hash: "sha256:x", By: "dev", At: time.Date(2026, 11, 26, 0, 0, 0, 0, time.UTC)})
@@ -47,7 +46,7 @@ func TestReadWrite_IF_006(t *testing.T) {
 		t.Fatalf("not byte-stable:\n%s\n%s", first, second)
 	}
 	s := string(first)
-	order := []string{`"approvals"`, `"artifact"`, `"at"`, `"by"`, `"hash"`, `"audit"`, `"items"`, `"FR-001"`, `"FR-002"`, `"phase"`, `"version"`}
+	order := []string{`"approvals"`, `"artifact"`, `"at"`, `"by"`, `"hash"`, `"audit"`, `"items"`, `"FR-001"`, `"FR-002"`, `"version"`}
 	last := -1
 	for _, k := range order {
 		i := strings.Index(s, k)
@@ -124,7 +123,23 @@ func TestUnits_IF_006(t *testing.T) {
 		t.Errorf("往返后不一致：%+v", got)
 	}
 	b, _ := New().Marshal()
-	if strings.Contains(string(b), "units") || New().ByUnit() {
-		t.Errorf("第 1 版锁文件不应按单位记录：%s", b)
+	if !strings.Contains(string(b), `"version": 2`) || !New().ByUnit() || strings.Contains(string(b), "approvals") {
+		t.Errorf("新建的锁文件应为第 2 版，且不写出按文件批准：%s", b)
+	}
+}
+
+// Release 1 的 phase 字段读到时忽略，写出后消失；没有 version 的文件按第 1 版读取（AC-048-1）。
+func TestPhaseDropped_IF_006(t *testing.T) {
+	p := filepath.Join(t.TempDir(), File)
+	os.WriteFile(p, []byte(`{"phase": "implementation", "items": {}}`), 0o644)
+	l, err := Read(p)
+	if err != nil || l.ByUnit() {
+		t.Fatalf("应按第 1 版读取：%+v %v", l, err)
+	}
+	if err := l.Write(p); err != nil {
+		t.Fatal(err)
+	}
+	if b, _ := os.ReadFile(p); strings.Contains(string(b), "phase") || strings.Contains(string(b), "approvals") {
+		t.Fatalf("写出后不应再有 phase 与空的按文件批准：%s", b)
 	}
 }

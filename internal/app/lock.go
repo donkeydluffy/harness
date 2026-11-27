@@ -39,17 +39,20 @@ func Lock(root string) error {
 	}
 	l := s.Lock
 	l.Items = s.LockItems()
-	if !l.ByUnit() && len(l.Legacy) > 0 {
+	if !l.ByUnit() {
 		migrate(s, l)
 	}
 	return l.Write(filepath.Join(root, lock.File))
 }
 
-// migrate 把第 1 版锁文件的按文件批准换算为按单位批准，结果写入审计记录 unit-migration。
-// phase 字段保留，门禁按阶段判定产物写入的逻辑删除后（T-054）再去掉。
+// migrate 把第 1 版锁文件的按文件批准换算为按单位批准，有换算结果时写入审计记录 unit-migration（AC-047-6）。
 func migrate(s *workspace.Snapshot, l *lock.Lock) {
-	units, raw := approval.Migrate(s)
 	l.Version = lock.UnitVersion
+	if len(l.Legacy) == 0 {
+		l.Units = map[string]lock.UnitApproval{}
+		return
+	}
+	units, raw := approval.Migrate(s)
 	l.Units = units
 	l.Legacy = []lock.Approval{}
 	l.Audit["unit-migration"] = raw

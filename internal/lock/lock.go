@@ -53,13 +53,13 @@ func Hash(text string) string {
 }
 
 // Lock 是 harness.lock 的内容（IF-006）。Version 为 2 时按批准单位记录批准（Units，ADR-009）；
-// 为 1 时是 Release 1 的按文件批准（Legacy）与当前阶段（Phase）。Phase 随阶段模块删除（T-054）。
+// 读到第 1 版时 Legacy 是 Release 1 的按文件批准，只供 harness lock 迁移，迁移后为空、不再写出。
+// Release 1 的 phase 字段读到时忽略，写出时不再出现（AC-048-1）。
 type Lock struct {
 	Version int                        `json:"version"`
-	Phase   string                     `json:"phase"`
 	Items   map[string]string          `json:"items"`
 	Units   map[string]UnitApproval    `json:"units,omitempty"`
-	Legacy  []Approval                 `json:"approvals"`
+	Legacy  []Approval                 `json:"approvals,omitempty"`
 	Audit   map[string]json.RawMessage `json:"audit"`
 }
 
@@ -87,9 +87,9 @@ type Approval struct {
 	At       time.Time `json:"at"`
 }
 
-// New 返回空锁文件。
+// New 返回空锁文件（第 2 版）。
 func New() *Lock {
-	return &Lock{Version: 1, Items: map[string]string{}, Legacy: []Approval{}, Audit: map[string]json.RawMessage{}}
+	return &Lock{Version: UnitVersion, Items: map[string]string{}, Units: map[string]UnitApproval{}, Legacy: []Approval{}, Audit: map[string]json.RawMessage{}}
 }
 
 // Read 读取锁文件；文件不存在时返回空 Lock 而非错误（IF-006）。
@@ -98,12 +98,15 @@ func New() *Lock {
 func Read(path string) (*Lock, error) {
 	src, err := os.ReadFile(path)
 	if errors.Is(err, fs.ErrNotExist) {
-		return New(), nil
+		l := New()
+		l.Version = 1 // 尚未锁定：没有批准记录可比对，按 Release 1 的规则只检查文件头
+		return l, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("读取锁文件 %s：%w", path, err)
 	}
 	l := New()
+	l.Version = 1 // 文件中没有 version 时是 Release 1 的格式
 	if err := json.Unmarshal(src, l); err != nil {
 		return nil, fmt.Errorf("解析锁文件 %s：%w", path, err)
 	}

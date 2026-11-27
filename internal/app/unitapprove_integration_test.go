@@ -6,18 +6,17 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
 // unitRepo 返回锁文件为第 2 版（按单位批准）的仓库，PRD 与设计尚未批准。
 func unitRepo(t *testing.T) string {
 	t.Helper()
 	dir := lockedRepo(t, basePRD)
-	p := filepath.Join(dir, "harness.lock")
-	b, _ := os.ReadFile(p)
-	if !strings.Contains(string(b), `"version": 1`) {
-		t.Fatalf("锁文件版本：%s", b)
+	if b, _ := os.ReadFile(filepath.Join(dir, "harness.lock")); !strings.Contains(string(b), `"version": 2`) {
+		t.Fatalf("新建的锁文件应为第 2 版：%s", b)
 	}
-	os.WriteFile(p, []byte(strings.Replace(string(b), `"version": 1`, `"version": 2`, 1)), 0o644)
 	return dir
 }
 
@@ -230,14 +229,29 @@ func TestApprove_AC_047_3_B1(t *testing.T) {
 
 // ---- AC-047-6 Release 1 锁文件迁移 ----
 
-// legacyApproved 返回按文件批准了 PRD 与 files 中各设计文件的第 1 版锁文件仓库。
+// legacyApproved 返回 Release 1 格式的锁文件仓库：PRD 与 files 中各设计文件的文件头为 Approved，
+// 锁文件为第 1 版并按文件记录了它们当前内容的批准。
 func legacyApproved(t *testing.T, files ...string) string {
 	t.Helper()
 	dir := lockedRepo(t, basePRD)
-	mustApprove(t, dir, append([]string{"prd"}, files...)...)
-	if !strings.Contains(readFile(t, dir, "harness.lock"), `"version": 1`) || len(approvals(t, dir)) != 1+len(files) {
-		t.Fatalf("应为第 1 版按文件批准：%s", readFile(t, dir, "harness.lock"))
+	rels := append([]string{"docs/PRD.md"}, files...)
+	for _, rel := range rels {
+		editFile(t, dir, rel, "- Status: Draft", "- Status: Approved")
 	}
+	s, err := workspace.Load(dir, workspace.LoadOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var legacy []map[string]string
+	for _, rel := range rels {
+		legacy = append(legacy, map[string]string{"artifact": rel, "hash": s.ApprovalHash(rel), "by": "dev", "at": "2026-11-26T00:00:00Z"})
+	}
+	var l map[string]any
+	json.Unmarshal([]byte(readFile(t, dir, "harness.lock")), &l)
+	l["version"], l["approvals"], l["phase"] = 1, legacy, "implementation"
+	delete(l, "units")
+	b, _ := json.MarshalIndent(l, "", "  ")
+	writeFile(t, dir, "harness.lock", string(b)+"\n")
 	return dir
 }
 
@@ -250,9 +264,8 @@ func lockOK(t *testing.T, dir string) {
 
 func TestLock_AC_047_6_N1(t *testing.T) {
 	dir := legacyApproved(t, "docs/architecture/overview.md", "docs/architecture/modules/modules.md")
-	// PRD 批准后修改并重新批准：只看最近一次批准，较早的记录不算失效。
-	editFile(t, dir, "docs/PRD.md", "- Current-Release: 1\n", "- Current-Release: 1\n\n背景说明。\n")
-	mustApprove(t, dir, "prd")
+	// PRD 曾在修改前批准过一次：只看最近一次批准，较早的记录不算失效。
+	editFile(t, dir, "harness.lock", `"approvals": [`, `"approvals": [{"artifact": "docs/PRD.md", "hash": "sha256:old", "by": "dev", "at": "2026-11-25T00:00:00Z"},`)
 	lockOK(t, dir)
 	var l struct {
 		Audit map[string]struct{ Valid, Invalid []string }

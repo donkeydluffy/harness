@@ -106,12 +106,12 @@ func approvedRepo(t *testing.T) string {
 
 func TestApprove_AC_037_1_N1(t *testing.T) {
 	dir := approvedRepo(t)
-	if !strings.Contains(readFile(t, dir, "docs/PRD.md"), "- Status: Approved\n") {
-		t.Fatal("PRD 状态未变为 Approved")
+	if w := approvalWarnings(t, dir); strings.Contains(w, "docs/PRD.md") || strings.Contains(w, "FR-001 未批准") {
+		t.Fatalf("PRD 应处于已批准状态：\n%s", w)
 	}
-	a := approvals(t, dir)
-	if len(a) != 1 || a[0]["artifact"] != "docs/PRD.md" || !strings.HasPrefix(a[0]["hash"], "sha256:") || a[0]["by"] == "" || a[0]["at"] == "" {
-		t.Fatalf("批准记录：%v", a)
+	u := unitRecords(t, dir)["FR-001"]
+	if u == nil || !strings.HasPrefix(u["hash"].(string), "sha256:") || u["by"] == "" || u["at"] == "" {
+		t.Fatalf("锁文件应新增批准记录：%v", u)
 	}
 }
 
@@ -148,25 +148,4 @@ func TestApprove_AC_037_1_E2(t *testing.T) {
 	if len(approvals(t, dir)) != 0 {
 		t.Fatal("拒绝后不应写入批准")
 	}
-}
-
-// ---- AC-037-3 批准哈希与失效 ----
-
-func TestCheck_AC_037_3_N1(t *testing.T) {
-	wantPass(t, checkJSON(t, approvedRepo(t), "approve"))
-}
-
-func TestCheck_AC_037_3_E1(t *testing.T) {
-	dir := approvedRepo(t)
-	edit(t, dir, "- AC-001-1: 生成骨架。", "- AC-001-1: 生成骨架与配置。")
-	v := wantViolation(t, checkJSON(t, dir, "approve"), "approve.01", "批准已失效", "视为 Draft")
-	if v.File != "docs/PRD.md" {
-		t.Fatalf("位置：%s", v.File)
-	}
-}
-
-func TestCheck_AC_037_3_B1(t *testing.T) {
-	dir := approvedRepo(t)
-	edit(t, dir, "## 3. 功能需求\n", "## 3. 功能需求   \n\n\n", "- AC-001-1: 生成骨架。\n", "- AC-001-1: 生成骨架。\t\n")
-	wantPass(t, checkJSON(t, dir, "approve"))
 }

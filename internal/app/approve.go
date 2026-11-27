@@ -3,14 +3,9 @@ package app
 import (
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/donkeydluffy/harness/internal/lock"
-	"github.com/donkeydluffy/harness/internal/model"
-	"github.com/donkeydluffy/harness/internal/rules/engine"
 	"github.com/donkeydluffy/harness/internal/workspace"
 )
 
@@ -30,9 +25,8 @@ var ErrDeclined = errors.New("未确认，产物状态与锁文件均未改变")
 // now 便于测试固定时间。
 var now = func() time.Time { return time.Now().UTC().Truncate(time.Second) }
 
-// Approve 由人批准（IF-024）。锁文件为第 2 版时按批准单位批准（approveUnits）；为第 1 版时批准整个产物：
-// 产物文档规则通过后请求确认，把文件头 Status 改为 Approved（ADR 为 Accepted），并在锁文件追加批准记录。
-// target 可以是产物路径、prd（docs/PRD.md），第 2 版时还可以是单位编号。检查未通过时返回 *ViolationsError。
+// Approve 由人批准（IF-024）：按批准单位批准（approveUnits）。target 可以是产物路径、prd（docs/PRD.md）或单位编号。
+// 锁文件仍有 Release 1 的按文件批准时先由 harness lock 迁移；检查未通过时返回 *ViolationsError。
 //
 // harness:IF-024
 func Approve(root, target string, t Terminal) error {
@@ -40,78 +34,15 @@ func Approve(root, target string, t Terminal) error {
 		return ErrNotInteractive
 	}
 	registerRules()
-	if l, err := lock.Read(filepath.Join(root, lock.File)); err == nil && l.ByUnit() {
-		s, err := workspace.Load(root, workspace.LoadOptions{})
-		if err != nil {
-			return err
-		}
-		return approveUnits(root, s, target, t)
-	}
-	rel := filepath.ToSlash(filepath.Clean(target))
-	if strings.EqualFold(target, "prd") {
-		rel = workspace.PRDIndex
-	}
-	if !workspace.Approvable(rel) {
-		return fmt.Errorf("%s 不是可批准的产物（可批准：prd 或 docs/PRD.md、docs/architecture/*.md、docs/architecture/modules/*.md、docs/adr/*.md）", target)
-	}
 	s, err := workspace.Load(root, workspace.LoadOptions{})
 	if err != nil {
 		return err
 	}
-	docs := s.ApprovalDocs(rel)
-	if len(docs) == 0 {
-		return fmt.Errorf("%s 不存在", rel)
-	}
-	if rep := artifactViolations(s, docs); len(rep.Violations) > 0 {
-		return &ViolationsError{Report: rep}
-	}
-	hash := s.ApprovalHash(rel)
-	if !t.Confirm(fmt.Sprintf("批准 %s（%s）？输入 y 确认：", rel, hash)) {
-		return ErrDeclined
-	}
-	if err := setStatus(filepath.Join(root, filepath.FromSlash(rel)), workspace.ApprovedStatus(rel)); err != nil {
-		return err
-	}
-	l := s.Lock
-	l.Legacy = append(l.Legacy, lock.Approval{Artifact: rel, Hash: hash, By: t.Identity(), At: now()})
-	return l.Write(filepath.Join(root, lock.File))
-}
-
-// artifactViolations 运行产物文档规则（批准有效性规则除外），只保留落在被批准文件中的违规。
-func artifactViolations(s *workspace.Snapshot, docs []*model.Doc) engine.Report {
-	files := map[string]bool{}
-	for _, d := range docs {
-		files[d.Path] = true
-	}
-	sel := docRules()
-	var ids []string
-	for _, id := range sel.IDs {
-		if !strings.HasPrefix(id, "approve.") {
-			ids = append(ids, id)
+	if !s.Lock.ByUnit() {
+		if len(s.Lock.Legacy) > 0 {
+			return fmt.Errorf("锁文件是 Release 1 的按文件批准格式，先运行 harness lock 迁移")
 		}
+		s.Lock.Version, s.Lock.Units = lock.UnitVersion, map[string]lock.UnitApproval{}
 	}
-	rep := engine.Run(s, engine.Selector{IDs: ids})
-	var keep []engine.Violation
-	for _, v := range rep.Violations {
-		if files[v.File] {
-			keep = append(keep, v)
-		}
-	}
-	rep.Violations = keep
-	return rep
-}
-
-// setStatus 把文件头的 Status 行改为 status；没有文件头 Status 时在标题后插入。
-func setStatus(path, status string) error {
-	b, err := os.ReadFile(path)
-	if err != nil {
-		return err
-	}
-	lines := strings.Split(string(b), "\n")
-	if i := workspace.HeaderStatusLine(lines); i >= 0 {
-		lines[i] = "- Status: " + status
-	} else {
-		lines = append(lines[:1], append([]string{"", "- Status: " + status}, lines[1:]...)...)
-	}
-	return os.WriteFile(path, []byte(strings.Join(lines, "\n")), 0o644)
+	return approveUnits(root, s, target, t)
 }

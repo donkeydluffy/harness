@@ -274,14 +274,19 @@ func writeTargets(args []string) []string {
 	case "mv":
 		return operands(1) // 来源被删除，目标被写入
 	case "sed", "gsed":
-		inPlace, script := false, false
+		inPlace, script, operand := false, false, false
 		var files []string
 		for _, a := range args[1:] {
 			switch {
+			case operand:
+				operand = false // -e、-f 后面的参数是脚本或脚本文件
 			case a == "-i" || strings.HasPrefix(a, "-i") || a == "--in-place" || strings.HasPrefix(a, "--in-place="):
 				inPlace = true
-			case a == "-e" || a == "-f" || strings.HasPrefix(a, "--expression"):
+			case a == "-e" || a == "-f":
+				script, operand = true, true
+			case strings.HasPrefix(a, "--expression"):
 				script = true
+				operand = !strings.Contains(a, "=")
 			case strings.HasPrefix(a, "-") || a == "":
 			case !script:
 				script = true // 第一个非选项参数是脚本

@@ -264,3 +264,7 @@
 ### 2026-11-27 T-058
 - 结论：pre-commit 模板的检查列表去掉 `phase`，skill 测试不再注册阶段规则、不再逐个检查阶段 skill；scaffold 与 MOD-10 不再有任何引用，T-055 不再涉及 scaffold。
 - 遗留：已安装的 `.git/hooks/pre-commit` 仍是旧模板生成的，含 `phase`；T-055 删除阶段规则前需重新运行 `harness init --lang go`。
+
+### 2026-11-27 T-050
+- 结论：规则 deps.01 ~ deps.04 经 Analyzer 读取非测试 Go 文件的 import，按 go.mod 解析到仓库目录，目录归属取 Paths 匹配前缀最长的模块；跨模块 import 须在 Depends 中且目标包含有 Public 文件，sourcePaths 内的源文件须有归属，Depends 须被非测试代码使用。本仓库按代码修正了 5 个模块的 Depends 与 FLOW-07、FLOW-12（ADR-015），scaffold 对阶段的引用由 T-058 去掉。
+- 遗留：ADR-015 待人批准。依赖识别只支持 Go，其他语言在 Release 3（FR-008）。

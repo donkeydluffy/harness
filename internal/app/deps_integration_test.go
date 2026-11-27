@@ -6,9 +6,9 @@ import (
 )
 
 const depsOverview = "# 架构总览\n\n- Status: Draft\n\n" +
-	"### MOD-01 api\n- Status: Active\n- Paths: internal/api/**\n- Public: internal/api/api.go\n- Depends:\n- Interfaces:\n- Covers: FR-001\n- Core: false\n\n" +
-	"### MOD-02 store\n- Status: Active\n- Paths: internal/store/**\n- Public: internal/store/store.go\n- Depends: MOD-01\n- Interfaces:\n- Covers: FR-001\n- Core: false\n\n" +
-	"### MOD-03 cache\n- Status: Active\n- Paths: internal/cache/**\n- Public: internal/cache/cache.go\n- Depends:\n- Interfaces:\n- Covers: FR-001\n- Core: false\n"
+	"### MOD-01 api\n- Status: Active\n- Paths: internal/api/**\n- Public: internal/api/api.go\n- Depends:\n- Interfaces:\n- Covers: FR-001\n- Core: false\n- Coverage: 60\n\n" +
+	"### MOD-02 store\n- Status: Active\n- Paths: internal/store/**\n- Public: internal/store/store.go\n- Depends: MOD-01\n- Interfaces:\n- Covers: FR-001\n- Core: false\n- Coverage: 60\n\n" +
+	"### MOD-03 cache\n- Status: Active\n- Paths: internal/cache/**\n- Public: internal/cache/cache.go\n- Depends:\n- Interfaces:\n- Covers: FR-001\n- Core: false\n- Coverage: 60\n"
 
 // depsRepo 返回三个模块的 Go 项目：MOD-02 store import MOD-01 api 的公开包；extra 中的文件覆盖或追加。
 func depsRepo(t *testing.T, extra map[string]string) string {
@@ -117,4 +117,15 @@ func TestDeps_AC_035_2_B1(t *testing.T) {
 func TestDeps_AC_035_2_B2(t *testing.T) {
 	dir := depsRepo(t, map[string]string{"internal/store/store_test.go": importing("store", "testing", "demo/internal/api/route")})
 	wantPass(t, checkJSON(t, dir, "deps.04"))
+}
+
+// ---- AC-035-1 模块声明 Public ----
+
+func TestArch_AC_035_1_N1(t *testing.T) {
+	wantPass(t, checkJSON(t, depsRepo(t, nil), "arch.01"))
+}
+
+func TestArch_AC_035_1_E1(t *testing.T) {
+	dir := depsRepo(t, map[string]string{"docs/architecture/overview.md": strings.Replace(depsOverview, "- Public: internal/store/store.go\n", "", 1)})
+	wantViolation(t, checkJSON(t, dir, "arch.01"), "arch.01", "MOD-02", "Public")
 }

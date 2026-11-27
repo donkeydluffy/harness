@@ -493,7 +493,7 @@ Go Analyzer 的 Imports、Anchors、Resolve；`harness snapshot` 写 `docs/archi
 Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆盖率；规则 unit.01 ~ unit.03。补齐 IF-004、IF-022 ~ IF-026 的单元测试；模块覆盖率低于阈值时补测试。
 
 ### T-050 Go 模块依赖与封装
-- Status: Todo
+- Status: Done
 - Covers: FR-053, FR-035
 - Design: IF-035, IF-014, FLOW-01
 - Flow: FLOW-01

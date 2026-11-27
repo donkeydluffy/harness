@@ -483,7 +483,7 @@ init 改用 IF-034 的语言配置包，缺失时生成工具配置文件；CI �
 Go Analyzer 的 Imports、Anchors、Resolve；`harness snapshot` 写 `docs/architecture/interfaces.txt`；规则 if.01 ~ if.04；锁文件的 `snapshot:IF-n`。补齐 FLOW-01 各模块的锚点。详细设计与代码签名不一致的接口，改设计或改代码，改设计时需人重新批准。
 
 ### T-049 单元测试追溯
-- Status: InProgress
+- Status: Done
 - Covers: FR-021
 - Design: IF-031, IF-033, IF-035, IF-014, FLOW-11
 - Flow: FLOW-11

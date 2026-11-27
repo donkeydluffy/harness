@@ -249,6 +249,17 @@ func designElements(s *workspace.Snapshot) []*model.Entity {
 	return out
 }
 
+// liveArch 返回架构文档中有效的 kind 类元素；Removed 的元素是历史记录，不检查它自身（AC-007-5）。
+func liveArch(s *workspace.Snapshot, kind string) []*model.Entity {
+	var out []*model.Entity
+	for _, e := range archEntities(s, kind) {
+		if effective(e) {
+			out = append(out, e)
+		}
+	}
+	return out
+}
+
 // effective 判断设计元素是否有效：ADR 不是 Superseded，其他元素不是 Removed。
 func effective(e *model.Entity) bool {
 	st := e.Fields["Status"]
@@ -531,10 +542,7 @@ func globWithin(p, m string) bool {
 func scopeOwners(s *workspace.Snapshot, p string) []string {
 	var out []string
 	for _, m := range s.Project.ByKind["MOD"] {
-		if workspace.Removed(m) {
-			continue
-		}
-		for _, g := range m.List("Paths") {
+		for _, g := range m.List("Paths") { // Removed 模块的路径仍计入归属（AC-007-5）
 			if globWithin(p, g) {
 				out = append(out, m.ID)
 				break

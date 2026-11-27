@@ -10,7 +10,7 @@ type commit03 struct{}
 
 func (commit03) Needs() engine.Input { return engine.InputGit }
 func (commit03) ID() string          { return "commit.03" }
-func (commit03) Covers() []string    { return []string{"AC-013-4", "AC-050-2"} }
+func (commit03) Covers() []string    { return []string{"AC-050-2"} }
 func (commit03) Fix() string {
 	return "把提交拆成几个各自独立的小提交（如接口、实现、测试分开）"
 }

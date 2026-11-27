@@ -15,7 +15,7 @@ import (
 type approve01 struct{}
 
 func (approve01) ID() string       { return "approve.01" }
-func (approve01) Covers() []string { return []string{"AC-037-3", "AC-047-1", "AC-047-3"} }
+func (approve01) Covers() []string { return []string{"AC-047-1", "AC-047-3"} }
 func (approve01) Fix() string {
 	return "由人在终端执行 harness approve <产物> 重新批准；不准备批准时把文件头 Status 改回 Draft（ADR 改回 Proposed）"
 }

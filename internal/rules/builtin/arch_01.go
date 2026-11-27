@@ -17,7 +17,7 @@ type arch01 struct{}
 
 func (arch01) ID() string { return "arch.01" }
 func (arch01) Covers() []string {
-	return []string{"AC-006-1", "AC-006-2", "AC-006-3", "AC-033-2"}
+	return []string{"AC-006-1", "AC-006-2", "AC-006-3", "AC-033-2", "AC-007-5"}
 }
 func (arch01) Fix() string {
 	return "按 docs/architecture/formats.md 第 3 节补齐字段；模块路径互不重叠，接口在所属模块的 Interfaces 中列出"
@@ -47,7 +47,7 @@ func (arch01) Check(s *workspace.Snapshot) []engine.Violation {
 		mods[e.ID] = e
 	}
 	for kind, fields := range archRequired {
-		for _, e := range archEntities(s, kind) {
+		for _, e := range liveArch(s, kind) {
 			if !archIDFormat[kind].MatchString(e.ID) {
 				out = append(out, at(e, "编号 %s 格式不合法", e.ID))
 			}
@@ -59,7 +59,7 @@ func (arch01) Check(s *workspace.Snapshot) []engine.Violation {
 			}
 		}
 	}
-	for _, e := range archEntities(s, "MOD") {
+	for _, e := range liveArch(s, "MOD") {
 		if c, ok := e.Field("Core"); ok && c != "true" && c != "false" {
 			out = append(out, at(e, "%s 的 Core 取值 %q 不合法，应为 true 或 false", e.ID, c))
 		}
@@ -76,8 +76,8 @@ func (arch01) Check(s *workspace.Snapshot) []engine.Violation {
 			}
 		}
 	}
-	out = append(out, pathOverlaps(archEntities(s, "MOD"))...)
-	for _, e := range archEntities(s, "IF") {
+	out = append(out, pathOverlaps(liveArch(s, "MOD"))...)
+	for _, e := range liveArch(s, "IF") {
 		m := e.Fields["Module"]
 		switch mod := mods[m]; {
 		case m == "":
@@ -90,12 +90,12 @@ func (arch01) Check(s *workspace.Snapshot) []engine.Violation {
 			out = append(out, at(e, "%s 缺少签名：需要一个首行为 // %s 的代码块", e.ID, e.ID))
 		}
 	}
-	for _, e := range archEntities(s, "FLOW") {
+	for _, e := range liveArch(s, "FLOW") {
 		if _, bad := parseSteps(e.Fields["Steps"]); len(bad) > 0 {
 			out = append(out, at(e, "%s 第 %v 步格式错误，应为 MOD-a -> IF-xxx", e.ID, bad))
 		}
 	}
-	for _, e := range archEntities(s, "EXT") {
+	for _, e := range liveArch(s, "EXT") {
 		if i := e.Fields["Interface"]; i != "" {
 			if f := s.Project.ByID[i]; f == nil || f.Kind != "IF" {
 				out = append(out, at(e, "%s 的承载接口 %s 不存在", e.ID, i))

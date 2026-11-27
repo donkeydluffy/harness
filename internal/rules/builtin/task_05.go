@@ -12,7 +12,7 @@ import (
 type task05 struct{}
 
 func (task05) ID() string       { return "task.05" }
-func (task05) Covers() []string { return []string{"AC-011-6", "AC-050-2"} }
+func (task05) Covers() []string { return []string{"AC-050-2", "AC-007-5"} }
 func (task05) Fix() string {
 	return "把任务拆成每个模块一个，或在 Flow 中引用一个包含全部涉及模块的调用流程"
 }
@@ -20,8 +20,8 @@ func (task05) Fix() string {
 func (task05) Check(s *workspace.Snapshot) []engine.Violation {
 	var out []engine.Violation
 	for _, t := range tasks(s) {
-		if mechanical(t) {
-			continue // 机械改动任务免于调用流程限制（AC-050-2）
+		if mechanical(t) || t.Fields["Status"] == "Done" {
+			continue // 机械改动任务免于调用流程限制（AC-050-2）；Done 的任务是历史记录（AC-007-5）
 		}
 		touched := map[string]bool{}
 		for _, p := range t.List("Scope") {

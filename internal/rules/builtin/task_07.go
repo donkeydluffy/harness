@@ -14,7 +14,7 @@ type task07 struct{}
 
 func (task07) ID() string { return "task.07" }
 func (task07) Covers() []string {
-	return []string{"AC-038-1", "AC-038-2", "AC-038-3", "AC-011-5", "AC-047-4"}
+	return []string{"AC-011-5", "AC-047-4"}
 }
 func (task07) Fix() string {
 	return "先由人用 harness approve 批准 PRD 与相关设计产物，并关闭关联需求的待澄清项，再把任务改为 InProgress；否则把任务改回 Todo"

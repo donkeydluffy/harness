@@ -11,7 +11,7 @@ import (
 type trace02 struct{}
 
 func (trace02) ID() string       { return "trace.02" }
-func (trace02) Covers() []string { return []string{"AC-007-2"} }
+func (trace02) Covers() []string { return []string{"AC-007-2", "AC-007-5"} }
 func (trace02) Fix() string {
 	return "在设计元素的 Covers（模块、接口、流程）或 Relates（扩展点、ADR）中引用它服务的需求或 ADR；确实无用的元素应删除"
 }
@@ -21,6 +21,9 @@ var reqOrADRRe = regexp.MustCompile(`^(FR|NFR)-\d+$|^AC-N?\d+-\d+$|^ADR-\d+$`)
 func (trace02) Check(s *workspace.Snapshot) []engine.Violation {
 	var out []engine.Violation
 	for _, e := range designElements(s) {
+		if !effective(e) {
+			continue // Removed 的元素与 Superseded 的 ADR 是历史记录（AC-007-5）
+		}
 		ok := false
 		for _, r := range traceRefs(e) {
 			if reqOrADRRe.MatchString(r) {

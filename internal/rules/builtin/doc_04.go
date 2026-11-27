@@ -12,6 +12,7 @@ import (
 
 // doc04：受检 Markdown 引用的编号必须存在、不是 Removed，也没有被已生效的需求取代（AC-030-3）。
 // 编号自身的定义行（标题、验收标准与用例行）以及 Replaces、Replaced-By 字段不检查。
+// ADR 与 Done 的任务记录当时的决定，其中的编号只要求存在。
 type doc04 struct{}
 
 func (doc04) ID() string       { return "doc.04" }
@@ -27,7 +28,9 @@ var (
 
 func (doc04) Check(s *workspace.Snapshot) []engine.Violation {
 	var out []engine.Violation
+	done := doneTaskLines(s)
 	for _, l := range s.DocLines() {
+		history := strings.HasPrefix(l.File, "docs/adr/") || (l.File == "docs/tasks.md" && done(l.Line))
 		t := strings.TrimSpace(l.Text)
 		if strings.HasPrefix(t, "- Replaces:") || strings.HasPrefix(t, "- Replaced-By:") {
 			continue
@@ -43,12 +46,31 @@ func (doc04) Check(s *workspace.Snapshot) []engine.Violation {
 				continue
 			}
 			seen[id] = true
-			if msg := refProblem(s, id); msg != "" {
+			if msg := refProblem(s, id); msg != "" && (!history || msg == "不存在") {
 				out = append(out, engine.Violation{File: l.File, Line: l.Line, Msg: "引用的 " + id + " " + msg})
 			}
 		}
 	}
 	return out
+}
+
+// doneTaskLines 返回判断 docs/tasks.md 的某一行是否在 Done 任务一节内的函数。
+func doneTaskLines(s *workspace.Snapshot) func(int) bool {
+	var ts []*model.Entity
+	if d := s.Doc("docs/tasks.md"); d != nil {
+		for _, e := range d.Entities {
+			ts = append(ts, e)
+		}
+	}
+	return func(line int) bool {
+		var cur *model.Entity
+		for _, e := range ts {
+			if e.Line <= line && (cur == nil || e.Line > cur.Line) {
+				cur = e
+			}
+		}
+		return cur != nil && cur.Kind == "T" && cur.Fields["Status"] == "Done"
+	}
 }
 
 // refProblem 返回编号的问题：不存在、已 Removed 或已被取代；没有问题时为空串。

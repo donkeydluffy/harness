@@ -11,7 +11,7 @@ import (
 type trace03 struct{}
 
 func (trace03) ID() string       { return "trace.03" }
-func (trace03) Covers() []string { return []string{"AC-007-3"} }
+func (trace03) Covers() []string { return []string{"AC-007-3", "AC-007-5"} }
 func (trace03) Fix() string {
 	return "修正引用：指向存在的编号；需求已 Removed 时去掉引用；ADR 已 Superseded 时改为引用取代它的 ADR"
 }
@@ -24,6 +24,9 @@ var refIDRe = regexp.MustCompile(`^(FR|NFR|MOD|IF|FLOW|EXT|ADR)-\d+$|^AC-N?\d+-\
 func (trace03) Check(s *workspace.Snapshot) []engine.Violation {
 	var out []engine.Violation
 	for _, e := range designElements(s) {
+		if !effective(e) {
+			continue // 历史记录自身的引用不检查；有效元素引用它们时照常报告（AC-007-5）
+		}
 		for _, f := range refFields {
 			for _, r := range e.List(f) {
 				if !refIDRe.MatchString(r) {

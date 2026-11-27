@@ -537,10 +537,10 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Covers: AC-048-1
 - Design: IF-017, IF-024, FLOW-02
 - Flow: FLOW-02
-- Scope: internal/gate/**, internal/app/**, internal/cli/**, internal/phase/**
-- Depends: T-053
+- Scope: internal/gate/**, internal/app/**, internal/cli/**
+- Depends: T-053, T-062
 
-去掉门禁、app、cli 中的阶段逻辑与 Release 1 的按文件批准分支；`harness phase` 提示已删除。
+去掉门禁、app、cli 中的阶段逻辑与 Release 1 的按文件批准分支；`harness phase` 提示已删除。Current-Release 为 1 时阶段需求仍生效，本任务与 T-055、T-061 在同一次推送中完成。
 
 ### T-055 删除阶段模块，Release 2 生效
 - Status: Todo
@@ -548,9 +548,9 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 - Design: MOD-10, EXT-04, IF-020, FLOW-02
 - Flow: FLOW-02
 - Scope: internal/phase/**, internal/app/**, internal/cli/**
-- Depends: T-054
+- Depends: T-054, T-062
 
-删除 `internal/phase/`、scaffold 中的阶段用法与 skill 中的阶段说明；设计中 MOD-10、EXT-04 改为 Removed，去掉对 MOD-10 的依赖与 IF-015、IF-016 的流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。
+删除阶段模块的代码与 app、cli 中对它的引用；设计中阶段模块、阶段扩展点及其两个接口改为 Removed，去掉对它们的依赖与流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。
 
 ### T-056 默认工具命令按语言配置包的输出格式解析
 - Status: Todo
@@ -594,3 +594,32 @@ scaffold 的非测试代码已不 import MOD-10，MOD-13 的 Depends 随 T-050 �
 - Depends: T-059
 
 skill 与产物骨架中的示例编号改为 `MOD-n`、`IF-n`、`T-n` 这类占位写法，尚未创建的产物路径不用行内代码，使 `harness init` 生成的项目通过 doc.02 ~ doc.04（AC-030-1/B4 由 T-052 验证）；本仓库的 `.claude/skills` 同步修改。
+
+### T-061 锁文件去掉阶段字段
+- Status: Todo
+- Covers: AC-048-1
+- Design: IF-006, FLOW-10
+- Flow: FLOW-10
+- Scope: internal/lock/**, internal/app/**
+- Depends: T-055
+
+锁文件结构去掉 phase 字段（读到时忽略，`harness lock` 写出后消失），新建的锁文件为第 2 版，不再写出 Release 1 的按文件批准记录。
+
+### T-062 Removed 的设计元素与历史记录
+- Status: InProgress
+- Covers: AC-007-5, AC-030-3
+- Design: MOD-05, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/**, internal/app/**
+- Depends: T-053
+
+arch.01、trace.02、trace.03 不检查 Removed 的设计元素与 Superseded 的 ADR 自身，task.03 把 Removed 模块的 Paths 计入归属，task.03、task.05 不检查 Done 的任务；doc.04 在 ADR 与 Done 的任务中只检查编号存在；内置规则的 Covers 去掉已被取代的验收标准。
+
+### T-063 skill 模板去掉阶段说明
+- Status: Todo
+- Covers: FR-048
+- Design: MOD-13
+- Scope: internal/scaffold/templates/**
+- Depends: T-055
+
+plan、clarify、architect、implement 等 skill 模板中关于阶段的说明改为按批准状态的说法；本仓库的 `.claude/skills` 由人同步。

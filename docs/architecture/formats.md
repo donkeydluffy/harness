@@ -118,7 +118,7 @@ Release 2 新增与删除的字段：
 - `rules`：声明式自定义规则，字段见 IF-036 的 `Def`（如 `{"id": "acme.01", "kind": "forbid", "paths": ["internal/**"], "pattern": "fmt\\.Println", "message": "用日志", "samples": ".harness/rules/acme.01", "approveFor": ["design"]}`）。
 - `phases` 删除；存在时被忽略。
 
-以下 `phases` 格式只在 Release 1 有效，Release 2 随 MOD-10 删除。
+以下 `phases` 格式只在 Release 1 有效，Release 2 已删除。
 
 `phases` 中每项是以下两种之一（规则 `phase.01` 校验）：
 

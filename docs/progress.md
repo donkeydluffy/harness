@@ -284,3 +284,7 @@
 ### 2026-11-27 T-052
 - 结论：规则 doc.02 ~ doc.05 检查受检 Markdown（README、AGENTS、CLAUDE、skill、docs 下除进度文件外的文档）代码块之外的行：行内代码中的仓库路径须存在（首段不在仓库中的、`.harness` 下的、文件名后缀不算），`harness <子命令>` 须是 cli 传入的子命令，FR、AC、IF 等编号须存在、未 Removed、未被已生效的需求取代；用例行、字段行、PRD 的澄清记录与变更日志、Release 大于 Current-Release 的需求不检查（CHG-026）。doc.05 用新增的 Repo.LastCommit（ADR-016）取详细设计的最后提交，模块代码此后的提交超过 staleCommits 时告警。修正了文档中 `harness hook`、`internal/version.injected` 等过期引用。
 - 遗留：MOD-02、MOD-05 的详细设计被 doc.05 告警可能过期，需对照代码更新。T-056 把 Current-Release 改为 2 后，Release 2 的需求开始受检，可能出现新的命中。DEBT-020、DEBT-021 待修。
+
+### 2026-11-27 T-053
+- 结论：规则 supp.01 在语言配置包提取的注释中识别 eslint-disable、@ts-ignore、@ts-expect-error、noqa、type: ignore、pylint: disable、nolint、NOLINT，在去掉字符串字面量（双引号、单引号、反引号）与行尾注释后的代码行中识别 Java 的 @SuppressWarnings 注解；同一行须引用 Open 的 DEBT，引用已关闭的技术债时报告其状态。
+- 遗留：只认同一行的引用；多行块注释中抑制标记与引用不在同一行时仍报告。

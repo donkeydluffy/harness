@@ -523,7 +523,7 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 规则 doc.02 ~ doc.05：受检 Markdown 行内代码中的路径、`harness` 子命令、编号引用，以及详细设计可能过期的告警；cli 把子命令名传入 CheckOptions。修正本仓库文档中被报告的过期引用。
 
 ### T-053 抑制注释登记
-- Status: InProgress
+- Status: Done
 - Covers: FR-042
 - Design: IF-003, IF-014, FLOW-01
 - Flow: FLOW-01

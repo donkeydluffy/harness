@@ -552,7 +552,7 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 删除阶段模块的代码目录（app、cli、gate 中的引用由 T-054 去掉）；设计中的删除与 Current-Release 改为 2 随本任务一起提交。
 
 ### T-056 默认工具命令按语言配置包的输出格式解析
-- Status: Todo
+- Status: Done
 - Covers: AC-014-3, AC-014-4
 - Design: IF-030, IF-034
 - Scope: internal/toolrun/**

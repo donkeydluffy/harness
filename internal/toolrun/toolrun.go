@@ -40,7 +40,7 @@ func Lint(s *workspace.Snapshot) (*testreport.LintReport, error) {
 				t = pack.Lint
 			}
 			if cmd := s.Config.Tools[name][which]; cmd != "" {
-				t = lang.Tool{Cmd: cmd, Output: "lines", Install: "安装 " + firstWord(cmd) + " 后重试"}
+				t = configured(pack, cmd)
 			}
 			if _, err := exec.LookPath(firstWord(t.Cmd)); err != nil {
 				return nil, &MissingTool{Language: name, Command: firstWord(t.Cmd), Hint: t.Install}
@@ -50,6 +50,17 @@ func Lint(s *workspace.Snapshot) (*testreport.LintReport, error) {
 		}
 	}
 	return rep, rep.Write(filepath.Join(s.Root, testreport.LintFile))
+}
+
+// configured 返回项目配置的命令对应的工具：与语言配置包的默认命令相同时沿用配置包的输出格式与安装提示
+// （harness init 把默认命令写入 tools），否则按行解析"文件:行: 消息"。
+func configured(pack lang.Pack, cmd string) lang.Tool {
+	for _, t := range []lang.Tool{pack.Format, pack.Lint} {
+		if strings.Join(strings.Fields(t.Cmd), " ") == strings.Join(strings.Fields(cmd), " ") {
+			return t
+		}
+	}
+	return lang.Tool{Cmd: cmd, Output: "lines", Install: "安装 " + firstWord(cmd) + " 后重试"}
 }
 
 // Smoke 运行项目配置的冒烟测试命令，返回退出码与输出的最后 50 行（AC-055-2）。没有声明命令时返回错误。

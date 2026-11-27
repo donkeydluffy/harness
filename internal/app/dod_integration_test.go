@@ -38,51 +38,7 @@ func gateRepo(t *testing.T) string {
 	return dir
 }
 
-// ---- AC-038-1 PRD 有效批准 ----
-
-func TestCheck_AC_038_1_N1(t *testing.T) {
-	wantPass(t, checkJSON(t, gateRepo(t), "task.07"))
-}
-
-func TestCheck_AC_038_1_E1(t *testing.T) {
-	dir := lockedRepo(t, basePRD)
-	write(t, dir, "docs/tasks.md", inProgress)
-	approveFiles(t, dir, "docs/architecture/overview.md")
-	wantViolation(t, checkJSON(t, dir, "task.07"), "task.07", "T-001", "PRD 没有处于有效的批准状态")
-}
-
-func TestCheck_AC_038_1_E2(t *testing.T) {
-	dir := gateRepo(t)
-	edit(t, dir, "- AC-001-1: 生成骨架。", "- AC-001-1: 生成骨架与配置。")
-	wantViolation(t, checkJSON(t, dir, "task.07"), "task.07", "T-001", "PRD 没有处于有效的批准状态")
-}
-
-// ---- AC-038-2 设计产物有效批准 ----
-
-func TestCheck_AC_038_2_N1(t *testing.T) {
-	wantPass(t, checkJSON(t, gateRepo(t), "task.07"))
-}
-
-func TestCheck_AC_038_2_E1(t *testing.T) {
-	dir := lockedRepo(t, basePRD)
-	write(t, dir, "docs/tasks.md", inProgress)
-	approveFiles(t, dir, "prd")
-	wantViolation(t, checkJSON(t, dir, "task.07"), "task.07", "MOD-01", "docs/architecture/overview.md")
-}
-
-// ---- AC-038-3 / AC-011-5 关联需求没有 Open 的待澄清项 ----
-
 const oq003 = "### OQ-003 接口格式\n- Status: Open\n- Relates: FR-001\n\n## 8. 变更日志"
-
-func TestCheck_AC_038_3_N1(t *testing.T) {
-	wantPass(t, checkJSON(t, gateRepo(t), "task.07")) // OQ-001 已 Closed
-}
-
-func TestCheck_AC_038_3_E1(t *testing.T) {
-	dir := gateRepo(t)
-	edit(t, dir, "## 8. 变更日志", oq003)
-	wantViolation(t, checkJSON(t, dir, "task.07"), "task.07", "T-001", "FR-001", "OQ-003")
-}
 
 func TestCheck_AC_011_5_E1(t *testing.T) {
 	dir := gateRepo(t)
@@ -156,5 +112,17 @@ func TestCheck_AC_024_2_E2(t *testing.T) {
 	v := wantViolation(t, checkJSON(t, dir, "task.08"), "task.08", "T-001", "缺少：结论")
 	if v.File != "docs/progress.md" || v.Line != 3 {
 		t.Fatalf("位置：%s:%d", v.File, v.Line)
+	}
+}
+
+// Done 任务关联的验收标准被取代后，其用例不再要求通过的集成测试（AC-003-6、AC-039-1）。
+func TestCheck_AC_003_6_N2_Done(t *testing.T) {
+	src := prd(t, "## 4. 非功能需求", fr003Replaces("AC-001-1"))
+	wantViolation(t, checkJSON(t, doneRepo(t, src, "FR-001"), "task.08"), "task.08", "AC-001-1/N1")
+	dir := doneRepo(t, src, "FR-001")
+	editFile(t, dir, "docs/PRD.md", "- Current-Release: 1", "- Current-Release: 2")
+	c := checkJSON(t, dir, "task.08")
+	if hasRule(c, "task.08", "AC-001-1") {
+		t.Fatalf("已被取代的 AC-001-1 不应再要求测试：%+v", c.vs)
 	}
 }

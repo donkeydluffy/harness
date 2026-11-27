@@ -663,10 +663,15 @@ func coveredRequirement(s *workspace.Snapshot, ref string) string {
 	return ref
 }
 
-// taskCases 返回任务关联条目涉及的有效用例：关联 FR 或 NFR 时为其下全部用例，关联 AC 时为该 AC 下的用例（ADR-008）。
+// taskCases 返回任务关联条目涉及的有效用例：关联 FR 或 NFR 时为其下全部用例，关联 AC 时为该 AC 下的用例（ADR-008）；
+// 已删除或已生效地被取代的需求与验收标准下的用例不计（AC-003-6）。
 func taskCases(s *workspace.Snapshot, t *model.Entity) []string {
 	var out []string
-	add := func(it *model.Item) {
+	add := func(it *model.Item, e *model.Entity) {
+		// 被取代或已删除的需求与验收标准不再要求测试，与 test.02 一致（AC-003-6）
+		if e.Fields["Status"] != "Active" || replacedBy(s, e.ID) != "" || replacedBy(s, it.ID) != "" {
+			return
+		}
 		for _, c := range it.Children {
 			if !workspace.CaseRemoved(c.Text) && !contains(out, c.ID) {
 				out = append(out, c.ID)
@@ -675,14 +680,14 @@ func taskCases(s *workspace.Snapshot, t *model.Entity) []string {
 	}
 	for _, ref := range t.List("Covers") {
 		if strings.HasPrefix(ref, "AC-") {
-			if it, _ := acItem(s, ref); it != nil {
-				add(it)
+			if it, e := acItem(s, ref); it != nil {
+				add(it, e)
 			}
 			continue
 		}
 		if e := s.Project.ByID[ref]; e != nil && (e.Kind == "FR" || e.Kind == "NFR") {
 			for _, it := range e.Items {
-				add(it)
+				add(it, e)
 			}
 		}
 	}

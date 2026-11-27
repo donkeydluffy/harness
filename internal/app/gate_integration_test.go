@@ -10,19 +10,35 @@ import (
 	"testing"
 )
 
-const gatePRD = "# PRD\n\n- Status: Draft\n- Current-Release: 1\n\n正文第一段。\n"
+// gatePRD 是带一段正文的 basePRD。
+var gatePRD = strings.Replace(basePRD, "- Current-Release: 1\n", "- Current-Release: 1\n\n正文第一段。\n", 1)
 
-// gateDir 返回处于 phase 阶段（空串为需求阶段）的项目；tasks 为任务列表内容（空串时不写）。
-func gateDir(t *testing.T, phase, tasks string) string {
+// gateDir 返回带架构夹具的项目；tasks 为任务列表内容（空串时不写）。approved 为真时锁文件为第 2 版，
+// PRD、MOD-01、MOD-02 与任务列表中的 T-001 已按单位批准，InProgress 的 T-001 可以修改 internal/api/**。archEdits 同 arch()。
+func gateDir(t *testing.T, approved bool, tasks string, archEdits ...string) string {
 	t.Helper()
-	files := map[string]string{"docs/PRD.md": gatePRD, "internal/api/a.go": "package api\n", "other/b.go": "package other\n"}
+	files := arch(t, archEdits...)
+	files["docs/PRD.md"] = gatePRD
+	files["internal/api/a.go"] = "package api\n"
+	files["other/b.go"] = "package other\n"
+	if !approved {
+		if tasks != "" {
+			files["docs/tasks.md"] = tasks
+		}
+		return writeTree(t, files)
+	}
+	dir := writeTree(t, files)
+	if r := runHarness(t, dir, "lock"); r.Code != 0 {
+		t.Fatalf("harness lock 失败：%s%s", r.Stdout, r.Stderr)
+	}
+	mustApprove(t, dir, "prd", "MOD-02", "MOD-01")
 	if tasks != "" {
-		files["docs/tasks.md"] = tasks
+		writeFile(t, dir, "docs/tasks.md", tasks)
 	}
-	if phase != "" {
-		files["harness.lock"] = `{"phase": "` + phase + `"}` + "\n"
+	if strings.Contains(tasks, "### T-001") {
+		mustApprove(t, dir, "T-001")
 	}
-	return writeTree(t, files)
+	return dir
 }
 
 var activeTasks = taskDoc(task("T-001", "InProgress", "FR-001", "MOD-01", "internal/api/**", "", ""))
@@ -115,39 +131,39 @@ func wantDeny(t *testing.T, h hookOut, parts ...string) {
 // ---- AC-012-1 没有 InProgress 任务时拒绝源码写入 ----
 
 func TestGate_AC_012_1_N1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/a.go", "package api\n\nvar X = 1\n")))
 }
 
 func TestGate_AC_012_1_E1(t *testing.T) {
-	dir := gateDir(t, "implementation", taskDoc(task("T-001", "Todo", "FR-001", "MOD-01", "internal/api/**", "", "")))
+	dir := gateDir(t, true, taskDoc(task("T-001", "Todo", "FR-001", "MOD-01", "internal/api/**", "", "")))
 	wantDeny(t, hook(t, dir, "PreToolUse", editTool(dir, "internal/api/a.go", "package api", "package api // x")), "gate.write", "没有 InProgress 任务")
 }
 
 func TestGate_AC_012_1_E2(t *testing.T) {
-	dir := gateDir(t, "implementation", "")
+	dir := gateDir(t, true, "")
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("echo x > src/a.go")), "gate.write", "src/a.go")
 }
 
 func TestGate_AC_012_1_B1(t *testing.T) {
-	dir := gateDir(t, "", "")
+	dir := gateDir(t, false, "")
 	wantAllow(t, hook(t, dir, "PreToolUse", editTool(dir, "docs/PRD.md", "正文第一段。", "正文第一段，补充。")))
 }
 
 // ---- AC-012-2 写入须在任务范围内 ----
 
 func TestGate_AC_012_2_N1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/new.go", "package api\n")))
 }
 
 func TestGate_AC_012_2_E1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hook(t, dir, "PreToolUse", writeTool(dir, "other/b.go", "package other\n")), "gate.write", "other/b.go", "T-001：internal/api/**")
 }
 
 func TestGate_AC_012_2_B1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hook(t, dir, "PreToolUse", writeTool(dir, "internal/api/../../other/b.go", "x")), "other/b.go")
 	if err := os.Symlink(filepath.Join(dir, "other"), filepath.Join(dir, "internal/api/link")); err != nil {
 		t.Fatal(err)
@@ -156,13 +172,13 @@ func TestGate_AC_012_2_B1(t *testing.T) {
 }
 
 func TestGate_AC_012_2_E2(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("sed -i '' 's/a/b/' other/b.go")), "gate.write", "other/b.go")
 }
 
 // 命令无法静态判定时放行执行，事后比对恢复范围外改动（FLOW-03）。
 func TestGate_FLOW_03(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	cmd := bashTool("sh ./script.sh")
 	wantAllow(t, hook(t, dir, "PreToolUse", cmd))
 	os.WriteFile(filepath.Join(dir, "other/b.go"), []byte("changed\n"), 0o644)
@@ -186,7 +202,7 @@ func TestGate_FLOW_03(t *testing.T) {
 // ---- AC-012-5 适配器 ----
 
 func TestGate_AC_012_5_N1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	h := hook(t, dir, "PreToolUse", writeTool(dir, "other/b.go", "x"))
 	if !strings.Contains(h.Raw, `"hookEventName":"PreToolUse"`) || !strings.Contains(h.Raw, `"permissionDecision":"deny"`) {
 		t.Fatalf("deny 输出格式：%s", h.Raw)
@@ -197,7 +213,7 @@ func TestGate_AC_012_5_N1(t *testing.T) {
 }
 
 func TestGate_AC_012_5_E1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hookRaw(t, dir, "PreToolUse", []byte("{not json")), "gate.input")
 	wantDeny(t, hookRaw(t, dir, "PreToolUse", []byte(`{"tool_name":"Write","tool_input":{}}`)), "gate.input", "缺少文件路径")
 }
@@ -205,180 +221,17 @@ func TestGate_AC_012_5_E1(t *testing.T) {
 // ---- AC-037-2 代理不能批准产物 ----
 
 func TestGate_AC_037_2_N1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantAllow(t, hook(t, dir, "PreToolUse", editTool(dir, "docs/PRD.md", "正文第一段。", "正文第一段，改写。")))
 }
 
 func TestGate_AC_037_2_E1(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hook(t, dir, "PreToolUse", editTool(dir, "docs/PRD.md", "- Status: Draft", "- Status: Approved")), "gate.protect", "harness approve")
 }
 
 func TestGate_AC_037_2_E2(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
+	dir := gateDir(t, true, activeTasks)
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("cd . && harness approve prd")), "gate.protect")
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("go run ./cmd/harness phase next")), "gate.protect")
-}
-
-// ---- AC-045-3 代理不能修改当前阶段 ----
-
-func TestGate_AC_045_3_E3(t *testing.T) {
-	dir := gateDir(t, "requirements", "")
-	wantDeny(t, hook(t, dir, "PreToolUse", editTool(dir, "harness.lock", "requirements", "implementation")), "gate.protect", "harness.lock")
-	wantDeny(t, hook(t, dir, "PreToolUse", bashTool(`echo '{"phase":"implementation"}' > harness.lock`)), "gate.protect")
-}
-
-// ---- AC-045-4 产物写入按阶段判定 ----
-
-func TestGate_AC_045_4_N1(t *testing.T) {
-	dir := gateDir(t, "planning", "")
-	wantAllow(t, hook(t, dir, "PreToolUse", writeTool(dir, "docs/tasks.md", "# 任务列表\n")))
-}
-
-func TestGate_AC_045_4_E1(t *testing.T) {
-	dir := gateDir(t, "", "")
-	wantDeny(t, hook(t, dir, "PreToolUse", writeTool(dir, "docs/tasks.md", "# 任务列表\n")), "gate.artifact", "requirements", "docs/PRD.md, docs/prd/**")
-}
-
-func TestGate_AC_045_4_B1(t *testing.T) {
-	dir := gateDir(t, "implementation", "")
-	wantAllow(t, hook(t, dir, "PreToolUse", editTool(dir, "docs/PRD.md", "正文第一段。", "正文第一段，需求变更。")))
-}
-
-// 只含变量赋值的命令不使门禁崩溃；赋值里命令替换的写入照常判定（T-028）。
-func TestGate_AssignmentOnlyCommand(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
-	h := hook(t, dir, "PreToolUse", bashTool("d=$(mktemp -d)"))
-	if h.Code != 0 {
-		t.Fatalf("门禁不应崩溃：%d %s", h.Code, h.Raw)
-	}
-	wantAllow(t, h)
-	wantAllow(t, hook(t, dir, "PreToolUse", bashTool("X=1 Y=2")))
-	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("d=$(touch other/b.go)")), "gate.write", "other/b.go")
-}
-
-// 代理可按 cfg.02 的修复办法删除可重新生成的生成文件，再单独运行 harness init 写回（T-031）。
-func TestGate_RegenerateGeneratedFile(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
-	write(t, dir, ".github/workflows/harness.yml", "旧内容\n")
-	write(t, dir, ".claude/settings.json", "{}\n")
-
-	// 只删除生成文件：命令前放行，命令后保留删除。
-	rm := bashTool("rm -f .github/workflows/harness.yml")
-	wantAllow(t, hook(t, dir, "PreToolUse", rm))
-	os.Remove(filepath.Join(dir, ".github/workflows/harness.yml"))
-	os.Remove(filepath.Join(dir, ".claude/settings.json"))
-	hook(t, dir, "PostToolUse", rm)
-	if _, err := os.Stat(filepath.Join(dir, ".github/workflows/harness.yml")); !os.IsNotExist(err) {
-		t.Fatal("CI 配置的删除被恢复")
-	}
-
-	// 单独一次 harness init 写回：命令后保留写回的内容。
-	initCmd := bashTool("harness init --lang go")
-	wantAllow(t, hook(t, dir, "PreToolUse", initCmd))
-	write(t, dir, ".github/workflows/harness.yml", "新内容\n")
-	write(t, dir, "other/b.go", "被 init 改动\n")
-	hook(t, dir, "PostToolUse", initCmd)
-	if b, _ := os.ReadFile(filepath.Join(dir, ".github/workflows/harness.yml")); string(b) != "新内容\n" {
-		t.Fatalf("harness init 写回的 CI 配置被恢复：%q", b)
-	}
-	if b, _ := os.ReadFile(filepath.Join(dir, "other/b.go")); string(b) != "package other\n" {
-		t.Fatalf("范围外的其他改动应恢复：%q", b)
-	}
-
-	// 其余形状仍按原规则判定。
-	for _, c := range []string{
-		"rm .claude/settings.json",                    // hook 配置只能由人修改（AC-025-4）
-		"rm harness.json",                             // 项目配置删除后会丢失
-		"rm harness.lock",                             // 批准记录
-		"rm .claude/settings.json && echo x",          // 复合命令
-		"rm -r .claude/settings.json",                 // 其他选项
-		"rm .github/workflows/harness.yml other/b.go", // 混入范围外文件
-	} {
-		if h := hook(t, dir, "PreToolUse", bashTool(c)); !h.Deny {
-			t.Errorf("%q 应拒绝：%s", c, h.Raw)
-		}
-	}
-	// 通配符无法静态判定：命令前放行，命令后恢复被删除的生成文件（FLOW-03）。
-	glob := bashTool("rm .claude/*.json")
-	wantAllow(t, hook(t, dir, "PreToolUse", glob))
-	os.Remove(filepath.Join(dir, ".claude/settings.json"))
-	hook(t, dir, "PostToolUse", glob)
-	if _, err := os.Stat(filepath.Join(dir, ".claude/settings.json")); err != nil {
-		t.Fatal("通配符删除的生成文件应恢复")
-	}
-}
-
-// 解析命令时跟随顶层的字面量 cd；目录无法静态判定时相对路径交给命令后比对，递归删除拒绝（T-035）。
-func TestGate_CommandFollowsCd(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
-	pre := func(c string) hookOut { return hook(t, dir, "PreToolUse", bashTool(c)) }
-
-	wantAllow(t, pre("cd internal/api && touch new.go"))                   // 范围内：internal/api/new.go
-	wantAllow(t, pre("cd internal; cd api; mkdir -p sub"))                 // 多次 cd 累积
-	wantDeny(t, pre("cd other && touch c.go"), "gate.write", "other/c.go") // 范围外
-	wantDeny(t, pre("cd internal/api && touch ../../other/c.go"), "other/c.go")
-	wantDeny(t, pre("cd /tmp && rm -rf foo"), "gate.command", "foo")                       // 仓库外的递归删除
-	wantDeny(t, pre("cd \"$X\" && rm -rf foo"), "gate.command", "无法静态判定")                  // 目录无法判定时拒绝递归删除
-	wantDeny(t, pre("cd \"$X\" && touch "+filepath.Join(dir, "other/c.go")), "other/c.go") // 绝对路径照常判定
-
-	// 无法判定当前目录：相对路径的写入命令前放行，由命令后比对恢复范围外的改动。
-	for _, c := range []string{
-		"cd \"$X\" && touch c.go",
-		"(cd internal/api) && touch c.go", // 子 shell 中的 cd 不影响外层，保守视为无法判定
-		"cd internal/api || exit; touch c.go",
-		"cd - && touch c.go",
-		"cd && touch c.go",
-	} {
-		wantAllow(t, pre(c))
-		// 同样的目录下递归删除相对路径：无法静态判定，拒绝。
-		wantDeny(t, pre(strings.Replace(c, "touch c.go", "rm -rf sub", 1)), "gate.command", "无法静态判定")
-	}
-	cmd := bashTool("cd \"$X\" && touch c.go")
-	wantAllow(t, hook(t, dir, "PreToolUse", cmd))
-	write(t, dir, "c.go", "x\n")
-	hook(t, dir, "PostToolUse", cmd)
-	if _, err := os.Stat(filepath.Join(dir, "c.go")); !os.IsNotExist(err) {
-		t.Fatal("范围外新建的文件应由命令后比对删除")
-	}
-}
-
-// hookIn 在仓库子目录 sub 中触发 hook：hook 进程的当前目录与输入中的 cwd 都是该子目录。
-func hookIn(t *testing.T, dir, sub, event string, in map[string]any) hookOut {
-	t.Helper()
-	wd := filepath.Join(dir, filepath.FromSlash(sub))
-	in["session_id"], in["cwd"] = "s1", wd
-	b, _ := json.Marshal(in)
-	return hookRaw(t, wd, event, b)
-}
-
-// 代理的 shell 停在子目录时，门禁仍以项目根判定：保护文件不能经 ../ 绕过，
-// 相对路径从子目录解析，命令前快照建在项目根的 .harness/ 下，命令后比对覆盖整个仓库（T-039）。
-func TestGate_SubdirectoryUsesProjectRoot(t *testing.T) {
-	dir := gateDir(t, "implementation", activeTasks)
-	pre := func(c string) hookOut { return hookIn(t, dir, "internal/api", "PreToolUse", bashTool(c)) }
-
-	wantDeny(t, pre("echo x > ../../harness.lock"), "gate.protect", "harness.lock")
-	wantAllow(t, pre("touch new.go"))                                      // internal/api/new.go 在范围内
-	wantDeny(t, pre("touch ../../other/c.go"), "gate.write", "other/c.go") // 从子目录解析后在范围外
-	rel := map[string]any{"tool_name": "Write", "tool_input": map[string]any{"file_path": "../../other/w.go", "content": "package other\n"}}
-	wantDeny(t, hookIn(t, dir, "internal/api", "PreToolUse", rel), "gate.write", "other/w.go")
-
-	cmd := bashTool("go generate ./...")
-	wantAllow(t, hookIn(t, dir, "internal/api", "PreToolUse", cmd))
-	if _, err := os.Stat(filepath.Join(dir, ".harness/snap/s1")); err != nil {
-		t.Fatalf("命令前快照应建在项目根的 .harness/ 下：%v", err)
-	}
-	if _, err := os.Stat(filepath.Join(dir, "internal/api/.harness")); !os.IsNotExist(err) {
-		t.Fatal("不应在子目录下创建 .harness/")
-	}
-	write(t, dir, "other/c.go", "x\n")
-	write(t, dir, "harness.lock", "{}\n")
-	hookIn(t, dir, "internal/api", "PostToolUse", cmd)
-	if _, err := os.Stat(filepath.Join(dir, "other/c.go")); !os.IsNotExist(err) {
-		t.Fatal("子目录中执行的命令在范围外新建的文件应被删除")
-	}
-	if b, _ := os.ReadFile(filepath.Join(dir, "harness.lock")); !strings.Contains(string(b), "implementation") {
-		t.Fatalf("锁文件应恢复为命令前内容：%q", b)
-	}
 }

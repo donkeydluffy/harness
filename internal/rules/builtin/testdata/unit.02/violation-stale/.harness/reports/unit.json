@@ -1,0 +1,16 @@
+{
+  "sourceHash": "sha256:0",
+  "interfaces": {
+    "IF-001": {
+      "tests": [
+        "TestA_IF_001"
+      ],
+      "passed": true,
+      "entryHit": true
+    }
+  },
+  "modules": {
+    "MOD-01": 100
+  },
+  "skipped": []
+}

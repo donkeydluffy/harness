@@ -1,4 +1,4 @@
-// Package lock 负责内容规范化与哈希、harness.lock 读写、批准记录与当前阶段（MOD-06）。
+// Package lock 负责内容规范化与哈希、harness.lock 读写、批准记录（MOD-06）。
 package lock
 
 import (

@@ -316,3 +316,7 @@
 ### 2026-11-27 T-063
 - 结论：plan、clarify、architect、implement 四个 skill 模板的描述去掉"某阶段："前缀，plan 中"回到需求或架构阶段澄清"改为"先澄清需求或修改设计，并重新批准"；模板中不再有阶段的说法。
 - 遗留：本仓库的 `.claude/skills` 由人从模板同步。
+
+### 2026-11-27 T-066
+- 结论：去掉代码与测试中阶段的残留：app、lock、engine、builtin 中关于阶段的注释（覆盖类规则改为说明由 CI 中的全量检查保证）；"新增流程阶段"扩展场景的示例与两个测试；确定性测试中的 `harness phase list`；workspace 配置中未使用的 `phases` 字段（harness.json 中存在时仍被忽略）。AC-048-1 要求的 `harness phase` 提示与锁文件旧 `phase` 字段的处理及其测试保留。
+- 遗留：门禁对 `harness phase next` 的拦截由 T-067 删除。

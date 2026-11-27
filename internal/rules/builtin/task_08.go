@@ -11,7 +11,7 @@ import (
 
 // task08：Done 任务的完成定义：所关联条目涉及的用例都有通过的集成测试；进度文件有该任务的记录
 // （含结论与遗留问题）；除覆盖类规则外的全量检查通过。覆盖类规则 test.02、arch.05 要求全部用例与扩展点，
-// 由实现阶段的退出规则保证，这里不计入，否则在全部任务完成前没有任务能 Done。
+// 由 CI 中的全量检查保证，这里不计入，否则在全部任务完成前没有任务能 Done。
 type task08 struct{}
 
 func (task08) Needs() engine.Input { return engine.InputSources | engine.InputTests | engine.InputGit }

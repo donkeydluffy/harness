@@ -30,7 +30,7 @@ func TestDiagnosticsReportedOnce(t *testing.T) {
 	if len(s.Diags) < len(files) {
 		t.Fatalf("夹具应在每个文件产生诊断：%v", s.Diags)
 	}
-	// 各文件的诊断应由哪条规则报告：阶段的退出规则按区域选取（如架构阶段的 arch.*），归属不能错。
+	// 各文件的诊断应由哪条规则报告：按区域选取规则时（如 harness check arch）归属不能错。
 	owner := map[string]string{
 		"docs/PRD.md": "doc.01", "docs/progress.md": "doc.01",
 		"docs/architecture/overview.md": "arch.01", "docs/tasks.md": "task.01",

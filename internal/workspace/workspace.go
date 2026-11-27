@@ -166,7 +166,6 @@ type Config struct {
 	CommitMaxLines    int               `json:"commitMaxLines"`
 	StopMaxBlocks     int               `json:"stopMaxBlocks"`
 	StaleCommits      int               `json:"staleCommits"`
-	Phases            []json.RawMessage `json:"phases"`
 	Rules             []json.RawMessage `json:"rules"`
 	// Tools 按语言覆盖格式化检查（format）与静态检查（lint）命令（AC-014-3）。
 	Tools map[string]map[string]string `json:"tools"`

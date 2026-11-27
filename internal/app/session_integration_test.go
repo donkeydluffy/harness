@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// sessionDir 返回全量检查（不含覆盖类规则）通过的项目：PRD 与架构夹具，处于实现阶段。
+// sessionDir 返回全量检查（不含覆盖类规则）通过的项目：PRD 与架构夹具已批准。
 func sessionDir(t *testing.T, extra map[string]string) string {
 	t.Helper()
 	files := traced(t, basePRD)

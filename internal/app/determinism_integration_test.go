@@ -66,7 +66,7 @@ func TestCheck_AC_N001_1_N1(t *testing.T) {
 		out, _ := cmd.CombinedOutput()
 		return string(out)
 	}
-	for _, args := range [][]string{{"check", "--json"}, {"check"}, {"trace", "--format", "json"}, {"phase", "list"}} {
+	for _, args := range [][]string{{"check", "--json"}, {"check"}, {"trace", "--format", "json"}} {
 		online, off := run(nil, args...), run(offline, args...)
 		if online != off || online != run(nil, args...) {
 			t.Errorf("harness %s 的结果不一致：\n%s\n----\n%s", strings.Join(args, " "), online, off)

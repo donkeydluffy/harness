@@ -642,3 +642,23 @@ task.08 计算 Done 任务应有集成测试的用例时，跳过已生效地被
 - Depends: T-064
 
 trace.03 检查 ADR 的 Relates 时只要求编号存在，不再报告 Removed、Superseded 与已被取代的引用（AC-007-5/B3）；其他设计元素照常检查。
+
+### T-066 代码中阶段的残留
+- Status: Done
+- Covers: FR-048
+- Design: MOD-02, MOD-04, MOD-05, MOD-06, MOD-09, FLOW-08
+- Flow: FLOW-08
+- Scope: internal/app/**, internal/lock/**, internal/rules/engine/**, internal/rules/builtin/**, internal/workspace/**
+- Depends: T-065
+
+去掉代码与测试中阶段的残留：注释中关于阶段的说法（覆盖类规则改为说明由 CI 中的全量检查保证）；"新增流程阶段"这一已被取代的扩展场景的测试；确定性测试中的 `harness phase list`；harness.json 中未使用的 `phases` 字段（存在时仍被忽略）。AC-048-1 要求的 `harness phase` 提示与锁文件中旧 `phase` 字段的处理及其测试保留。
+
+### T-067 门禁去掉 harness phase next 的拦截
+- Status: Todo
+- Covers: FR-048
+- Design: MOD-11, IF-017, FLOW-02
+- Flow: FLOW-02
+- Scope: internal/gate/**, internal/app/**
+- Depends: T-066
+
+`harness phase next` 已不存在，门禁只拦截 harness approve；删除对应的测试断言。

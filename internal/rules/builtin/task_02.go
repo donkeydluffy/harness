@@ -8,7 +8,7 @@ import (
 )
 
 // task02：纳入范围的 Active FR 被任务覆盖：直接关联，或其每条有效验收标准都被关联（ADR-008）。
-// 没有任务列表（规划阶段之前）时不检查。
+// 还没有任务列表时不检查。
 type task02 struct{}
 
 func (task02) ID() string       { return "task.02" }

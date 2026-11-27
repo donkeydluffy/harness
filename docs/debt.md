@@ -150,3 +150,9 @@ T-028 只豁免以 `/`、`./`、`~/` 开头的路径。`docs/architecture/module
 - Module: MOD-11
 
 在 `internal/scaffold/templates/artifacts/docs` 下执行命令时，门禁向上找到 `templates/artifacts/docs/PRD.md`，把 `templates/artifacts` 当作项目根，在其中写入 `.harness/snap/<会话>/`；这些文件随后被嵌入模板，init 的集成测试失败（2026-11-27 遇到）。项目根应以 harness.json 或 git 仓库根判定，不以 docs/PRD.md 判定。
+
+### DEBT-020 清除"未完成"段时连带删掉其后的进度记录
+- Status: Open
+- Module: MOD-11
+
+门禁在会话结束检查连续阻止 3 次后把未通过项写入 docs/progress.md 末尾的"## 未完成"段；检查通过后清除该段，但段的结束只认下一个 `## ` 标题，而进度记录是 `### ` 标题，追加在该段之后的记录被一并删除（2026-11-27 T-059 的记录因此丢失，此前 T-049 的记录也丢过一次）。修复方向：把"未完成"段的正文限定为门禁自己写入的内容（如以结束标记收尾），或写入时放在文件开头、追加记录时插到它之前；补"段后追加的记录在清除后保留"的用例。

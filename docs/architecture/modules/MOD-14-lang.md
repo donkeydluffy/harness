@@ -83,8 +83,9 @@ type Analyzer interface {
 	Anchors(path string, src []byte) []Decl
 	// Resolve 把 import 路径解析为仓库相对目录；标准库与第三方包 ok 为 false。
 	Resolve(root, importPath string) (dir string, ok bool)
-	// Coverage 运行名称匹配 pattern 的单元测试并返回结果与已执行的行（文件 -> 行号）；pattern 为空时运行全部单元测试。
-	Coverage(root, pattern string) (passed bool, tests []string, executed map[string][]int, err error)
+	// Coverage 运行名称匹配 pattern 的单元测试，返回结果、已执行的行与全部含语句的行（文件 -> 行号，ADR-013）；
+	// pattern 为空时运行全部单元测试。
+	Coverage(root, pattern string) (passed bool, tests []string, executed, statements map[string][]int, err error)
 }
 func AnalyzerFor(path string) (Analyzer, bool)
 ```

@@ -78,6 +78,9 @@ func (Lang) Anchors(p string, src []byte) []spec.Decl {
 				if fn, ok := d.(*ast.FuncDecl); ok && fn.Body != nil {
 					end = fset.Position(fn.Body.Lbrace).Offset
 					dc.EntryLine = fset.Position(fn.Body.Lbrace).Line
+					if len(fn.Body.List) > 0 { // 覆盖率的语句块从第一条语句开始
+						dc.EntryLine = fset.Position(fn.Body.List[0].Pos()).Line
+					}
 				}
 				dc.Signature = Normalize(src[start:end])
 			}
@@ -205,12 +208,12 @@ func (l Lang) Resolve(root, importPath string) (string, bool) {
 	return "", false
 }
 
-// Coverage 运行 go test -coverprofile -coverpkg=./...，返回是否全部通过、运行过的测试名与已执行的行。
+// Coverage 运行 go test -coverprofile -coverpkg=./...，返回是否全部通过、运行过的测试名、已执行的行与含语句的行。
 // pattern 为空时运行全部单元测试：名称含 _AC_ 的集成测试被跳过。
-func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, error) {
+func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, map[string][]int, error) {
 	prof, err := os.CreateTemp("", "harness-cover-*.out")
 	if err != nil {
-		return false, nil, nil, err
+		return false, nil, nil, nil, err
 	}
 	prof.Close()
 	defer os.Remove(prof.Name())
@@ -224,7 +227,7 @@ func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, 
 	cmd.Dir = root
 	out, runErr := cmd.Output()
 	if _, ok := runErr.(*exec.ExitError); runErr != nil && !ok {
-		return false, nil, nil, runErr
+		return false, nil, nil, nil, runErr
 	}
 	seen := map[string]bool{}
 	var tests []string
@@ -240,20 +243,21 @@ func (l Lang) Coverage(root, pattern string) (bool, []string, map[string][]int, 
 	sort.Strings(tests)
 	profile, err := os.ReadFile(prof.Name())
 	if err != nil {
-		return false, tests, nil, err
+		return false, tests, nil, nil, err
 	}
-	executed := l.executed(root, profile)
-	return runErr == nil, tests, executed, nil
+	executed, statements := l.lines(root, profile)
+	return runErr == nil, tests, executed, statements, nil
 }
 
-// executed 解析覆盖率文件，返回执行次数大于 0 的语句块覆盖的行（仓库相对路径 -> 升序行号）。
-func (l Lang) executed(root string, profile []byte) map[string][]int {
-	lines := map[string]map[int]bool{}
+// lines 解析覆盖率文件，返回执行次数大于 0 的语句块覆盖的行与语句数大于 0 的语句块覆盖的行（仓库相对路径 -> 升序行号）。
+// 空函数体是语句数为 0 的块，执行过时计入 executed，供判断入口行。
+func (l Lang) lines(root string, profile []byte) (map[string][]int, map[string][]int) {
+	hit, stmt := map[string]map[int]bool{}, map[string]map[int]bool{}
 	for _, row := range strings.Split(string(profile), "\n")[1:] {
 		// <import 路径>/<文件>:<起始行>.<列>,<结束行>.<列> <语句数> <次数>
 		colon := strings.LastIndex(row, ":")
 		f := strings.Fields(row[colon+1:])
-		if colon < 0 || len(f) != 3 || f[2] == "0" {
+		if colon < 0 || len(f) != 3 {
 			continue
 		}
 		dir, ok := l.Resolve(root, path.Dir(row[:colon]))
@@ -267,15 +271,27 @@ func (l Lang) executed(root string, profile []byte) map[string][]int {
 		if len(ranges) == 2 {
 			b, _ = strconv.Atoi(strings.SplitN(ranges[1], ".", 2)[0])
 		}
-		if lines[file] == nil {
-			lines[file] = map[int]bool{}
-		}
-		for n := a; n <= b; n++ {
-			lines[file][n] = true
-		}
+		mark(hit, file, a, b, f[2] != "0")
+		mark(stmt, file, a, b, f[1] != "0")
 	}
+	return sorted(hit), sorted(stmt)
+}
+
+func mark(m map[string]map[int]bool, file string, a, b int, ok bool) {
+	if !ok {
+		return
+	}
+	if m[file] == nil {
+		m[file] = map[int]bool{}
+	}
+	for n := a; n <= b; n++ {
+		m[file][n] = true
+	}
+}
+
+func sorted(m map[string]map[int]bool) map[string][]int {
 	out := map[string][]int{}
-	for file, set := range lines {
+	for file, set := range m {
 		for n := range set {
 			out[file] = append(out[file], n)
 		}

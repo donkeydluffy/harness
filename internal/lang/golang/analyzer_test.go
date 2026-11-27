@@ -56,7 +56,7 @@ var x = 1
 func TestAnchors_IF_035(t *testing.T) {
 	got := Lang{}.Anchors("a/a.go", []byte(anchored))
 	want := []spec.Decl{
-		{ID: "IF-022", File: "a/a.go", Line: 5, EntryLine: 6, Signature: "func Check(root string) error"},
+		{ID: "IF-022", File: "a/a.go", Line: 5, EntryLine: 7, Signature: "func Check(root string) error"},
 		{ID: "IF-023", File: "a/a.go", Line: 10, Signature: "type T struct { A int }"},
 		{ID: "IF-024", File: "a/a.go", Line: 15},
 	}
@@ -105,21 +105,25 @@ func TestCoverage_IF_035(t *testing.T) {
 	dir := t.TempDir()
 	files := map[string]string{
 		"go.mod":      "module example.com/m\n\ngo 1.21\n",
-		"a/a.go":      "package a\n\nfunc A(x int) int {\n\tif x > 0 {\n\t\treturn 1\n\t}\n\treturn 0\n}\n",
-		"a/a_test.go": "package a\n\nimport \"testing\"\n\nfunc TestA_IF_001(t *testing.T) { A(1) }\n\nfunc TestA_AC_001_1_N1(t *testing.T) { A(0) }\n",
+		"a/a.go":      "package a\n\nfunc A(x int) int {\n\tif x > 0 {\n\t\treturn 1\n\t}\n\treturn 0\n}\n\nfunc B() {}\n",
+		"a/a_test.go": "package a\n\nimport \"testing\"\n\nfunc TestA_IF_001(t *testing.T) { A(1); B() }\n\nfunc TestA_AC_001_1_N1(t *testing.T) { A(0) }\n",
 	}
 	for p, c := range files {
 		os.MkdirAll(filepath.Join(dir, filepath.Dir(p)), 0o755)
 		os.WriteFile(filepath.Join(dir, p), []byte(c), 0o644)
 	}
-	passed, tests, executed, err := Lang{}.Coverage(dir, "")
+	passed, tests, executed, statements, err := Lang{}.Coverage(dir, "")
 	if err != nil || !passed || !reflect.DeepEqual(tests, []string{"TestA_IF_001"}) {
 		t.Fatalf("应只运行单元测试：%v %v %v", passed, tests, err)
 	}
-	if got := executed["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 6}) {
+	// 空函数体 B 是语句数为 0 的块：执行过，但不算含语句的行
+	if got := executed["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 6, 10}) {
 		t.Fatalf("已执行的行：%v", executed)
 	}
-	if _, tests, _, _ := (Lang{}).Coverage(dir, "TestA_AC"); !reflect.DeepEqual(tests, []string{"TestA_AC_001_1_N1"}) {
+	if got := statements["a/a.go"]; !reflect.DeepEqual(got, []int{4, 5, 6, 7}) {
+		t.Fatalf("含语句的行：%v", statements)
+	}
+	if _, tests, _, _, _ := (Lang{}).Coverage(dir, "TestA_AC"); !reflect.DeepEqual(tests, []string{"TestA_AC_001_1_N1"}) {
 		t.Fatalf("pattern：%v", tests)
 	}
 }

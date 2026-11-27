@@ -101,7 +101,7 @@ IF-034
 func PackFor(name string) (Pack, bool)
 
 IF-035
-type Analyzer interface { Imports(src []byte) []Import; ModuleDecl(path string, src []byte) (mod string, line int, ok bool); Anchors(path string, src []byte) []Decl; Resolve(root, importPath string) (dir string, ok bool); Coverage(root, pattern string) (passed bool, tests []string, executed map[string][]int, err error) }
+type Analyzer interface { Imports(src []byte) []Import; ModuleDecl(path string, src []byte) (mod string, line int, ok bool); Anchors(path string, src []byte) []Decl; Resolve(root, importPath string) (dir string, ok bool); Coverage(root, pattern string) (passed bool, tests []string, executed, statements map[string][]int, err error) }
 
 IF-036
 func Load(s *workspace.Snapshot, builtin []string) ([]engine.Rule, []engine.Violation)

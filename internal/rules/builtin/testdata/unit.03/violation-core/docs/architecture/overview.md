@@ -1,0 +1,12 @@
+# 架构总览
+
+- Status: Draft
+
+### MOD-01 a
+- Status: Active
+- Paths: internal/a/**
+- Public: internal/a/a.go
+- Depends:
+- Interfaces: IF-001
+- Covers: FR-001
+- Core: true

@@ -879,14 +879,25 @@
       }
     },
     "ADR-013": {
-      "at": "2026-11-27T01:30:50Z",
+      "at": "2026-11-27T02:03:13Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:7bd7978f791945f78f5684375309e5202e812d1c73312c2a4c4b35c6ba2d4f65",
       "text": "# ADR-013 Analyzer.Coverage 同时返回可执行行\n\n- Status: Proposed\n- Relates: FR-021, IF-035, IF-031\n\n## 背景\n\nAC-021-3 要求按模块统计行覆盖率并与 Coverage 阈值比较。IF-035 的 `Coverage` 只返回已执行的行，算不出分母：模块里哪些行含有语句，只有覆盖率文件知道（执行次数为 0 的语句块也在其中）。\n\n## 决策\n\n- `Coverage` 增加返回值 `statements`：覆盖率文件中全部语句块覆盖的行（文件 -> 行号），与 `executed` 同一格式。模块行覆盖率 = 模块路径内 `executed` 的行数 / `statements` 的行数 × 100。\n- 被否决的方案：用模块源文件的非空、非注释行作分母。import、类型声明与右括号都会算作未覆盖，结果明显偏低，阈值失去意义。\n- 被否决的方案：toolrun 自己解析覆盖率文件。覆盖率文件的格式属于具体语言，应留在 Analyzer 内。\n\n## 后果\n\n- IF-035 的签名变化，T-048 已实现的 Go Analyzer 随 T-049 修改；`harness snapshot` 更新接口快照，if.04 由本 ADR 说明这次变化。\n- 一个模块没有任何语句行时（只有类型声明）不计算覆盖率，unit.03 不检查它的阈值。",
       "upstream": {
         "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
-        "IF-031": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
-        "IF-035": "sha256:7c989805539f42a4e001c6b95f757d27c028189c863163a71e57e09cd173a437"
+        "IF-031": "sha256:4eb038dd4c4633aca5ee7e7b3cc88d134b391536529f93b5f5ec7d73477ce88b",
+        "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2"
+      }
+    },
+    "ADR-014": {
+      "at": "2026-11-27T02:03:30Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:1f1d4ac04c2772b2d527f13fe43d5388a2e8f4a978f407da2275974bc823d8e3",
+      "text": "# ADR-014 模块覆盖率计入集成测试与子进程\n\n- Status: Proposed\n- Relates: FR-021, IF-035, IF-031\n\n## 背景\n\nAC-021-3 按模块统计行覆盖率。最初的设计只全量运行单元测试（跳过名称含 `_AC_` 的集成测试），本仓库的 cli、app、gate 主要由集成测试覆盖：集成测试构建 harness 二进制并在子进程中运行。只算单元测试时 cli 为 0%、app 为 8.2%、gate 为 39.6%，与实际的测试程度不符，阈值失去意义。\n\n`go test -cover` 会把测试进程的 `GOCOVERDIR` 改为自己的临时目录，子进程写入的覆盖率数据不会合并进 `-coverprofile`。\n\n## 决策\n\n- 统计模块覆盖率的全量运行包含集成测试。按接口运行的测试仍只取测试名含接口编号的测试。\n- Go Analyzer 全量运行时设置环境变量 `HARNESS_COVERDIR` 为一个临时目录。测试构建被测二进制时，若该变量不为空，以 `go build -cover -coverpkg=<模块路径>/...` 构建，并把子进程的 `GOCOVERDIR` 设为该目录。运行结束后用 `go tool covdata textfmt` 转换，与 `-coverprofile` 合并。\n- 被否决的方案：调低阈值到只算单元测试时的数值。cli、app 的阈值会变成 0 与 5，不再约束什么。\n- 被否决的方案：为 cli、app、gate 补单元测试达到原阈值。要几千行与集成测试重复的测试。\n\n## 后果\n\n- `harness check unit` 的全量运行耗时与一次完整的 `go test ./...` 相当。\n- 用户项目的测试以子进程运行自己的程序时，按同样的约定使用 `HARNESS_COVERDIR`，子进程的覆盖率才会计入；不使用时只统计测试进程内执行的代码。",
+      "upstream": {
+        "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
+        "IF-031": "sha256:4eb038dd4c4633aca5ee7e7b3cc88d134b391536529f93b5f5ec7d73477ce88b",
+        "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2"
       }
     },
     "EXT-01": {
@@ -1763,10 +1774,10 @@
       }
     },
     "IF-031": {
-      "at": "2026-11-26T12:17:58Z",
+      "at": "2026-11-27T02:02:59Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
-      "text": "### IF-031 Unit\n- Module: MOD-16\n- Covers: FR-021\n\n```go\n// IF-031\n// Unit 对每个带锚点的 Active 接口单独运行测试名含其编号的单元测试，记录锚点所在函数入口行是否执行；\n// 再全量运行一次单元测试统计各模块行覆盖率；结果与源码哈希写入 .harness/reports/unit.json（AC-021-2、AC-021-3）。\n// 项目没有支持覆盖率的语言时返回 Skipped 不为空的报告。\nfunc Unit(s *workspace.Snapshot) (*testreport.UnitReport, error)\n```",
+      "hash": "sha256:4eb038dd4c4633aca5ee7e7b3cc88d134b391536529f93b5f5ec7d73477ce88b",
+      "text": "### IF-031 Unit\n- Module: MOD-16\n- Covers: FR-021\n\n```go\n// IF-031\n// Unit 对每个带锚点的 Active 接口单独运行测试名含其编号的单元测试，记录锚点所在函数入口行是否执行；\n// 再全量运行一次测试（含集成测试与其子进程，ADR-014）统计各模块行覆盖率；结果与源码哈希写入 .harness/reports/unit.json（AC-021-2、AC-021-3）。\n// 项目没有支持覆盖率的语言时返回 Skipped 不为空的报告。\nfunc Unit(s *workspace.Snapshot) (*testreport.UnitReport, error)\n```",
       "upstream": {
         "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4"
       }
@@ -1800,10 +1811,10 @@
       }
     },
     "IF-035": {
-      "at": "2026-11-27T01:30:46Z",
+      "at": "2026-11-27T02:02:49Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:7c989805539f42a4e001c6b95f757d27c028189c863163a71e57e09cd173a437",
-      "text": "### IF-035 Analyzer\n- Module: MOD-14\n- Covers: FR-021, FR-050, FR-052, FR-053\n\n```go\n// IF-035\ntype Import struct{ Path string; Line int }\ntype Decl struct {\n\tID        string // 锚点上的接口编号\n\tFile      string\n\tLine      int    // 锚点行\n\tEntryLine int    // 函数或方法体的第一行；类型声明为 0\n\tSignature string // 去掉注释与函数体、空白规范化后的声明\n}\n// Analyzer 是语言的可选接口，Release 2 只有 Go 实现（ADR-012）。\ntype Analyzer interface {\n\tImports(src []byte) []Import\n\t// ModuleDecl 返回模块声明文件（如 go.mod）中的模块路径及其行号；不是该文件时 ok 为 false。\n\tModuleDecl(path string, src []byte) (mod string, line int, ok bool)\n\t// Anchors 返回 `// harness:IF-n` 锚点紧随的声明；锚点后不是声明时 Signature 为空。\n\tAnchors(path string, src []byte) []Decl\n\t// Resolve 把 import 路径解析为仓库相对目录；标准库与第三方包 ok 为 false。\n\tResolve(root, importPath string) (dir string, ok bool)\n\t// Coverage 运行名称匹配 pattern 的单元测试，返回结果、已执行的行与全部含语句的行（文件 -> 行号，ADR-013）；\n\t// pattern 为空时运行全部单元测试。\n\tCoverage(root, pattern string) (passed bool, tests []string, executed, statements map[string][]int, err error)\n}\nfunc AnalyzerFor(path string) (Analyzer, bool)\n```",
+      "hash": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2",
+      "text": "### IF-035 Analyzer\n- Module: MOD-14\n- Covers: FR-021, FR-050, FR-052, FR-053\n\n```go\n// IF-035\ntype Import struct{ Path string; Line int }\ntype Decl struct {\n\tID        string // 锚点上的接口编号\n\tFile      string\n\tLine      int    // 锚点行\n\tEntryLine int    // 函数或方法体的第一行；类型声明为 0\n\tSignature string // 去掉注释与函数体、空白规范化后的声明\n}\n// Analyzer 是语言的可选接口，Release 2 只有 Go 实现（ADR-012）。\ntype Analyzer interface {\n\tImports(src []byte) []Import\n\t// ModuleDecl 返回模块声明文件（如 go.mod）中的模块路径及其行号；不是该文件时 ok 为 false。\n\tModuleDecl(path string, src []byte) (mod string, line int, ok bool)\n\t// Anchors 返回 `// harness:IF-n` 锚点紧随的声明；锚点后不是声明时 Signature 为空。\n\tAnchors(path string, src []byte) []Decl\n\t// Resolve 把 import 路径解析为仓库相对目录；标准库与第三方包 ok 为 false。\n\tResolve(root, importPath string) (dir string, ok bool)\n\t// Coverage 运行名称匹配 pattern 的单元测试，返回结果、已执行的行与全部含语句的行（文件 -> 行号，ADR-013）；\n\t// pattern 为空时运行全部测试（含集成测试），并合并测试经 HARNESS_COVERDIR 收集的子进程覆盖率（ADR-014）。\n\tCoverage(root, pattern string) (passed bool, tests []string, executed, statements map[string][]int, err error)\n}\nfunc AnalyzerFor(path string) (Analyzer, bool)\n```",
       "upstream": {
         "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
         "FR-050": "sha256:816ac65f0cc05099c0ea0f75ae029ef40ac4ad4b821812fa2fd60df7668f566c",
@@ -2794,7 +2805,7 @@
       }
     },
     "T-045": {
-      "at": "2026-11-26T12:48:57Z",
+      "at": "2026-11-27T02:03:40Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:a684fc61cb0313107c51e396c367f8d76e13823b5033d2419fd4c08816e15524",
       "text": "### T-045 外部工具运行器与 lint\n- Covers: AC-014-2, AC-014-3, AC-014-4, AC-014-5\n- Design: MOD-16, IF-030, IF-031, IF-032, IF-033, IF-034, IF-038, FLOW-11\n- Flow: FLOW-11\n- Scope: internal/toolrun/**, internal/lang/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/lint_01.go, internal/rules/builtin/cfg_03.go, internal/rules/builtin/testdata/lint.01/**, internal/rules/builtin/testdata/cfg.03/**, internal/rules/builtin/registry.go\n- Depends: T-044\n\n五种语言的语言配置包（IF-034）；toolrun 的 Lint、Unit、Smoke 运行器与报告读写；`harness check lint|unit|smoke`；规则 lint.01、cfg.03。Unit 的覆盖率采集在 T-049 接入 Go。",
@@ -2802,7 +2813,7 @@
         "FLOW-11": "sha256:4cca329d02de900b1a828292b24b8a40d81b8dc600170e6d6a8b03f32b6e7bbe",
         "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
         "IF-030": "sha256:692b0b050c908f87c589aeff96e7f649ea0ccf6522ef43e3f4a2da0be111ec54",
-        "IF-031": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
+        "IF-031": "sha256:4eb038dd4c4633aca5ee7e7b3cc88d134b391536529f93b5f5ec7d73477ce88b",
         "IF-032": "sha256:856657cd1cbeda2636c4d357481de5bbbeba651dde4a5e7492d59937143c0fe0",
         "IF-033": "sha256:14f032c6bd64269bf30a952afd01fdd5ac3495da071b286a259d2b9b8f21c926",
         "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4",
@@ -2840,7 +2851,7 @@
       }
     },
     "T-048": {
-      "at": "2026-11-27T01:30:57Z",
+      "at": "2026-11-27T02:03:44Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:291c4282cfcc3531516748bab2305dbb5e176ef172f825dc03128beaf8c096c0",
       "text": "### T-048 Go 接口锚点与签名快照\n- Covers: FR-052\n- Design: IF-035, IF-039, IF-014, FLOW-01, FLOW-12\n- Flow: FLOW-01\n- Scope: internal/lang/**, internal/app/**, internal/cli/**, internal/workspace/**, internal/lock/**, internal/model/**, internal/rules/engine/**, internal/rules/builtin/**, internal/rules/custom/**, internal/vcs/**, internal/testreport/**, internal/approval/**\n- Depends: T-047\n\nGo Analyzer 的 Imports、Anchors、Resolve；`harness snapshot` 写 `docs/architecture/interfaces.txt`；规则 if.01 ~ if.04；锁文件的 `snapshot:IF-n`。补齐 FLOW-01 各模块的锚点。详细设计与代码签名不一致的接口，改设计或改代码，改设计时需人重新批准。",
@@ -2849,26 +2860,26 @@
         "FLOW-12": "sha256:da610a98e5e4803f723c405938e2f75ba7c57d094b8f7b4dc01a5444323a32d0",
         "FR-052": "sha256:8489677566027f291fd7cd00fa595d467c7d366834c42251dbde7a8f8fa06cfb",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-035": "sha256:7c989805539f42a4e001c6b95f757d27c028189c863163a71e57e09cd173a437",
+        "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2",
         "IF-039": "sha256:0fbcc9158b547c1fbd018ad3de17e475646bf2e9f43df574f12c0c6257ab261c"
       }
     },
     "T-049": {
-      "at": "2026-11-27T01:32:46Z",
+      "at": "2026-11-27T02:03:48Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:5f27fb8c3afef2b08efc8f22409efe710cef5407859a7cbef1141681f4533afd",
-      "text": "### T-049 单元测试追溯\n- Covers: FR-021\n- Design: IF-031, IF-033, IF-035, IF-014, FLOW-11\n- Flow: FLOW-11\n- Scope: internal/lang/**, internal/toolrun/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/unit_0*.go, internal/rules/builtin/testdata/unit.0*/**, internal/rules/builtin/registry.go\n- Depends: T-048\n\nGo Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆盖率；规则 unit.01 ~ unit.03。补齐 IF-004、IF-022 ~ IF-026 的单元测试；模块覆盖率低于阈值时补测试。",
+      "hash": "sha256:6baadac58b4fc584c68498832ebc140943770a355ac3bebb7d1ebb43e86aed4d",
+      "text": "### T-049 单元测试追溯\n- Covers: FR-021\n- Design: IF-031, IF-033, IF-035, IF-014, FLOW-11\n- Flow: FLOW-11\n- Scope: internal/lang/**, internal/toolrun/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/unit_0*.go, internal/rules/builtin/testdata/unit.0*/**, internal/rules/builtin/registry.go\n- Depends: T-048, T-057\n\nGo Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆盖率；规则 unit.01 ~ unit.03。补齐 IF-004、IF-022 ~ IF-026 的单元测试；模块覆盖率低于阈值时补测试。",
       "upstream": {
         "FLOW-11": "sha256:4cca329d02de900b1a828292b24b8a40d81b8dc600170e6d6a8b03f32b6e7bbe",
         "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-031": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
+        "IF-031": "sha256:4eb038dd4c4633aca5ee7e7b3cc88d134b391536529f93b5f5ec7d73477ce88b",
         "IF-033": "sha256:14f032c6bd64269bf30a952afd01fdd5ac3495da071b286a259d2b9b8f21c926",
-        "IF-035": "sha256:7c989805539f42a4e001c6b95f757d27c028189c863163a71e57e09cd173a437"
+        "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2"
       }
     },
     "T-050": {
-      "at": "2026-11-27T01:31:00Z",
+      "at": "2026-11-27T02:03:52Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:9e352732c539a3909a010ea89ab241b831ce5f7680bc74e4539539f29f851bd3",
       "text": "### T-050 Go 模块依赖与封装\n- Covers: FR-053, FR-035\n- Design: IF-035, IF-014, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/lang/**, internal/rules/builtin/deps_0*.go, internal/rules/builtin/testdata/deps.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-049\n\n规则 deps.01 ~ deps.04：跨模块 import 须在 Depends 中且指向 Public，sourcePaths 内的源文件须有归属，Depends 中的模块须被使用。",
@@ -2877,11 +2888,11 @@
         "FR-035": "sha256:73c6fb37ae06b7e007adeebd7aa4452f68d2cba1efe70a790fd032b3ce559ae0",
         "FR-053": "sha256:cc50039cd3243ab909132397cdc4c457a2bceb209f80df4ce78d85e1c64e4b7b",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-035": "sha256:7c989805539f42a4e001c6b95f757d27c028189c863163a71e57e09cd173a437"
+        "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2"
       }
     },
     "T-051": {
-      "at": "2026-11-27T01:31:03Z",
+      "at": "2026-11-27T02:03:54Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:5c2f6b6600ed3029ca85c04f7429aaa09ebe754edd33fbdd179bf47fee2c7389",
       "text": "### T-051 机械改动任务\n- Covers: FR-050\n- Design: IF-035, IF-014, FLOW-09\n- Flow: FLOW-09\n- Scope: internal/lang/**, internal/rules/builtin/task_03.go, internal/rules/builtin/task_05.go, internal/rules/builtin/task_09.go, internal/rules/builtin/commit_03.go, internal/rules/builtin/commit_05.go, internal/rules/builtin/testdata/task.09/**, internal/rules/builtin/testdata/commit.05/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/app/**\n- Depends: T-050\n\n`Kind: mechanical` 与 Rewrite 的声明（task.09）；task.03、task.05、commit.03 豁免机械改动任务；commit.05 逐行校验只改 import 路径与模块声明行。",
@@ -2889,7 +2900,7 @@
         "FLOW-09": "sha256:4a8798d25990b6320853067f8bf017e2ce839af2689b21f5a1df74ea09696a1a",
         "FR-050": "sha256:816ac65f0cc05099c0ea0f75ae029ef40ac4ad4b821812fa2fd60df7668f566c",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-035": "sha256:7c989805539f42a4e001c6b95f757d27c028189c863163a71e57e09cd173a437"
+        "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2"
       }
     },
     "T-052": {
@@ -2952,6 +2963,17 @@
         "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
         "IF-030": "sha256:692b0b050c908f87c589aeff96e7f649ea0ccf6522ef43e3f4a2da0be111ec54",
         "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4"
+      }
+    },
+    "T-057": {
+      "at": "2026-11-27T02:03:56Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:1cef38706ad7c55544ff3f0fe66852e8eb5e6f1084267d49c7e12ff2afef65d1",
+      "text": "### T-057 锁文件模块补单元测试\n- Covers: AC-021-3\n- Design: MOD-06, IF-006\n- Scope: internal/lock/lock_test.go\n- Depends:\n\n计入集成测试后 MOD-06 的行覆盖率为 87.6%，低于阈值 90%：`LastApproval`、`Read` 的读取失败与字段缺失、`Write` 的写入失败没有测试。T-049 的 unit.03 依赖本任务通过。",
+      "upstream": {
+        "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
+        "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
+        "MOD-06": "sha256:33d87ec516d7a4efa65f776f6abce89f86d6f7f8d00f47a164b6a262c8dae59d"
       }
     },
     "TERM": {

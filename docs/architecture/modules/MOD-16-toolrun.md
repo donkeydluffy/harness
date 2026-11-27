@@ -29,7 +29,7 @@ func Lint(s *workspace.Snapshot) (*testreport.LintReport, error)
 ```go
 // IF-031
 // Unit 对每个带锚点的 Active 接口单独运行测试名含其编号的单元测试，记录锚点所在函数入口行是否执行；
-// 再全量运行一次单元测试统计各模块行覆盖率；结果与源码哈希写入 .harness/reports/unit.json（AC-021-2、AC-021-3）。
+// 再全量运行一次测试（含集成测试与其子进程，ADR-014）统计各模块行覆盖率；结果与源码哈希写入 .harness/reports/unit.json（AC-021-2、AC-021-3）。
 // 项目没有支持覆盖率的语言时返回 Skipped 不为空的报告。
 func Unit(s *workspace.Snapshot) (*testreport.UnitReport, error)
 ```

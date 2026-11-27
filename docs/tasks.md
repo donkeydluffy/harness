@@ -533,24 +533,23 @@ Go Analyzer 的 Coverage；Unit 运行器按接口运行测试并统计模块覆
 规则 supp.01：抑制注释同一行须引用 Open 的 DEBT。
 
 ### T-054 删除阶段（门禁、命令）
-- Status: Todo
+- Status: Done
 - Covers: AC-048-1
 - Design: IF-017, IF-024, FLOW-02
 - Flow: FLOW-02
 - Scope: internal/gate/**, internal/app/**, internal/cli/**
 - Depends: T-053, T-062
 
-去掉门禁、app、cli 中的阶段逻辑与 Release 1 的按文件批准分支；`harness phase` 提示已删除。Current-Release 为 1 时阶段需求仍生效，本任务与 T-055、T-061 在同一次推送中完成。
+去掉门禁、app、cli 中的阶段逻辑、对阶段模块的引用（含 phase.01 的注册与 AC-045 的测试）与 Release 1 的按文件批准分支；`harness phase` 提示已删除。Current-Release 为 1 时阶段需求仍生效，本任务与 T-055、T-061 在同一次推送中完成。
 
 ### T-055 删除阶段模块，Release 2 生效
-- Status: Todo
+- Status: Done
 - Covers: FR-048
-- Design: MOD-10, EXT-04, IF-020, FLOW-02
-- Flow: FLOW-02
-- Scope: internal/phase/**, internal/app/**, internal/cli/**
+- Design: MOD-10, EXT-04
+- Scope: internal/phase/**
 - Depends: T-054, T-062
 
-删除阶段模块的代码与 app、cli 中对它的引用；设计中阶段模块、阶段扩展点及其两个接口改为 Removed，去掉对它们的依赖与流程步骤；PRD 的 Current-Release 改为 2。设计与 PRD 的这些改动需人批准。
+删除阶段模块的代码目录（app、cli、gate 中的引用由 T-054 去掉）；设计中的删除与 Current-Release 改为 2 随本任务一起提交。
 
 ### T-056 默认工具命令按语言配置包的输出格式解析
 - Status: Todo
@@ -596,7 +595,7 @@ scaffold 的非测试代码已不 import MOD-10，MOD-13 的 Depends 随 T-050 �
 skill 与产物骨架中的示例编号改为 `MOD-n`、`IF-n`、`T-n` 这类占位写法，尚未创建的产物路径不用行内代码，使 `harness init` 生成的项目通过 doc.02 ~ doc.04（AC-030-1/B4 由 T-052 验证）；本仓库的 `.claude/skills` 同步修改。
 
 ### T-061 锁文件去掉阶段字段
-- Status: Todo
+- Status: Done
 - Covers: AC-048-1
 - Design: IF-006, FLOW-10
 - Flow: FLOW-10
@@ -623,3 +622,23 @@ arch.01、trace.02、trace.03 不检查 Removed 的设计元素与 Superseded �
 - Depends: T-055
 
 plan、clarify、architect、implement 等 skill 模板中关于阶段的说明改为按批准状态的说法；本仓库的 `.claude/skills` 由人同步。
+
+### T-064 完成定义不要求已被取代的用例
+- Status: Done
+- Covers: AC-003-6
+- Design: MOD-05, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/**, internal/app/**
+- Depends: T-061, T-062
+
+task.08 计算 Done 任务应有集成测试的用例时，跳过已生效地被取代的需求与验收标准下的用例（与 test.02 一致）。
+
+### T-065 ADR 的 Relates 可引用 Removed 的元素
+- Status: Done
+- Covers: AC-007-5
+- Design: MOD-05, FLOW-01
+- Flow: FLOW-01
+- Scope: internal/rules/builtin/**, internal/app/**
+- Depends: T-064
+
+trace.03 检查 ADR 的 Relates 时只要求编号存在，不再报告 Removed、Superseded 与已被取代的引用（AC-007-5/B3）；其他设计元素照常检查。

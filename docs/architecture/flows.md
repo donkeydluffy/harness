@@ -4,8 +4,6 @@
 
 每个流程的 Steps 按调用顺序列出"调用方模块 -> 被调用接口"（格式见 `docs/architecture/formats.md` 第 4 节）。
 
-调用 IF-015、IF-016 的步骤属于 Release 1，在 MOD-10 删除（FR-048）时一并去掉。
-
 ### FLOW-01 全量检查
 - Covers: FR-003, FR-007, FR-011, FR-017, FR-030, FR-035, FR-042, FR-053, FR-054
 - Steps: MOD-01 -> IF-022, MOD-02 -> IF-009, MOD-09 -> IF-010, MOD-09 -> IF-004, MOD-09 -> IF-001, MOD-09 -> IF-002, MOD-09 -> IF-006, MOD-09 -> IF-007, MOD-09 -> IF-008, MOD-09 -> IF-033, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-013, MOD-02 -> IF-012, MOD-05 -> IF-003, MOD-05 -> IF-035, MOD-05 -> IF-028
@@ -16,7 +14,7 @@ Release 2：快照另读 lint 与 unit 报告；app 构造项目自定义规则�
 
 ### FLOW-02 写操作门禁
 - Covers: FR-012, FR-025, FR-037, FR-047, FR-048
-- Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-009, MOD-02 -> IF-017, MOD-11 -> IF-015, MOD-11 -> IF-016, MOD-11 -> IF-028, MOD-01 -> IF-019
+- Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-009, MOD-02 -> IF-017, MOD-11 -> IF-028, MOD-01 -> IF-019
 
 claudecode 适配器解码 PreToolUse 输入为门禁请求；app 用轻量快照（不读测试报告和源码）调用 gate.Decide；产物写入不再按阶段判定；源码写入时 gate 查询 InProgress 任务的批准链（IF-028 Chain）；适配器把判定编码为 deny 输出。
 
@@ -38,7 +36,7 @@ PostToolUse 写入产物文件后，gate 按文件类型选择规则前缀（如
 
 ### FLOW-06 会话开始注入
 - Covers: FR-024, FR-048
-- Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-017, MOD-11 -> IF-016, MOD-11 -> IF-028, MOD-11 -> IF-012, MOD-01 -> IF-019
+- Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-017, MOD-11 -> IF-028, MOD-11 -> IF-012, MOD-01 -> IF-019
 
 注入批准状态摘要（IF-028 Summarize）与建议的 skill，取代当前阶段。
 
@@ -50,9 +48,9 @@ cli 取当前版本放入 InitOptions；scaffold 按语言配置包生成配置�
 
 ### FLOW-08 人工批准
 - Covers: FR-037, FR-047, FR-054
-- Steps: MOD-01 -> IF-024, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-016, MOD-02 -> IF-005, MOD-02 -> IF-006
+- Steps: MOD-01 -> IF-024, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-005, MOD-02 -> IF-006
 
-app 先确认交互式终端，列出范围内待批准的单位与差异，运行批准前检查（单位所在文件的结构规则、上游已批准、登记在该单位类型上的自定义规则），人确认后写入按单位的批准记录。Release 1 的 phase next 随 MOD-10 删除。
+app 先确认交互式终端，列出范围内待批准的单位与差异，运行批准前检查（单位所在文件的结构规则、上游已批准、登记在该单位类型上的自定义规则），人确认后写入按单位的批准记录。
 
 ### FLOW-09 提交检查
 - Covers: FR-010, FR-013, FR-034, FR-050

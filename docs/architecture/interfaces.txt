@@ -40,12 +40,6 @@ func Verify(r Rule, samples []Sample) error
 IF-014
 func Rules() []engine.Rule
 
-IF-015
-func Load(s *workspace.Snapshot) ([]Phase, error)
-
-IF-016
-func Current(s *workspace.Snapshot, phases []Phase) (Phase, error)
-
 IF-017
 func Decide(s *workspace.Snapshot, req Request) Decision
 

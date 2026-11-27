@@ -2,11 +2,12 @@
 
 - Status: Approved
 
-Release 2 删除本模块（FR-048）：`Current-Release` 改为 2 时与 `internal/phase/` 一起删除，模块 Status 改为 Removed。
+Release 2 取消阶段（FR-048），本模块与其代码已删除，接口改为 Removed。
 
 ## 接口
 
 ### IF-015 Phases
+- Status: Removed
 - Module: MOD-10
 - Covers: FR-045
 
@@ -30,6 +31,7 @@ func Rule() engine.Rule
 ```
 
 ### IF-016 Current
+- Status: Removed
 - Module: MOD-10
 - Covers: FR-038, FR-045
 

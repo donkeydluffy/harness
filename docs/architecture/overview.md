@@ -18,7 +18,6 @@ L2 能力   MOD-13 scaffold ──▶ adapter, lang, version
           MOD-05 builtin ───▶ engine, approval + L0        ◀ EXT-03
           MOD-04 engine
           MOD-15 approval ──▶ workspace, lock, model
-          MOD-10 phase（Release 2 删除；app、gate、scaffold 对它的依赖随之去掉） ◀ EXT-04
 L1 加载   MOD-09 workspace
 L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MOD-14 lang ◀ EXT-01 · MOD-18 version
 ```
@@ -37,7 +36,7 @@ L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MO
 - Status: Active
 - Paths: cmd/harness/**, internal/cli/**, go.mod, go.sum, .goreleaser.yaml, .github/workflows/release.yml
 - Public: cmd/harness/main.go
-- Depends: MOD-02, MOD-04, MOD-10, MOD-11, MOD-12, MOD-13, MOD-18
+- Depends: MOD-02, MOD-04, MOD-11, MOD-12, MOD-13, MOD-18
 - Interfaces:
 - Covers: FR-001, FR-007, FR-012, FR-037, FR-048, FR-049, NFR-002
 - Core: false
@@ -49,13 +48,13 @@ L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MO
 - Status: Active
 - Paths: internal/app/**
 - Public: internal/app/app.go
-- Depends: MOD-03, MOD-04, MOD-05, MOD-06, MOD-09, MOD-10, MOD-11, MOD-13, MOD-15, MOD-16, MOD-17
+- Depends: MOD-04, MOD-05, MOD-06, MOD-09, MOD-11, MOD-13, MOD-15, MOD-16, MOD-17
 - Interfaces: IF-022, IF-023, IF-024, IF-025, IF-026, IF-038, IF-039
 - Covers: FR-001, FR-004, FR-007, FR-012, FR-014, FR-017, FR-021, FR-037, FR-047, FR-052, FR-054, FR-055
 - Core: true
 - Coverage: 80
 
-用例编排：check、trace、lock、approve、门禁、init、外部工具报告（lint、unit、smoke）、接口快照。Release 1 的 phase next 随 MOD-10 删除。交互式终端判定在此层。代理协议转换在 cli 调用 adapter 完成，app 只接收门禁请求。
+用例编排：check、trace、lock、approve、门禁、init、外部工具报告（lint、unit、smoke）、接口快照。交互式终端判定在此层。代理协议转换在 cli 调用 adapter 完成，app 只接收门禁请求。
 
 ### MOD-03 model
 - Status: Active
@@ -142,7 +141,7 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 加载项目快照：配置（`harness.json`）、产物模型、锁文件、git 仓库、测试报告、语言注册表。
 
 ### MOD-10 phase
-- Status: Active
+- Status: Removed
 - Paths: internal/phase/**
 - Public: internal/phase/phase.go
 - Depends: MOD-04, MOD-09
@@ -151,13 +150,13 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Core: true
 - Coverage: 85
 
-阶段定义（内置 JSON + 项目配置合并）、当前阶段、推进。Release 2 删除（FR-048）：`Current-Release` 改为 2 时本模块 Status 改为 Removed，在此之前它仍覆盖 Release 1 的 FR-038、FR-045，app、gate、scaffold 对它的依赖与流程中 IF-015、IF-016 的步骤也一并保留，删除时同时去掉。
+阶段定义、当前阶段与推进。Release 2 取消阶段（FR-048），本模块与其代码目录一并删除。
 
 ### MOD-11 gate
 - Status: Active
 - Paths: internal/gate/**
 - Public: internal/gate/gate.go
-- Depends: MOD-03, MOD-04, MOD-09, MOD-10, MOD-15
+- Depends: MOD-03, MOD-04, MOD-09, MOD-15
 - Interfaces: IF-017, IF-018
 - Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048
 - Core: true
@@ -262,23 +261,23 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Status: Active
 - Interface: IF-019
 - Paths: internal/adapter/<代理>/**, internal/scaffold/templates/agents/<代理>/**, internal/adapter/registry.go
-- Closed: MOD-10, MOD-11
+- Closed: MOD-11
 - Relates: NFR-007
 
 ### EXT-03 新增内置规则
 - Status: Active
 - Interface: IF-011
 - Paths: internal/rules/builtin/<规则文件>.go, internal/rules/builtin/testdata/<规则编号>/**, internal/rules/builtin/registry.go
-- Closed: MOD-03, MOD-04, MOD-10, MOD-11
+- Closed: MOD-03, MOD-04, MOD-11
 - Relates: NFR-009
 
 ### EXT-04 新增内置阶段
-- Status: Active
+- Status: Removed
 - Interface: IF-015
 - Paths: internal/phase/builtin/<阶段>.json, internal/phase/builtin/order.json, internal/scaffold/templates/skills/<阶段>/**
 - Closed: MOD-03, MOD-04, MOD-11
 - Relates: NFR-008
 
-Release 2 随 MOD-10 删除（FR-048 取代 NFR-008）：`Current-Release` 改为 2 时 Status 改为 Removed。
+Release 2 随阶段一起删除（FR-048）。
 
-项目级扩展（不重新编译）：自定义规则写在 `harness.json` 的 `rules`，由 MOD-17 构造为 IF-011 规则（FR-054，ADR-010），可登记为某类批准单位的批准前检查。Release 1 的项目阶段（`phases`）随 MOD-10 删除。
+项目级扩展（不重新编译）：自定义规则写在 `harness.json` 的 `rules`，由 MOD-17 构造为 IF-011 规则（FR-054，ADR-010），可登记为某类批准单位的批准前检查。Release 1 的项目阶段配置已删除。

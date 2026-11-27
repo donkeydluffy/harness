@@ -2,7 +2,7 @@
 
 - Status: Approved
 - Version: 1.0-rc3
-- Current-Release: 1
+- Current-Release: 2
 - Updated: 2026-11-26
 
 > 本文件是 harness 的唯一需求来源，同时也是 harness 自举的第一个受检产物。格式即规范：harness 的 `check prd` 会按本文件的结构解析。
@@ -219,11 +219,12 @@ harness 的目标：用一套 skill 引导流程，用一个确定性的检查�
   - AC-007-4/N2: `--format json` 输出可被 JSON 解析，内容与 Markdown 一致
   - AC-007-4/B1: 没有任何设计元素时输出空矩阵且不报错
   - AC-007-4/E1: `--format xml` 退出码非 0 并列出支持的格式
-- AC-007-5: Status 为 Removed 的设计元素与 Superseded 的 ADR 是历史记录：不检查它们自身的必填字段与引用，也不要求它们覆盖需求；仍有效的设计元素引用它们时按 AC-007-3 失败；任务的文件范围落在 Removed 模块的 Paths 内时，视为落在该模块内。Done 的任务同样是历史记录，其文件范围与调用流程不随设计的后续修改重新检查。
+- AC-007-5: Status 为 Removed 的设计元素与 Superseded 的 ADR 是历史记录：不检查它们自身的必填字段与引用，也不要求它们覆盖需求；仍有效的设计元素引用它们时按 AC-007-3 失败，ADR 除外：ADR 记录当时的决定，其 Relates 中的编号只要求存在（与 AC-030-3 一致）；任务的文件范围落在 Removed 模块的 Paths 内时，视为落在该模块内。Done 的任务同样是历史记录，其文件范围与调用流程不随设计的后续修改重新检查。
   - AC-007-5/N1: 状态为 Removed 的模块 Covers 为空、Depends 引用已被取代的需求，不报告
   - AC-007-5/E1: Active 的模块在 Depends 中引用 Removed 的模块，失败
   - AC-007-5/B1: 删除 Removed 模块代码的任务，文件范围是该模块的 Paths，通过
   - AC-007-5/B2: Done 的任务引用的流程后来去掉了它涉及的模块，不报告；同样的 Todo 任务失败
+  - AC-007-5/B3: Proposed 的 ADR 在 Relates 中引用它决定删除的扩展点（Status 为 Removed），通过；引用不存在的编号，失败
 
 ### FR-008 模块依赖约束
 - Status: Active
@@ -1445,3 +1446,5 @@ FR-013 通过本地 git hook、CI，还是两者都要？
 | CHG-026 | 2026-11-27 | 修改 | FR-004 | AC-004-2 的示例编号改为占位写法 FR-n |
 | CHG-027 | 2026-11-27 | 修改 | FR-007 | 新增 AC-007-5：Removed 的设计元素、Superseded 的 ADR 与 Done 的任务是历史记录 |
 | CHG-027 | 2026-11-27 | 修改 | FR-030 | AC-030-3 在 ADR 与 Done 的任务中只检查编号存在，新增 AC-030-3/B2 |
+| CHG-028 | 2026-11-27 | 删除 | IF-015, IF-016 | Breaking: 阶段接口随阶段模块删除（FR-048） |
+| CHG-029 | 2026-11-27 | 修改 | FR-007 | AC-007-5：ADR 的 Relates 可引用 Removed 的元素，只要求编号存在；新增 AC-007-5/B3 |

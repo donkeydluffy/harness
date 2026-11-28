@@ -78,3 +78,15 @@ func TestSnapshot_IF_018(t *testing.T) {
 		t.Errorf("没有命令前快照时返回 nil：%v %v", c, err)
 	}
 }
+
+// "未完成"段到下一个任意级别的标题结束，门禁写入的正文中以 # 开头的行被转义（AC-057-1）。
+func TestUnfinishedSection(t *testing.T) {
+	doc := "# 进度\n\n## 未完成\n\n- a\n\\# b\n\n### 2026-11-28 T-3\n- 结论：x\n"
+	rest, sec := splitUnfinished(doc)
+	if sec != "- a\n\\# b" || rest != "# 进度\n\n### 2026-11-28 T-3\n- 结论：x\n" {
+		t.Fatalf("段：%q 其余：%q", sec, rest)
+	}
+	if got := noHeadings("x\n# y\n## z"); got != "x\n\\# y\n\\## z" {
+		t.Fatalf("正文中的标题应转义：%q", got)
+	}
+}

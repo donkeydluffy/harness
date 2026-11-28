@@ -702,7 +702,7 @@ IF-018 After 恢复或删除文件前把当前内容另存到 `.harness/session/
 新增 IF-018 Running；Terminal 增加 Notify；Approve 在列出待批准单位前与写入锁文件前检查正在执行的代理命令并等待，快照早于 10 分钟前时询问人（ADR-018）。
 
 ### T-072 进度文件"未完成"段的边界
-- Status: Todo
+- Status: Done
 - Covers: AC-057-1
 - Design: IF-017, FLOW-05
 - Flow: FLOW-05

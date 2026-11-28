@@ -146,7 +146,7 @@ func writeUnfinished(root, text string) error {
 	}
 	out := strings.TrimRight(rest, "\n")
 	if text != "" {
-		out += "\n\n" + unfinishedTitle + "\n\n" + text
+		out += "\n\n" + unfinishedTitle + "\n\n" + noHeadings(text)
 	}
 	out = strings.TrimLeft(out, "\n")
 	if !strings.HasSuffix(out, "\n") {
@@ -159,7 +159,19 @@ func writeUnfinished(root, text string) error {
 	return os.WriteFile(p, []byte(out), 0o644)
 }
 
-// splitUnfinished 把进度文件分为"未完成"段以外的内容与该段正文。
+// noHeadings 转义以 # 开头的行，段正文不含标题，段的边界才能由下一个标题确定（AC-057-1）。
+func noHeadings(text string) string {
+	lines := strings.Split(text, "\n")
+	for i, l := range lines {
+		if strings.HasPrefix(l, "#") {
+			lines[i] = "\\" + l
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+// splitUnfinished 把进度文件分为"未完成"段以外的内容与该段正文；段到下一个任意级别的标题结束（AC-057-1），
+// 段后追加的进度记录（### 标题）不属于该段。
 func splitUnfinished(s string) (rest, section string) {
 	lines := strings.Split(s, "\n")
 	var keep, sec []string
@@ -169,7 +181,7 @@ func splitUnfinished(s string) (rest, section string) {
 		case strings.TrimSpace(l) == unfinishedTitle:
 			in = true
 			continue
-		case in && strings.HasPrefix(l, "## "):
+		case in && strings.HasPrefix(l, "#"):
 			in = false
 		}
 		if in {

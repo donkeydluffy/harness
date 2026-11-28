@@ -139,3 +139,64 @@ func TestGate_AC_024_3_B1(t *testing.T) {
 		t.Fatalf("未声明冒烟命令时不应运行：%q", r)
 	}
 }
+
+// ---- AC-057-1 "未完成"段的边界 ----
+
+const progressDoc = "# 进度\n\n### 2026-11-26 T-001\n- 结论：进行中。\n- 遗留：无。\n"
+
+const laterRecord = "\n### 2026-11-28 T-003\n- 结论：段后追加的记录。\n- 遗留：无。\n"
+
+// releaseStop 连续阻止到上限后放行，未通过项写入进度文件的"未完成"段。
+func releaseStop(t *testing.T, dir string) {
+	t.Helper()
+	for i := 1; i <= 3; i++ {
+		wantDeny(t, stopHook(t, dir), "gate.stop")
+	}
+	wantAllow(t, stopHook(t, dir))
+}
+
+func appendProgress(t *testing.T, dir, text string) {
+	t.Helper()
+	f, err := os.OpenFile(filepath.Join(dir, "docs/progress.md"), os.O_APPEND|os.O_WRONLY, 0o644)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	f.WriteString(text)
+}
+
+func TestGate_AC_057_1_N1(t *testing.T) {
+	dir := sessionDir(t, map[string]string{"docs/progress.md": progressDoc})
+	breakPRD(t, dir)
+	releaseStop(t, dir)
+	appendProgress(t, dir, laterRecord)
+	fixPRD(t, dir)
+	wantAllow(t, stopHook(t, dir))
+	b := readFile(t, dir, "docs/progress.md")
+	if strings.Contains(b, "## 未完成") || !strings.Contains(b, "### 2026-11-28 T-003") || !strings.Contains(b, "段后追加的记录") {
+		t.Fatalf("清除未完成段后，段后的记录应保留：\n%s", b)
+	}
+}
+
+func TestGate_AC_057_1_N2(t *testing.T) {
+	dir := sessionDir(t, map[string]string{"docs/progress.md": progressDoc})
+	breakPRD(t, dir)
+	releaseStop(t, dir)
+	appendProgress(t, dir, laterRecord)
+	releaseStop(t, dir)
+	b := readFile(t, dir, "docs/progress.md")
+	if strings.Count(b, "## 未完成") != 1 || !strings.Contains(b, "段后追加的记录") || !strings.Contains(b, "[prd.") {
+		t.Fatalf("再次写入未完成段时，段后的记录应保留：\n%s", b)
+	}
+}
+
+func TestGate_AC_057_1_B1(t *testing.T) {
+	dir := sessionDir(t, map[string]string{"docs/progress.md": progressDoc})
+	breakPRD(t, dir)
+	releaseStop(t, dir)
+	fixPRD(t, dir)
+	wantAllow(t, stopHook(t, dir))
+	if b := readFile(t, dir, "docs/progress.md"); b != progressDoc {
+		t.Fatalf("清除位于文件末尾的未完成段后，段前的内容应不变：\n%q", b)
+	}
+}

@@ -6,7 +6,7 @@
 
 ### IF-017 Decide
 - Module: MOD-11
-- Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048
+- Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048, FR-057
 
 ```go
 // IF-017
@@ -31,14 +31,24 @@ func Decide(s *workspace.Snapshot, req Request) Decision
 
 ### IF-018 Snapshot
 - Module: MOD-11
-- Covers: FR-012
+- Covers: FR-012, FR-056
 
 ```go
 // IF-018
+type Change struct {
+	Path     string
+	Action   string // created / modified / deleted
+	Restored bool   // 已恢复为命令前状态
+	Reason   string // 未恢复的原因（被允许或文件过大）
+	Saved    string // 恢复前另存的位置（仓库相对路径），没有另存时为空
+}
 // Before 在命令执行前记录仓库文件的 (路径, 大小, mtime) 与小文件内容副本，存于 .harness/snap/<会话>。
 func Before(root, sessionID string) error
 // After 比对命令前后状态；不被 allowed 允许的改动恢复为命令前内容，新建文件删除。
+// 恢复或删除前把文件当前内容另存到 .harness/session/restored/<时间>/<路径>（AC-056-2）。
 func After(root, sessionID string, allowed func(path string) bool) ([]Change, error)
+// Running 报告是否有代理命令正在执行（存在未被 After 清除的命令前快照），since 为其中最早的快照时间（AC-056-1）。
+func Running(root string) (since time.Time, ok bool)
 ```
 
 ## 判定顺序
@@ -55,6 +65,8 @@ func After(root, sessionID string, allowed func(path string) bool) ([]Change, er
 用 `mvdan.cc/sh/v3/syntax` 解析命令（ADR-003）：重定向目标、`tee`、`cp`、`mv`、`rm`、`touch`、`mkdir`、`sed -i`、`git checkout -- <path>`、`git restore` 的路径参数作为写入目标。无法静态判定的命令（脚本、解释器）放行到执行，由 IF-018 事后比对。
 
 ## 结束检查
+
+连续阻止达到上限后，未通过项写入进度文件的"未完成"段（`## 未完成` 到下一个任意级别的标题或文件末尾）；段正文只有列表、不含标题，替换与清除不改动段外的进度记录（AC-057-1）。
 
 `session_start` 注入 IF-028 Summarize 的批准状态摘要与建议的 skill（AC-048-3），取代当前阶段。
 

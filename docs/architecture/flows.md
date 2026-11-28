@@ -13,16 +13,16 @@ cli 调用 app.Check；app 加载快照（配置、语言注册表、产物、�
 Release 2：快照另读 lint 与 unit 报告；app 构造项目自定义规则并先用样本验证；依赖、封装、接口锚点类规则经 IF-035 解析 Go 源码，批准类规则经 IF-028 取批准状态。cli 把子命令名放入 CheckOptions，供文档引用检查。
 
 ### FLOW-02 写操作门禁
-- Covers: FR-012, FR-025, FR-037, FR-047, FR-048
+- Covers: FR-012, FR-025, FR-037, FR-047, FR-048, FR-058
 - Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-009, MOD-02 -> IF-017, MOD-11 -> IF-028, MOD-01 -> IF-019
 
-claudecode 适配器解码 PreToolUse 输入为门禁请求；app 用轻量快照（不读测试报告和源码）调用 gate.Decide；产物写入不再按阶段判定；源码写入时 gate 查询 InProgress 任务的批准链（IF-028 Chain）；适配器把判定编码为 deny 输出。
+claudecode 适配器解码 PreToolUse 输入为门禁请求，项目根取最近的含 harness.json 的目录（AC-058-1）；app 用轻量快照（不读测试报告和源码）调用 gate.Decide；产物写入不再按阶段判定；源码写入时 gate 查询 InProgress 任务的批准链（IF-028 Chain）；适配器把判定编码为 deny 输出。
 
 ### FLOW-03 命令执行后比对
-- Covers: FR-012
+- Covers: FR-012, FR-056
 - Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-017, MOD-11 -> IF-018, MOD-01 -> IF-019
 
-PreToolUse(Bash) 放行时 gate 调用 Before 记录状态；PostToolUse(Bash) 时调用 After，恢复范围外改动并把恢复清单反馈给代理。
+PreToolUse(Bash) 放行时 gate 调用 Before 记录状态；PostToolUse(Bash) 时调用 After，恢复范围外改动并把恢复清单反馈给代理。恢复前另存被覆盖的内容，清单列出另存位置（AC-056-2）。
 
 ### FLOW-04 写后产物检查
 - Covers: FR-012
@@ -31,7 +31,7 @@ PreToolUse(Bash) 放行时 gate 调用 Before 记录状态；PostToolUse(Bash) �
 PostToolUse 写入产物文件后，gate 按文件类型选择规则前缀（如 `prd.`）运行引擎，结果作为反馈返回代理。
 
 ### FLOW-05 会话结束检查
-- Covers: FR-012, FR-024
+- Covers: FR-012, FR-024, FR-057
 - Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-009, MOD-02 -> IF-017, MOD-11 -> IF-012, MOD-01 -> IF-019
 
 ### FLOW-06 会话开始注入
@@ -47,10 +47,10 @@ PostToolUse 写入产物文件后，gate 按文件类型选择规则前缀（如
 cli 取当前版本放入 InitOptions；scaffold 按语言配置包生成配置与缺失的工具配置文件，CI 固定版本不是发布版本号时拒绝。
 
 ### FLOW-08 人工批准
-- Covers: FR-037, FR-047, FR-054
-- Steps: MOD-01 -> IF-024, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-005, MOD-02 -> IF-006
+- Covers: FR-037, FR-047, FR-054, FR-056
+- Steps: MOD-01 -> IF-024, MOD-02 -> IF-018, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-005, MOD-02 -> IF-006
 
-app 先确认交互式终端，列出范围内待批准的单位与差异，运行批准前检查（单位所在文件的结构规则、上游已批准、登记在该单位类型上的自定义规则），人确认后写入按单位的批准记录。
+app 先确认交互式终端，有代理命令正在执行时等待其结束（IF-018 Running，ADR-018），列出范围内待批准的单位与差异，运行批准前检查（单位所在文件的结构规则、上游已批准、登记在该单位类型上的自定义规则），人确认后写入按单位的批准记录。
 
 ### FLOW-09 提交检查
 - Covers: FR-010, FR-013, FR-034, FR-050

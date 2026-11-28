@@ -50,7 +50,7 @@ L0 基础   MOD-03 model · MOD-06 lock · MOD-07 vcs · MOD-08 testreport · MO
 - Public: internal/app/app.go
 - Depends: MOD-04, MOD-05, MOD-06, MOD-09, MOD-11, MOD-13, MOD-15, MOD-16, MOD-17
 - Interfaces: IF-022, IF-023, IF-024, IF-025, IF-026, IF-038, IF-039
-- Covers: FR-001, FR-004, FR-007, FR-012, FR-014, FR-017, FR-021, FR-037, FR-047, FR-052, FR-054, FR-055
+- Covers: FR-001, FR-004, FR-007, FR-012, FR-014, FR-017, FR-021, FR-037, FR-047, FR-052, FR-054, FR-055, FR-056
 - Core: true
 - Coverage: 80
 
@@ -158,7 +158,7 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Public: internal/gate/gate.go
 - Depends: MOD-03, MOD-04, MOD-09, MOD-15
 - Interfaces: IF-017, IF-018
-- Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048
+- Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048, FR-056, FR-057
 - Core: true
 - Coverage: 90
 
@@ -170,7 +170,7 @@ git 访问：提交范围、提交改动、指定版本的文件内容。通过�
 - Public: internal/adapter/adapter.go
 - Depends: MOD-11
 - Interfaces: IF-019
-- Covers: FR-012
+- Covers: FR-012, FR-058
 - Core: false
 - Coverage: 85
 

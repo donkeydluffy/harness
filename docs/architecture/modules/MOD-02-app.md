@@ -47,15 +47,17 @@ func Lock(root string) error
 
 ### IF-024 Approve
 - Module: MOD-02
-- Covers: FR-037, FR-047, FR-054
+- Covers: FR-037, FR-047, FR-054, FR-056
 
 ```go
 // IF-024
-type Terminal interface{ IsInteractive() bool; Confirm(prompt string) bool; Identity() string }
+type Terminal interface{ IsInteractive() bool; Confirm(prompt string) bool; Notify(msg string); Identity() string }
 var ErrNotInteractive, ErrDeclined error // 不在交互式终端中；批准人在确认提示处拒绝
 // Approve 列出 target（产物路径、prd 或单位编号）范围内待批准的单位与差异（IF-029），
 // 运行批准前检查（MOD-15 内部设计、AC-054-5），人确认后把批准记录写入锁文件；没有待批准单位时提示并返回 nil。
 // 锁文件仍有第 1 版的按文件批准时返回错误，提示先运行 harness lock；检查未通过时返回 *ViolationsError。
+// 代理命令正在执行（IF-018 Running）时先用 Notify 提示并等待其结束，再加载快照；快照早于 10 分钟前时改为 Confirm 询问是否继续。
+// 写入锁文件前再查一次，有命令开始执行则等待后重新列出待批准单位并再次确认（AC-056-1）。
 func Approve(root, target string, t Terminal) error
 ```
 

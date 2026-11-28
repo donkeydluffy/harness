@@ -6,13 +6,14 @@
 
 ### IF-019 Adapter
 - Module: MOD-12
-- Covers: FR-012, FR-044
+- Covers: FR-012, FR-044, FR-058
 
 ```go
 // IF-019
 type Adapter interface {
 	Name() string
-	// Decode 把代理 hook 的事件名和标准输入转换为门禁请求。
+	// Decode 把代理 hook 的事件名和标准输入转换为门禁请求；Request.Root 为从代理的当前目录向上
+	// 最近的含 harness.json 的目录，其次最近的 git 仓库根，都没有时为当前目录（AC-058-1）。
 	Decode(event string, stdin []byte) (gate.Request, error)
 	// Encode 把门禁判定转换为代理期望的标准输出和退出码。
 	Encode(event string, d gate.Decision) (stdout []byte, exit int)

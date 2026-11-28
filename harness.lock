@@ -3154,6 +3154,16 @@
         "MOD-02": "sha256:69e8e93a5a77fb87a7c19721daf951ea026dfff045dafe98291670a69e49a849"
       }
     },
+    "T-069": {
+      "at": "2026-11-28T02:04:42Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:afa1150bb4a39398d6d14fc784f994e4bc36f4dcb35e85165fadf53ea758341e",
+      "text": "### T-069 architect skill 模板去掉多余的空格\n- Covers: FR-048\n- Design: MOD-13\n- Scope: internal/scaffold/templates/**\n- Depends: T-063\n\nT-063 改写 architect 模板的 description 时留下\"依据已批准的需求 设计模块\"，去掉多余的空格；本仓库的 `.claude/skills` 由人同步。",
+      "upstream": {
+        "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
+        "MOD-13": "sha256:db3eaafbf8fcf6bced232c9cfea5b7370dab91d492a4a1973ef1fb3b8a54f177"
+      }
+    },
     "TERM": {
       "at": "2026-11-26T12:17:49Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",

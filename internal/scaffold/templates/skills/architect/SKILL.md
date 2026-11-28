@@ -1,6 +1,6 @@
 ---
 name: architect
-description: 架构设计：依据已批准的需求 设计模块、接口、调用流程、扩展点与架构决策。
+description: 架构设计：依据已批准的需求设计模块、接口、调用流程、扩展点与架构决策。
 check: harness check arch trace adr term
 ---
 

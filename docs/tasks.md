@@ -673,7 +673,7 @@ trace.03 检查 ADR 的 Relates 时只要求编号存在，不再报告 Removed�
 T-061 后 harness lock 写出的锁文件总是第 2 版，Lock 的注释仍写着"没有批准记录的第 1 版锁文件在 Release 2 生效前保持第 1 版"；改为与 IF-023 一致的说明，只改注释。
 
 ### T-069 architect skill 模板去掉多余的空格
-- Status: Todo
+- Status: Done
 - Covers: FR-048
 - Design: MOD-13
 - Scope: internal/scaffold/templates/**

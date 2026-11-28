@@ -298,3 +298,80 @@ func TestGate_AC_056_2_E1(t *testing.T) {
 		t.Fatalf("恢复报告应提示由人复制回去：%s", h.Raw)
 	}
 }
+
+// ---- AC-058-1 门禁的项目根 ----
+
+// hookIn 在仓库子目录 sub 中触发 hook：hook 进程的当前目录与输入中的 cwd 都是该子目录。
+func hookIn(t *testing.T, dir, sub, event string, in map[string]any) hookOut {
+	t.Helper()
+	wd := filepath.Join(dir, filepath.FromSlash(sub))
+	os.MkdirAll(wd, 0o755)
+	in["session_id"], in["cwd"] = "s1", wd
+	b, _ := json.Marshal(in)
+	return hookRaw(t, wd, event, b)
+}
+
+// snapAt 报告命令前快照是否建在 dir 下的 rel 中。
+func snapAt(dir, rel string) bool {
+	_, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel), ".harness", "snap", "s1"))
+	return err == nil
+}
+
+// 代理的 shell 停在子目录时，门禁仍以项目根判定：保护文件不能经 ../ 绕过，
+// 相对路径从子目录解析，命令前快照建在项目根的 .harness/ 下，命令后比对覆盖整个仓库（T-039）。
+func TestGate_SubdirectoryUsesProjectRoot(t *testing.T) {
+	dir := gateDir(t, true, activeTasks)
+	writeFile(t, dir, "harness.json", "{}\n")
+	pre := func(c string) hookOut { return hookIn(t, dir, "internal/api", "PreToolUse", bashTool(c)) }
+
+	wantDeny(t, pre("echo x > ../../harness.lock"), "gate.protect", "harness.lock")
+	wantAllow(t, pre("touch new.go"))                                      // internal/api/new.go 在范围内
+	wantDeny(t, pre("touch ../../other/c.go"), "gate.write", "other/c.go") // 从子目录解析后在范围外
+	rel := map[string]any{"tool_name": "Write", "tool_input": map[string]any{"file_path": "../../other/w.go", "content": "package other\n"}}
+	wantDeny(t, hookIn(t, dir, "internal/api", "PreToolUse", rel), "gate.write", "other/w.go")
+
+	lockBefore := readFile(t, dir, "harness.lock")
+	cmd := bashTool("go generate ./...")
+	wantAllow(t, hookIn(t, dir, "internal/api", "PreToolUse", cmd))
+	if !snapAt(dir, ".") || snapAt(dir, "internal/api") {
+		t.Fatal("命令前快照应建在项目根的 .harness/ 下")
+	}
+	writeFile(t, dir, "other/c.go", "x\n")
+	writeFile(t, dir, "harness.lock", "{}\n")
+	hookIn(t, dir, "internal/api", "PostToolUse", cmd)
+	if _, err := os.Stat(filepath.Join(dir, "other/c.go")); !os.IsNotExist(err) {
+		t.Fatal("子目录中执行的命令在范围外新建的文件应被删除")
+	}
+	if readFile(t, dir, "harness.lock") != lockBefore {
+		t.Fatal("锁文件应恢复为命令前内容")
+	}
+}
+
+func TestGate_AC_058_1_N1(t *testing.T) {
+	dir := gateDir(t, true, activeTasks)
+	writeFile(t, dir, "harness.json", "{}\n")
+	writeFile(t, dir, "tpl/artifacts/docs/PRD.md", "# 模板 PRD\n") // 脚手架模板中的 docs/PRD.md
+	wantAllow(t, hookIn(t, dir, "tpl/artifacts/docs", "PreToolUse", bashTool("go generate ./...")))
+	if !snapAt(dir, ".") || snapAt(dir, "tpl/artifacts") {
+		t.Fatal("项目根应为含 harness.json 的仓库根，不是含 docs/PRD.md 的模板目录")
+	}
+}
+
+func TestGate_AC_058_1_B1(t *testing.T) {
+	dir := gateDir(t, false, "")
+	os.MkdirAll(filepath.Join(dir, ".git"), 0o755)
+	writeFile(t, dir, "sub/harness.json", "{}\n")
+	hookIn(t, dir, "sub/pkg", "PreToolUse", bashTool("go generate ./..."))
+	if !snapAt(dir, "sub") || snapAt(dir, ".") {
+		t.Fatal("git 仓库的子目录含 harness.json 时，项目根应为该子目录")
+	}
+}
+
+func TestGate_AC_058_1_B2(t *testing.T) {
+	dir := gateDir(t, false, "")
+	os.MkdirAll(filepath.Join(dir, ".git"), 0o755)
+	hookIn(t, dir, "internal/api", "PreToolUse", bashTool("go generate ./..."))
+	if !snapAt(dir, ".") || snapAt(dir, "internal/api") {
+		t.Fatal("没有 harness.json 时，项目根应为 git 仓库根")
+	}
+}

@@ -137,16 +137,25 @@ func newContent(in input, abs string) string {
 	return s
 }
 
-// projectRoot 从 cwd 向上查找含 docs/PRD.md、harness.json 或 .git 的目录，找不到时为 cwd。
+// projectRoot 是从 cwd 向上最近的含 harness.json 的目录，其次最近的 git 仓库根，都没有时为 cwd（AC-058-1）。
+// 不按 docs/PRD.md 判定：仓库中的脚手架模板也含 docs/PRD.md。
 func projectRoot(cwd string) string {
-	for d := cwd; ; d = filepath.Dir(d) {
-		for _, m := range []string{"harness.json", "docs/PRD.md", ".git"} {
-			if _, err := os.Stat(filepath.Join(d, m)); err == nil {
-				return d
-			}
+	for _, m := range []string{"harness.json", ".git"} {
+		if d, ok := upward(cwd, m); ok {
+			return d
+		}
+	}
+	return cwd
+}
+
+// upward 从 dir 向上查找含 marker 的目录。
+func upward(dir, marker string) (string, bool) {
+	for d := dir; ; d = filepath.Dir(d) {
+		if _, err := os.Stat(filepath.Join(d, marker)); err == nil {
+			return d, true
 		}
 		if filepath.Dir(d) == d {
-			return cwd
+			return "", false
 		}
 	}
 }

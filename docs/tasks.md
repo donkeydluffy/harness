@@ -712,7 +712,7 @@ IF-018 After 恢复或删除文件前把当前内容另存到 `.harness/session/
 "未完成"段到下一个任意级别的标题结束，替换与清除不删掉段后的进度记录（DEBT-020）。
 
 ### T-073 门禁以最近的 harness.json 判定项目根
-- Status: Todo
+- Status: Done
 - Covers: AC-058-1
 - Design: IF-019, FLOW-02
 - Flow: FLOW-02

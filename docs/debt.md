@@ -150,19 +150,31 @@ T-028 只豁免以 `/`、`./`、`~/` 开头的路径。`docs/architecture/module
 `harness init` 不覆盖内容不同的已有文件，`.git/hooks/pre-commit` 也按此跳过；harness 升级后钩子中的规则列表（如 T-058 去掉的 phase）不会更新，只能删掉钩子再运行 init（2026-11-27 遇到）。钩子由 harness 生成、不由人编辑，可考虑让 init 识别自己生成的旧版钩子并替换，或让钩子只调用一个不带规则列表的子命令。
 
 ### DEBT-019 门禁把含 docs/PRD.md 的子目录当作项目根
-- Status: Open
+- Status: Resolved
 - Module: MOD-11
 
 在 `internal/scaffold/templates/artifacts/docs` 下执行命令时，门禁向上找到 `templates/artifacts/docs/PRD.md`，把 `templates/artifacts` 当作项目根，在其中写入 `.harness/snap/<会话>/`；这些文件随后被嵌入模板，init 的集成测试失败（2026-11-27 遇到）。项目根应以 harness.json 或 git 仓库根判定，不以 docs/PRD.md 判定。
 
+已解决（T-073，FR-058）：项目根取最近的含 harness.json 的目录，其次 git 仓库根，不再按 docs/PRD.md 判定。
+
 ### DEBT-020 清除"未完成"段时连带删掉其后的进度记录
-- Status: Open
+- Status: Resolved
 - Module: MOD-11
 
 门禁在会话结束检查连续阻止 3 次后把未通过项写入 docs/progress.md 末尾的"## 未完成"段；检查通过后清除该段，但段的结束只认下一个 `## ` 标题，而进度记录是 `### ` 标题，追加在该段之后的记录被一并删除（2026-11-27 T-059 的记录因此丢失，此前 T-049 的记录也丢过一次）。修复方向：把"未完成"段的正文限定为门禁自己写入的内容（如以结束标记收尾），或写入时放在文件开头、追加记录时插到它之前；补"段后追加的记录在清除后保留"的用例。
 
+已解决（T-072，FR-057）："未完成"段到下一个任意级别的标题结束，门禁写入的正文中以 # 开头的行转义；段后的进度记录在清除与再次写入时都保留。
+
 ### DEBT-021 命令后比对把人同时写入的锁文件恢复掉
-- Status: Open
+- Status: Resolved
 - Module: MOD-11
 
 门禁在代理命令前给受保护文件做快照，命令后发现内容变化就恢复为快照。人在自己的终端执行 `harness approve` 时，若代理的长命令（如 `harness check unit`，约 80 秒）正在运行，命令结束时 harness.lock 被判为代理改动并恢复，人的批准记录全部丢失，且没有任何提示给人（2026-11-27 一次批准 62 个单位后遇到）。修复方向：命令后比对只恢复由该命令进程写入的改动，或对受保护文件的变化先比对写入者（如锁文件中批准记录的身份与时间晚于命令开始时间则保留）；恢复前把被覆盖的内容另存，便于找回。
+
+已解决（T-070、T-071，FR-056，ADR-018）：`harness approve` 等待正在执行的代理命令结束，写入锁文件前再查一次；命令后比对恢复或删除文件前把当前内容另存到 `.harness/session/restored/`，恢复报告列出另存位置。
+
+### DEBT-022 lint 的 gofmt 扫到门禁快照中的文件副本
+- Status: Open
+- Module: MOD-16
+
+T-056 起 `tools` 中的 `gofmt -l .` 按文件名解析输出。全量检查在代理命令中运行时，门禁的命令前快照 `.harness/snap/<会话>/files/` 里有源文件的副本；命令前未格式化的文件，其副本也被 gofmt 列出并报为 lint.01（2026-11-28 T-073 遇到，格式化后再运行一次即通过）。修复方向：lint 报告只保留 sourcePaths 内的文件，或运行工具时排除 `.harness/`；补"快照中的未格式化副本不报告"的用例。

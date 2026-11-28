@@ -680,3 +680,43 @@ T-061 后 harness lock 写出的锁文件总是第 2 版，Lock 的注释仍写�
 - Depends: T-063
 
 T-063 改写 architect 模板的 description 时留下"依据已批准的需求 设计模块"，去掉多余的空格；本仓库的 `.claude/skills` 由人同步。
+
+### T-070 命令后恢复前另存被覆盖的内容
+- Status: Done
+- Covers: AC-056-2
+- Design: IF-018, FLOW-03
+- Flow: FLOW-03
+- Scope: internal/gate/**, internal/app/gate.go, internal/app/gate_integration_test.go
+- Depends: T-069
+
+IF-018 After 恢复或删除文件前把当前内容另存到 `.harness/session/restored/<时间>/<路径>`，Change 增加 Saved；恢复报告列出另存位置，受保护文件被恢复时提示由人在终端复制回去（DEBT-021）。
+
+### T-071 批准等待正在执行的代理命令
+- Status: Todo
+- Covers: AC-056-1
+- Design: IF-024, IF-018, FLOW-08
+- Flow: FLOW-08
+- Scope: internal/app/**, internal/cli/terminal.go, internal/gate/snapshot.go
+- Depends: T-070
+
+新增 IF-018 Running；Terminal 增加 Notify；Approve 在列出待批准单位前与写入锁文件前检查正在执行的代理命令并等待，快照早于 10 分钟前时询问人（ADR-018）。
+
+### T-072 进度文件"未完成"段的边界
+- Status: Todo
+- Covers: AC-057-1
+- Design: IF-017, FLOW-05
+- Flow: FLOW-05
+- Scope: internal/gate/**, internal/app/session_integration_test.go
+- Depends: T-071
+
+"未完成"段到下一个任意级别的标题结束，替换与清除不删掉段后的进度记录（DEBT-020）。
+
+### T-073 门禁以最近的 harness.json 判定项目根
+- Status: Todo
+- Covers: AC-058-1
+- Design: IF-019, FLOW-02
+- Flow: FLOW-02
+- Scope: internal/adapter/**, internal/app/gate_integration_test.go
+- Depends: T-072
+
+适配器的项目根取最近的含 harness.json 的目录，其次 git 仓库根，不再看 docs/PRD.md（DEBT-019）。

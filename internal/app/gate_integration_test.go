@@ -235,3 +235,66 @@ func TestGate_AC_037_2_E2(t *testing.T) {
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("cd . && harness approve prd")), "gate.protect")
 	wantDeny(t, hook(t, dir, "PreToolUse", bashTool("go run ./cmd/harness approve prd")), "gate.protect")
 }
+
+// ---- AC-056-2 命令后恢复前另存被覆盖的内容 ----
+
+// savedCopy 返回 .harness/session/restored/<时间>/rel 中另存的内容，找不到时 ok 为 false。
+func savedCopy(t *testing.T, dir, rel string) (string, bool) {
+	t.Helper()
+	m, _ := filepath.Glob(filepath.Join(dir, ".harness", "session", "restored", "*", filepath.FromSlash(rel)))
+	if len(m) != 1 {
+		return "", false
+	}
+	b, err := os.ReadFile(m[0])
+	return string(b), err == nil
+}
+
+func TestGate_AC_056_2_N1(t *testing.T) {
+	dir := gateDir(t, true, activeTasks)
+	cmd := bashTool("sh ./script.sh")
+	wantAllow(t, hook(t, dir, "PreToolUse", cmd))
+	os.WriteFile(filepath.Join(dir, "other/b.go"), []byte("changed\n"), 0o644)
+	h := hook(t, dir, "PostToolUse", cmd)
+	if b, _ := os.ReadFile(filepath.Join(dir, "other/b.go")); string(b) != "package other\n" {
+		t.Fatalf("范围外修改未恢复：%q", b)
+	}
+	if got, ok := savedCopy(t, dir, "other/b.go"); !ok || got != "changed\n" {
+		t.Fatalf("恢复前应另存改动后的内容：%q %v", got, ok)
+	}
+	if !strings.Contains(h.Reason, ".harness/session/restored/") || !strings.Contains(h.Reason, "/other/b.go") {
+		t.Fatalf("恢复报告应列出另存位置：%s", h.Raw)
+	}
+}
+
+func TestGate_AC_056_2_B1(t *testing.T) {
+	dir := gateDir(t, true, activeTasks)
+	cmd := bashTool("sh ./script.sh")
+	wantAllow(t, hook(t, dir, "PreToolUse", cmd))
+	os.WriteFile(filepath.Join(dir, "other/new.go"), []byte("new\n"), 0o644)
+	hook(t, dir, "PostToolUse", cmd)
+	if _, err := os.Stat(filepath.Join(dir, "other/new.go")); !os.IsNotExist(err) {
+		t.Fatal("范围外新建文件未删除")
+	}
+	if got, ok := savedCopy(t, dir, "other/new.go"); !ok || got != "new\n" {
+		t.Fatalf("删除前应另存新建文件：%q %v", got, ok)
+	}
+}
+
+func TestGate_AC_056_2_E1(t *testing.T) {
+	dir := gateDir(t, true, activeTasks)
+	before := readFile(t, dir, "harness.lock")
+	cmd := bashTool("sh ./full.sh") // 调用多个命令的脚本；只调用一次 harness 的命令允许改写锁文件
+	wantAllow(t, hook(t, dir, "PreToolUse", cmd))
+	approved := strings.Replace(before, "{", "{\"human\": true,", 1) // 人在命令执行期间写入的锁文件
+	os.WriteFile(filepath.Join(dir, "harness.lock"), []byte(approved), 0o644)
+	h := hook(t, dir, "PostToolUse", cmd)
+	if readFile(t, dir, "harness.lock") != before {
+		t.Fatal("锁文件应恢复为命令前内容")
+	}
+	if got, ok := savedCopy(t, dir, "harness.lock"); !ok || got != approved {
+		t.Fatalf("另存的副本应保留人写入的内容：%v", ok)
+	}
+	if !strings.Contains(h.Reason, "由人在终端复制回去") {
+		t.Fatalf("恢复报告应提示由人复制回去：%s", h.Raw)
+	}
+}

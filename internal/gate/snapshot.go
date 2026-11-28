@@ -27,6 +27,27 @@ type Change struct {
 	Action   string // created / modified / deleted
 	Restored bool   // 已恢复为命令前状态
 	Reason   string // 未恢复的原因（被允许或文件过大）
+	Saved    string // 恢复前另存的位置（仓库相对路径），没有另存时为空（AC-056-2）
+}
+
+// restoredDir 存放命令后恢复前另存的文件内容：门禁运行时目录，已被忽略，代理不能写入（ADR-018）。
+const restoredDir = ".harness/session/restored"
+
+// stamp 便于测试固定另存目录的时间部分。
+var stamp = func() string { return time.Now().UTC().Format("20060102T150405.000000000Z") }
+
+// save 把仓库文件 rel 的当前内容另存到 restoredDir/<at>/<rel>，返回另存位置；失败时为空。
+func save(root, at, rel string) string {
+	b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+	if err != nil {
+		return ""
+	}
+	dst := restoredDir + "/" + at + "/" + rel
+	abs := filepath.Join(root, filepath.FromSlash(dst))
+	if os.MkdirAll(filepath.Dir(abs), 0o755) != nil || os.WriteFile(abs, b, 0o644) != nil {
+		return ""
+	}
+	return dst
 }
 
 func snapDir(root, session string) string {
@@ -68,6 +89,7 @@ func Before(root, sessionID string) error {
 }
 
 // After 比对命令前后状态；不被 allowed 允许的改动恢复为命令前内容，新建文件删除（IF-018）。
+// 恢复或删除前把文件当前内容另存到 .harness/session/restored/<时间>/<路径>（AC-056-2）。
 // 没有命令前快照时返回 nil。
 func After(root, sessionID string, allowed func(path string) bool) ([]Change, error) {
 	dir := snapDir(root, sessionID)
@@ -102,6 +124,7 @@ func After(root, sessionID string, allowed func(path string) bool) ([]Change, er
 		}
 	}
 	sort.Slice(changes, func(i, j int) bool { return changes[i].Path < changes[j].Path })
+	at := stamp()
 	for i := range changes {
 		c := &changes[i]
 		if allowed(c.Path) {
@@ -110,6 +133,7 @@ func After(root, sessionID string, allowed func(path string) bool) ([]Change, er
 		}
 		abs := filepath.Join(root, filepath.FromSlash(c.Path))
 		if c.Action == "created" {
+			c.Saved = save(root, at, c.Path)
 			c.Restored = os.Remove(abs) == nil
 			continue
 		}
@@ -119,6 +143,7 @@ func After(root, sessionID string, allowed func(path string) bool) ([]Change, er
 		}
 		orig, err := os.ReadFile(filepath.Join(dir, "files", filepath.FromSlash(c.Path)))
 		if err == nil {
+			c.Saved = save(root, at, c.Path)
 			os.MkdirAll(filepath.Dir(abs), 0o755)
 			err = os.WriteFile(abs, orig, 0o644)
 		}

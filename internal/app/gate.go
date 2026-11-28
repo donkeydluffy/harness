@@ -49,6 +49,8 @@ func restoreReport(changes []gate.Change) string {
 	var lines []string
 	for _, c := range changes {
 		switch {
+		case c.Restored && c.Saved != "":
+			lines = append(lines, fmt.Sprintf("- %s（%s）已恢复为命令前状态；改动后的内容另存在 %s，需要保留时由人在终端复制回去", c.Path, c.Action, c.Saved))
 		case c.Restored:
 			lines = append(lines, fmt.Sprintf("- %s（%s）已恢复为命令前状态", c.Path, c.Action))
 		case c.Reason != "允许":

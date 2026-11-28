@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: 需求阶段：与人多轮对话澄清需求，把结果写入 docs/PRD.md。用于新项目起步、新增需求、需求含糊时。
+description: 需求澄清：与人多轮对话澄清需求，把结果写入 docs/PRD.md。用于新项目起步、新增需求、需求含糊时。
 check: harness check prd term
 ---
 

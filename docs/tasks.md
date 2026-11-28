@@ -662,3 +662,12 @@ trace.03 检查 ADR 的 Relates 时只要求编号存在，不再报告 Removed�
 - Depends: T-066
 
 `harness phase next` 已不存在，门禁只拦截 harness approve；删除对应的测试断言。
+
+### T-068 Lock 注释去掉第 1 版锁文件的过时说明
+- Status: Todo
+- Covers: AC-047-6
+- Design: MOD-02, IF-023
+- Scope: internal/app/lock.go
+- Depends: T-061
+
+T-061 后 harness lock 写出的锁文件总是第 2 版，Lock 的注释仍写着"没有批准记录的第 1 版锁文件在 Release 2 生效前保持第 1 版"；改为与 IF-023 一致的说明，只改注释。

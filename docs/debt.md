@@ -1,7 +1,7 @@
 # 技术债清单
 
 - Status: Draft
-- Updated: 2026-11-26
+- Updated: 2026-11-28
 
 每项格式见 `docs/architecture/formats.md` 第 3 节：`### DEBT-nnn 标题`，字段 Status（Open / Resolved）、Module。
 
@@ -56,10 +56,12 @@
 已解决（388f331，T-028）：以 `/`、`./`、`~/` 开头的 token 按路径处理；含多个 `/` 的 base64 密钥仍命中。
 
 ### DEBT-007 跨全部模块的机械改动没有合规路径
-- Status: Open
+- Status: Resolved
 - Module: MOD-05
 
 task.05 要求文件范围跨模块的任务引用覆盖这些模块的调用流程，task.03 要求范围在关联模块内，commit.03 限制单个提交 400 行。模块路径改名（DEBT-001）这类只改 import 的机械改动跨全部 14 个模块、约 400 行，不对应任何调用流程。T-027 期间由人在终端运行脚本并以 `--no-verify` 提交（fd3898e）。Release 2 应给机械改动一个受约束的通道，例如任务声明 `Kind: mechanical` 时免于 task.05，但提交只能改动 import 路径，由规则校验。
+
+已解决（T-051，FR-050）：任务声明 `Kind: mechanical` 与 `Rewrite: 旧前缀 -> 新前缀` 并引用 ADR 后，免于文件范围、调用流程与提交行数三项约束；提交只能把 import 路径与模块声明行中的旧前缀替换为新前缀（AC-050-3）。
 
 ### DEBT-008 失败的非用例测试不被任何规则报告
 - Status: Resolved
@@ -78,10 +80,12 @@ commit.02/commit.03 豁免生成文件（TERM-026），门禁却按源码路径�
 已解决（df67d88，T-031）：整条命令只是 `rm` CI 配置（`workspace.RegeneratedFiles`）时放行并保留删除，单独一次 `harness init` 写回的内容保留。hook 配置 `.claude/settings.json` 不在其中，仍只能由人重新生成（AC-025-4）。
 
 ### DEBT-010 用户项目的 CI 安装 @latest，与生成文件的 harness 版本可能不一致
-- Status: Open
+- Status: Resolved
 - Module: MOD-13
 
 生成的 CI 配置用 `go install …/cmd/harness@latest`，而生成文件来自本地那个版本的模板。harness 发布了改动模板的新版本后，用户项目的 CI 会因 cfg.02 失败，本地却通过；代理缓存还会让 `@latest` 落后于最新提交（T-027 中本仓库的 CI 装到了旧提交）。本仓库已改为从源码构建（`SelfHosted`）；用户项目应把版本固定为生成时的 harness 版本（取自构建信息），升级 harness 后由 cfg.02 提示重新生成。
+
+已解决（T-047，FR-051）：生成的 CI 配置下载生成时所用 harness 版本的发布包并校验 checksums.txt；本地 harness 与 CI 固定的版本不同时，cfg.02 提示重新运行 `harness init`。
 
 ### DEBT-011 测试包构建失败不被任何规则报告
 - Status: Resolved

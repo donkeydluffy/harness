@@ -664,10 +664,19 @@ trace.03 检查 ADR 的 Relates 时只要求编号存在，不再报告 Removed�
 `harness phase next` 已不存在，门禁只拦截 harness approve；删除对应的测试断言。
 
 ### T-068 Lock 注释去掉第 1 版锁文件的过时说明
-- Status: Todo
+- Status: Done
 - Covers: AC-047-6
 - Design: MOD-02, IF-023
 - Scope: internal/app/lock.go
 - Depends: T-061
 
 T-061 后 harness lock 写出的锁文件总是第 2 版，Lock 的注释仍写着"没有批准记录的第 1 版锁文件在 Release 2 生效前保持第 1 版"；改为与 IF-023 一致的说明，只改注释。
+
+### T-069 architect skill 模板去掉多余的空格
+- Status: Todo
+- Covers: FR-048
+- Design: MOD-13
+- Scope: internal/scaffold/templates/**
+- Depends: T-063
+
+T-063 改写 architect 模板的 description 时留下"依据已批准的需求 设计模块"，去掉多余的空格；本仓库的 `.claude/skills` 由人同步。

@@ -134,6 +134,11 @@
     "AC-007-4/E1": "sha256:1c061c2445c6b3af129de82b7dbc75ddcacd21be779d935e38fe568c8a60be3c",
     "AC-007-4/N1": "sha256:dfd661404a29b84c5ed223c3f44371c63b5b274a6e14e3d25b011df47268fa8f",
     "AC-007-4/N2": "sha256:371082766cdb0da585871cb5bcf6b81cab0362ad4fad02c7e8435a1e1709b23d",
+    "AC-007-5/B1": "sha256:2ff9ab1ac6aece61057cc179d3fef40c3fa6ad9765b847cc1c88f4a11b7d9ecd",
+    "AC-007-5/B2": "sha256:58a1e1dba490a3c6755624d43a788c3959757a0f5c4541aa24ac2563002848fa",
+    "AC-007-5/B3": "sha256:abfa2a0ce4456b67d57d25752716e71dd1dc0d768cb3e66c213a7669e70e18cd",
+    "AC-007-5/E1": "sha256:85d22592b10b6104107bc12c35849e5bd36b41045f6a8edff88a1ade40c85f6f",
+    "AC-007-5/N1": "sha256:70442291ed2b5d6eeb87cfaa3dc799604f2ed74943c0a4fc2e7cc85c41767080",
     "AC-010-1/E1": "sha256:c0afd53dc0a14a475e0c58516cc201c72e9ff8df12572cbca7702eb455223289",
     "AC-010-1/E2": "sha256:e539c2a31878aaf4bc07f593fedc5fda1e80f4068e775e3144a8de2fe94a0d81",
     "AC-010-1/N1": "sha256:c3b19163ed668a73c4f411a91ccf6eac3d1b41bb8c17bc234486a854fcbf314b",
@@ -295,11 +300,15 @@
     "AC-025-4/N1": "sha256:935cc18446f3aa1fb58bf6b0c4cbbb70c4e33e1228d17b12c707422ee180f397",
     "AC-030-1/B1": "sha256:83d05fa5076b6cbc70ae182bc70b6cdfab2a4b9a3824a79af89f12cfa6ab6924",
     "AC-030-1/B2": "sha256:eba418b57bf36bf7bb67e020f0620a5236eadf527882b594f7e77515122c7a34",
+    "AC-030-1/B3": "sha256:23f6d6aee23b942f3897bcd904b72ea383a6709d72453fb463bf5b9e64aead7c",
+    "AC-030-1/B4": "sha256:8faa996a6bb7b743a9a9d2a466ed55aaf05dd5c743051d181606656cf7aa9bb4",
     "AC-030-1/E1": "sha256:ea775f110d94e402bb273302f2d13d80125960d09d9b412fca6397824d154e29",
     "AC-030-1/N1": "sha256:3144cb61f0ceb0fed8902f4c9428a1f81909d66e45e5b1f20ae2baaf101f8e29",
+    "AC-030-2/B1": "sha256:55978898f6cc5ed31dbab4a640201055424dbb787aa31fd9bb30f1fdd572191f",
     "AC-030-2/E1": "sha256:c491b3d561d695549cce4ab24934355baf65b8d60c7a66e4b4bfb7c252caab0a",
     "AC-030-2/N1": "sha256:2b10396f1d2e4351a144fd2e9f71ee5e61545ac1e67f2375ae38e223d2808334",
     "AC-030-3/B1": "sha256:3ad0944cceb9c49840e20aa58dfaad7da8e5cc06ed632d673b4e2f4b7905f90f",
+    "AC-030-3/B2": "sha256:3a0631ba01c667c845af58fc461afd048c6cbe8be758eff0c1a59446b6c4525f",
     "AC-030-3/E1": "sha256:e95de5d5818f1a52fac69570b921be28614eabc88701ccf2a2f828f70f20166a",
     "AC-030-3/E2": "sha256:4c9dae0969185c8995148abc490155ed059fd85ca0d4d71bfe32de3ce7b99f00",
     "AC-030-3/N1": "sha256:b64beff0961badbbee71d92bd58ef098be97d5b36c0495fa7829aafe3f71a0dc",
@@ -340,10 +349,10 @@
     "AC-035-2/B2": "sha256:4dc8958a233741a931d36f61f7a4d62dd76786867e831f7f9984e11348d47623",
     "AC-035-2/E1": "sha256:d7232dbf3406d63b5884333d42d55b34de2259334fd64014e437142689dbee3b",
     "AC-035-2/N1": "sha256:82ba1c8a5104530ff07099ea07819fee626ad23a7b2d81e9c51f1fc41c271334",
-    "AC-037-1/B1": "sha256:0fd4146917794174d1851d1185af74f881bb87862c768ea02507cfa1ff169254",
+    "AC-037-1/B1": "sha256:58655ea745fcc13ac222c6ee9c3fedc847e698305bd3387d5a39e956173d14b5",
     "AC-037-1/E1": "sha256:18be260252b6a10051a0e8c2d31fdcf1e369ab6bdb6fd276535c7593b49deb66",
     "AC-037-1/E2": "sha256:d7fe8b03ebdfe7b7b2232c8c353bd2982fc71ee3b7131688382e60ee2d1491c4",
-    "AC-037-1/N1": "sha256:00c0ad6738217529ad3e9ad07abeefd3743f4867de1dfc9d6da512c5055862e6",
+    "AC-037-1/N1": "sha256:93b8c7d3f3b40151a5e4ef0f1faaf2a9f54ab35fd56ad58d383ef81579ec6e0e",
     "AC-037-2/E1": "sha256:af50fa98b7e0d117a24ef308c88cb77ace41a62978cd84e02df01097600999fb",
     "AC-037-2/E2": "sha256:4933ad584b98e4a8b2942c6ada9dd217f84412e792277c85e7c11ebe3c4c79ee",
     "AC-037-2/N1": "sha256:f77e48b1cb4087e088165821f71b815b1818b0b0277ed8653b4217f41868f4ce",
@@ -542,6 +551,11 @@
     "ADR-010": "sha256:9ea7d0d9687f7018cbab1fbb7363f508df68d3c204f7cb3ec7816df42695127d",
     "ADR-011": "sha256:fe6b0c17c10123a9ee6a40ab8473bb5630a1aeb7345028321c3d76e18bd04b22",
     "ADR-012": "sha256:c53cab7a410a2099680b259efed231858a7784246eb1257b9c375e8c8f08b640",
+    "ADR-013": "sha256:7bd7978f791945f78f5684375309e5202e812d1c73312c2a4c4b35c6ba2d4f65",
+    "ADR-014": "sha256:1f1d4ac04c2772b2d527f13fe43d5388a2e8f4a978f407da2275974bc823d8e3",
+    "ADR-015": "sha256:e0148eac4c186e5a36c037d88ce5ce6b1ac1f2df5e6c2e2da8dd0fd3e6b3a46c",
+    "ADR-016": "sha256:d362dc25069cbf67c2a99eb33808f1e26570a61e5f65c3de43cc355115fd4c94",
+    "ADR-017": "sha256:abe8c5ea25b0f2bcbb793eb1479bc3605ed18aaca61654a0f7bfc8aae3d9ecf3",
     "CHG-001": "sha256:5226a6da8954f94bedfecedde9d4567415507233bb6b9ba570679b3198b099f4",
     "CHG-002": "sha256:3bc37a559f863e46003df42921748e725ee77ed64a2e83bf18c064c5d72cf117",
     "CHG-003": "sha256:0ce85cdae4b10648ac115017008f04197561a5e1b9fcf4de1b4164dd08bf4f80",
@@ -567,13 +581,18 @@
     "CHG-023": "sha256:9a41de83213d966dac16d44a16a5f85d85b78af62738ead77d418df3493761c5",
     "CHG-024": "sha256:d0f5a6fb65970214db1a73d00d7c2c7fd546d7601f565fe82ed03bac4d24f377",
     "CHG-025": "sha256:e74a202cfacf81154621b62d5b4562da53659f9cb80a81ace8ce6d189d08c22e",
+    "CHG-026": "sha256:ec14d99df8998dff31cb1ef3645a6395d661597b9eab599b233e934236455cba",
+    "CHG-027": "sha256:4c656ad2fa596523e2a00698a327a64ef0e7fe7ca5e1ead133df83c36dc94c12",
+    "CHG-028": "sha256:a7be2a9280ce81ae9bba7fa4d245603d6eb09831fc006b7962f56dc3ed49f4c8",
+    "CHG-029": "sha256:5d9f20bd44a4ddd0e0e5d81262bf06156b55983daed42143608208cf207b3f76",
+    "CHG-030": "sha256:e7d8e68dc92e9ab02e1fbd7919b2f0414813027c5cab44bc924ec8efadf18055",
     "FR-001": "sha256:3d3161ed1ebffc0c0cc4808d744f6ea94f2c6c334ac2753acc120ee35cbb2ecf",
     "FR-002": "sha256:26b639028bbd3261ba7d6892b11e1b63deeed0126c61d5bc2a147837f8ffe07c",
     "FR-003": "sha256:63697b1e98fa73f9929fbdefefb5f79557b450b8c17c02f1ed9e3afd8f840809",
-    "FR-004": "sha256:cbe21976d564e711deb9d8108a926c0380f8b3956a57f7ee8e5da432188e666d",
+    "FR-004": "sha256:be16b0178163e67b832f374663119f6bfe987c5e4e2ca92b902c53a7feec8c09",
     "FR-005": "sha256:b77558d1b2dca2ac2fc410f44aa10c59f2f4674578e1dd0f3e77b17e93a54b7e",
     "FR-006": "sha256:ec29c46dc3bf71d4d46f41b041f15995d109a31000ee6b2b4187b0de644283ab",
-    "FR-007": "sha256:56fddf2aa191bcea3ed84cb7a590632dbf6f630e277549967e786a9cc9be38fa",
+    "FR-007": "sha256:d7c6f640f0e8044fa5bd403bc0a39c6ba0b3b2965bc8d773a5fb0f9b8d9defba",
     "FR-008": "sha256:7e5e06e13019beabb299b14289d8cd7d8af5b364d7dbee87972494c6fab7255f",
     "FR-009": "sha256:668fcc2787c91f870fb1f9ee800c0340acd52a68fea7ebd2c98d2593022a100b",
     "FR-010": "sha256:59615ceae0bc94288244cd8bba0b0d2bfe15f211caa2e03576d7efffcfb8a875",
@@ -596,14 +615,14 @@
     "FR-027": "sha256:47de3f2510eeb71e3539a0c4d3b591a8272a6f552e7a8310ba046c1debd7aebf",
     "FR-028": "sha256:e7d07059ff08b352f6d73c9e90a8bb077ab451ca2b35ed28010a3254d5bc56fc",
     "FR-029": "sha256:dd3823506e65d0dfe49f5c0fd5b6c70ec496826ed7c4abbc30c4f0b65dd9a131",
-    "FR-030": "sha256:0c4f2b02fc6f44150c5d64a3d27661985d04449528ecac0117fe7114e66f40b1",
+    "FR-030": "sha256:a80b03cd9aa3adaf4a051083d4a4df4dc33dad95bcaafff0276ee19326484ca1",
     "FR-031": "sha256:1cac6d9b3b7d00674467824f15e224fc149fa8c7dcb4b59767bf4a1d0c02801e",
     "FR-032": "sha256:b5663584bcb8434cba369253cdb1f93208f7feab59aeacaf783bc587f979f8ac",
     "FR-033": "sha256:a58ea863f5eecacb8bb837217ebd17798b0b0d046837ff6eece523ce02abc104",
     "FR-034": "sha256:792e53872d8687b79f1157a344bb767eb0aff4c5f19b389cae9896ebb83ddb42",
     "FR-035": "sha256:e761b6e8a9f943d68caa26848927db882ac811c66c9416dcb75672f490f0ee03",
     "FR-036": "sha256:79b3a3e6f9aa7235a385cf4d1275029e02bec5a162a39668b6c2cfe40fa51a6c",
-    "FR-037": "sha256:900872788a36a876bdfdd3895693561d983aecd3c6b6630c26c299ad6d4e398b",
+    "FR-037": "sha256:757d73f4a510f3acc506f0c6bafb7027a6cbfb83e1e5fe8b4979520cc1e4f467",
     "FR-038": "sha256:ae3448f73c87786a090af5642a9bfea1ab5924d3c6d015c5d2324dc06b4606c1",
     "FR-039": "sha256:b10eb37f49ca4bb3a6c4d81636478fa33739b952e0525d229b2b83f23e0a3f6a",
     "FR-040": "sha256:609e7b3580c33fdd68106838a9fc39ef333be5351cbf4fd373b8de9a025e15cd",
@@ -628,7 +647,7 @@
     "IF-004": "sha256:feab23fd636fd19dd3d28c0d054a657fea8a6c0c88292a4ad2769fdd87c3fba8",
     "IF-005": "sha256:f4dd1c6b9ed2ccff2edfda4823a5adbf48e70cf616512755696d616751975158",
     "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
-    "IF-007": "sha256:47692e2ba6b7ea39ec3469586a95ba1b956db5a9613816c8b965f19bb60bff7d",
+    "IF-007": "sha256:8278b4243171813daccaed77b5fb2e914673a1d6eb56373b5061a0824f01321f",
     "IF-008": "sha256:81c79235740ebb3db9774188727106ce9943ea9a04632173a15523cb4b51e50c",
     "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
     "IF-010": "sha256:1c7e34091a1af8f7bd2c8a08ba64a969228f091eeb25db0d50c9b319752f8801",
@@ -636,32 +655,32 @@
     "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
     "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
     "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-    "IF-015": "sha256:18474bcfef2afc15f9e155451cc65b5e41b04dae55ae4bc453d4f5928d72d5e4",
-    "IF-016": "sha256:980a4574511aea2be14e7b9c12def0f4a644c129464f6f9418957088d1a7eddb",
+    "IF-015": "sha256:69cd05fede0a5f7a25ff1e230200be0638340db3bb7a4d1cd99f7f232426b73b",
+    "IF-016": "sha256:9bf07a86ae0ca44414f76f7ef5facc1311538d6669b890859e13a89d0d5e9762",
     "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
     "IF-018": "sha256:026462d45210401744c68ca0486f26b6ab2c4b9dda435fe266b145a007bdcb37",
     "IF-019": "sha256:8ba0869f2215c708a5c157ae39ab141ae68a8f58268c576a83da6084f96f7308",
     "IF-020": "sha256:2c0bcab8d4df679a77c5ce4ad88f85bf02172653b6106ee620f06d0abf793f61",
     "IF-021": "sha256:82dfc28a06b1ebe84257e3bdcf9c7d8bedf6440d9a40d84710c88b97ca8eb1c1",
-    "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b",
-    "IF-023": "sha256:c9a1ee5391322ba065c0ee970420d08ba40147a2b7183bb02eeb6038347b7283",
-    "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+    "IF-022": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166",
+    "IF-023": "sha256:f8d4a0708785c603816a969e2e53eef04a548a28d272ca19965af9919b915ec3",
+    "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810",
     "IF-025": "sha256:b75b999f7f1d7977f08e67e7f364ffe82fd39c4298da506ffdc1eb712cfca6eb",
     "IF-026": "sha256:9b0bcb737b73ccc9389490608608ddc29f9553658671eb705ba17b18973a96e7",
     "IF-027": "sha256:3799e27c399926e4cbc1b4ad4630d54e3640195c619c80c9dbdd7957107d1046",
     "IF-028": "sha256:428ef7a9301799478b870755a067a0ca13644a92e432a1bdbe3b540f54e6a972",
     "IF-029": "sha256:54206b45b55cc67ea23facba4d65ff0e619f23f06c6ce0213e33fd8b31fa6380",
     "IF-030": "sha256:692b0b050c908f87c589aeff96e7f649ea0ccf6522ef43e3f4a2da0be111ec54",
-    "IF-031": "sha256:7fa72c7cfa62ce570aaa6391df382e0517662ea153106f7b17329f09697b1908",
+    "IF-031": "sha256:4eb038dd4c4633aca5ee7e7b3cc88d134b391536529f93b5f5ec7d73477ce88b",
     "IF-032": "sha256:856657cd1cbeda2636c4d357481de5bbbeba651dde4a5e7492d59937143c0fe0",
     "IF-033": "sha256:14f032c6bd64269bf30a952afd01fdd5ac3495da071b286a259d2b9b8f21c926",
     "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4",
-    "IF-035": "sha256:41cba669a3c7470faa4dde0f7a9b9c83a6ae3befc66abdd5a378ad3784bf9ece",
+    "IF-035": "sha256:ccdfcdb13f725e821a77cc1276b4a2e69d0d4acfae9991f517a7ddd3bbbf0bb2",
     "IF-036": "sha256:5aa92fb81827b2b249325bbd3115ac27f6734dd1053ee007d1c8fa4598d00dfb",
     "IF-037": "sha256:16245cb12efaea30a5bda7cef503e0cbd127ec026b2d7e5f5181229353adfe73",
-    "IF-038": "sha256:861c935b4ef3a43bc75d208515d0885d141d75b6ecb3dce3f7c607f62bdb8719",
+    "IF-038": "sha256:888cad88450046d1ba01940f5055d8d3045f4bbbd4b33801ad1001797786fa9d",
     "IF-039": "sha256:0fbcc9158b547c1fbd018ad3de17e475646bf2e9f43df574f12c0c6257ab261c",
-    "NFR-001": "sha256:65bfc26aedabff38fdb3e8c3edbd532099d73e8a77cdba1459450f6c52ea57b0",
+    "NFR-001": "sha256:d817dfa2d117f2be1e5dad27b87c3f8fef7fe0cb5401139d817a94edac9d7cf3",
     "NFR-002": "sha256:4c0db4aaf789787393a0f0cc9f9ce559554ba36628a9a6629b4d960bc7401f9c",
     "NFR-003": "sha256:4097662dfaaf63684f96581e6e801dbf702c7d55fd5b3de28cfc107d38bdc2de",
     "NFR-004": "sha256:56addee9f4cffb90b84edb6efe4e32e5ae40aa72f96c957d761598630a261f80",
@@ -677,7 +696,7 @@
     "snapshot:IF-004": "sha256:6cdad9cb89c152aac128e29bf5a8beb55ea5032ab0a66c1e4bf83becb58dc450",
     "snapshot:IF-005": "sha256:ab247cb8d8bbc2ed96faf4d01fc21bff80086c06241f4c2e7fb16727c52f4dc1",
     "snapshot:IF-006": "sha256:b71a7bd8e7d22045092e203bfa70a013701a07ce843676fb8a2cdde2af3f10ff",
-    "snapshot:IF-007": "sha256:1ec701db750a7fe5c594a18488479e679d9e58dac595c2041f469cb540bac15e",
+    "snapshot:IF-007": "sha256:7db2527214aee44811941fffd0aed32760268b84f67859f5577dbaa2165fc4dc",
     "snapshot:IF-008": "sha256:99184c0b0b48e6f0fa5cb0c3e428dfb323ae75453067b4c0e3d4ef59760c8c3c",
     "snapshot:IF-009": "sha256:0cf1b52e60574294c495d7692deac9f4e644042d38cc208227fae9d25cabfbd2",
     "snapshot:IF-010": "sha256:f307ce22f10cba42851cd9079562234bf9752e3e6fd11f3defe2a89b3ee667b0",
@@ -685,8 +704,6 @@
     "snapshot:IF-012": "sha256:bdea8d4aea9c4c7ab0ec65340c4be45dc07842087122f314832afe2859001237",
     "snapshot:IF-013": "sha256:5dc85c3eefb407712e5132cf2f8d91c7eb0f4b43a4aae1b6a74dff25aa2f73c2",
     "snapshot:IF-014": "sha256:1ca4b8e58567da1d6b79c44afb9a27da9e31b5388364c492a100f99841e013d4",
-    "snapshot:IF-015": "sha256:855c7e9cba51ee2f7ab17e4e197cebf012805e8f3ea339b3eb45a56512b21cfd",
-    "snapshot:IF-016": "sha256:30512fc20079dd58598200507e9a43825e415b75fd13d68e8943fde2bdebf532",
     "snapshot:IF-017": "sha256:c705c681d698f0f81ec864bb570ab58f4e834c657e644bdf473986dce6543796",
     "snapshot:IF-018": "sha256:e7dfa2073ba3cf80dfd63192276ac3b661ce4dc00e64126ed1a9465c39d5f11d",
     "snapshot:IF-019": "sha256:8fc5aaa33f5c91169c8b9784a7a14878a6a5e466cd723a97e266138582f9eba4",
@@ -705,7 +722,7 @@
     "snapshot:IF-032": "sha256:4132d210bcc6843baf989c1037fe428469b2272c47b76d71fd0399d596d1d4c1",
     "snapshot:IF-033": "sha256:9af781a2abd2682f157edf033ca66f93056d4b37897acfad47d3cdc1755bccd1",
     "snapshot:IF-034": "sha256:133e9fd3d4d4eaa70fc153aa6868e7af93f03667fb600e68f6d4fa86661b96cb",
-    "snapshot:IF-035": "sha256:a54f16e49d7f02f7b2733750c27beef154c5ffb4673d5917ad6dfe8386e4bbfc",
+    "snapshot:IF-035": "sha256:e25077d3d5e4d5d025e00bb5a3dc4f2eecb2d17a04c11a0b2845b9bb381b2ed6",
     "snapshot:IF-036": "sha256:b9805361144909c34af8e167890e6cdf4b694cd8d7a665bd121c99eed18d9fd1",
     "snapshot:IF-037": "sha256:45d4e680780c4150e6415a3b5e972ddc17bff1d1811212f7779f871a7d81b093",
     "snapshot:IF-038": "sha256:a12246274c2250d619414625e573c92668368947675134c2d2e303056896b247",
@@ -748,13 +765,13 @@
       }
     },
     "ADR-004": {
-      "at": "2026-11-27T08:55:08Z",
+      "at": "2026-11-28T00:49:02Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:334be2bcdd57fd4f3f919834ee2b4c5bde98d716b88a01ad2c5ab3c8e01322e2",
       "text": "# ADR-004 锁文件记录哈希、批准与当前阶段\n\n- Status: Superseded\n- Superseded-By: ADR-009\n- Relates: FR-004, FR-037, FR-041, MOD-06\n\n## 背景\n\n需求变更检测、批准有效性、门禁配置锁定、当前阶段都需要\"人确认过的状态\"，且必须防止代理篡改。\n\n## 决策\n\n统一放在仓库根目录的 `harness.lock`（JSON，键排序）。代理不能直接编辑锁文件（`gate.protect`）；`harness lock` 只在检查通过时更新哈希；批准与阶段推进只能由交互式终端的 `harness approve` 和 `harness phase next` 写入。\n\n## 后果\n\n- 一个受保护文件承载全部\"受信状态\"，门禁只需保护它与 `harness.json`、hook 配置。\n- 多人并行修改时锁文件可能冲突；冲突解决后重新运行 `harness lock`。",
       "upstream": {
         "FR-004": "sha256:0e16b1afa8ce707af93250a657c653aefe05d2f6f8b45366fb4fed9944d21f35",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
         "MOD-06": "sha256:33d87ec516d7a4efa65f776f6abce89f86d6f7f8d00f47a164b6a262c8dae59d"
       }
@@ -814,14 +831,14 @@
       }
     },
     "ADR-009": {
-      "at": "2026-11-27T10:18:22Z",
+      "at": "2026-11-28T00:49:03Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:b765c0d4046a8fb221799afc25ef63e30a2b65e24eb01e2feabf235941d8c11c",
       "text": "# ADR-009 按单位批准取代阶段\n\n- Status: Accepted\n- Relates: FR-047, FR-048, FR-037, MOD-06, MOD-11, MOD-15, FLOW-02, FLOW-08\n\n## 背景\n\nRelease 1 按文件批准，并用线性阶段决定什么时候能写什么。到实现阶段后阶段不再前进，代理可以随时改需求和设计；改动一条需求又会让整个 PRD 的批准失效，与之无关的任务也被卡住。\n\n## 决策\n\n- 批准单位为一条需求、术语、待澄清项、设计元素、ADR、任务，以及每个文件中条目之外的正文（TERM-027）。哈希不含 Status 字段，PRD 正文不含变更日志。\n- 批准记录放在锁文件的 `units` 中，记下批准时的内容与各上游单位的哈希。上游变化或失效时下游失效，并能说出是哪个上游引起的。\n- 批准时内容写入锁文件，`harness approve` 据此显示差异。被否决的方案：从 git 历史取上次批准时的内容。批准与提交不一一对应，按提交查找既慢又会出错。\n- 删除阶段。产物任何时候都可写；能否开工由任务的批准链决定，门禁在源码写入时检查。\n- 被否决的方案：保留阶段，增加\"退回\"命令。退回仍以整个阶段为粒度，解决不了一条需求变化牵连全部任务的问题。\n- 本决策取代 ADR-004 中关于当前阶段与按文件批准的部分；锁文件的其余约定（受保护、键排序、只由 harness 命令写入）不变。\n\n## 后果\n\n- 锁文件变大：大约是全部产物文本的规范化副本。\n- 门禁写源码时需要计算一条批准链，只算当前 InProgress 任务这一条。\n- Release 1 的锁文件由 `harness lock` 一次性迁移；MOD-10、EXT-04 在 `Current-Release` 改为 2 时删除。",
       "upstream": {
         "FLOW-02": "sha256:c5fe6032bdb0f8006e58fbb184ce32aac5eb4372d5a97415cf6422844188f243",
         "FLOW-08": "sha256:95db9bdb343824b12885a57b69a673d1a410e2869eaf51baba352a5be8c9a173",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
         "MOD-06": "sha256:33d87ec516d7a4efa65f776f6abce89f86d6f7f8d00f47a164b6a262c8dae59d",
@@ -991,14 +1008,14 @@
       }
     },
     "FLOW-02": {
-      "at": "2026-11-27T10:18:05Z",
+      "at": "2026-11-28T00:48:55Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:c5fe6032bdb0f8006e58fbb184ce32aac5eb4372d5a97415cf6422844188f243",
       "text": "### FLOW-02 写操作门禁\n- Covers: FR-012, FR-025, FR-037, FR-047, FR-048\n- Steps: MOD-01 -> IF-019, MOD-01 -> IF-025, MOD-02 -> IF-009, MOD-02 -> IF-017, MOD-11 -> IF-028, MOD-01 -> IF-019\n\nclaudecode 适配器解码 PreToolUse 输入为门禁请求；app 用轻量快照（不读测试报告和源码）调用 gate.Decide；产物写入不再按阶段判定；源码写入时 gate 查询 InProgress 任务的批准链（IF-028 Chain）；适配器把判定编码为 deny 输出。",
       "upstream": {
         "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
         "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189"
       }
@@ -1056,12 +1073,12 @@
       }
     },
     "FLOW-08": {
-      "at": "2026-11-27T10:18:05Z",
+      "at": "2026-11-28T00:48:55Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:95db9bdb343824b12885a57b69a673d1a410e2869eaf51baba352a5be8c9a173",
       "text": "### FLOW-08 人工批准\n- Covers: FR-037, FR-047, FR-054\n- Steps: MOD-01 -> IF-024, MOD-02 -> IF-009, MOD-02 -> IF-029, MOD-02 -> IF-014, MOD-02 -> IF-036, MOD-02 -> IF-012, MOD-02 -> IF-005, MOD-02 -> IF-006\n\napp 先确认交互式终端，列出范围内待批准的单位与差异，运行批准前检查（单位所在文件的结构规则、上游已批准、登记在该单位类型上的自定义规则），人确认后写入按单位的批准记录。",
       "upstream": {
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-054": "sha256:383913c520d024c7aef642f0291b857bf8374102dda6f21c270ce55bbfcfa2d5"
       }
@@ -1363,10 +1380,10 @@
       "upstream": {}
     },
     "FR-037": {
-      "at": "2026-11-26T12:02:28Z",
+      "at": "2026-11-28T00:48:28Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
-      "text": "### FR-037 人工审批\n- Release: 1\n- Priority: P0\n\n产物的批准只能由人完成，批准后内容变化自动失效。\n\n- AC-037-1: PRD、架构声明、详细设计、ADR 的状态只能通过 `harness approve <产物>` 变为 Approved；该命令要求交互式终端，非交互环境下拒绝执行。\n  - AC-037-1/N1: 人在终端执行 `harness approve prd` 并确认，PRD 状态变为 Approved，锁文件新增批准记录\n  - AC-037-1/E1: 标准输入不是终端（管道或代理执行）时，`harness approve` 拒绝并退出码非 0\n  - AC-037-1/B1: 在确认提示处输入 n，状态不变，锁文件不变\n  - AC-037-1/E2: PRD 存在检查失败项时执行 approve，拒绝批准\n- AC-037-2: 门禁拒绝代理直接把产物状态改为 Approved，也拒绝代理执行 `harness approve`。\n  - AC-037-2/N1: 代理编辑 PRD 的正文，放行\n  - AC-037-2/E1: 代理把 PRD 的 `Status: Draft` 改为 `Status: Approved`，拒绝\n  - AC-037-2/E2: 代理通过 Bash 执行 `harness approve prd`，拒绝\n- AC-037-3: 锁文件记录每次批准的批准人、时间、被批准内容的哈希；产物内容与批准哈希不一致时，`harness check` 将其视为 Draft 并报告\"批准已失效\"。\n  - AC-037-3/N1: 批准后内容未变，检查报告 PRD 为 Approved\n  - AC-037-3/E1: 批准后修改一条验收标准，检查报告\"批准已失效\"，PRD 视为 Draft\n  - AC-037-3/B1: 批准后只改变更日志之外的空白字符，规范化哈希不变，批准仍有效",
+      "hash": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
+      "text": "### FR-037 人工审批\n- Release: 1\n- Priority: P0\n\n产物的批准只能由人完成，批准后内容变化自动失效。\n\n- AC-037-1: PRD、架构声明、详细设计、ADR、任务列表中单位的批准只能通过 `harness approve <产物路径、prd 或单位编号>` 写入锁文件（AC-047-1）；该命令要求交互式终端，非交互环境下拒绝执行。\n  - AC-037-1/N1: 人在终端执行 `harness approve prd` 并确认，PRD 中的单位均为已批准，锁文件新增批准记录\n  - AC-037-1/E1: 标准输入不是终端（管道或代理执行）时，`harness approve` 拒绝并退出码非 0\n  - AC-037-1/B1: 在确认提示处输入 n，PRD 与锁文件均不变\n  - AC-037-1/E2: PRD 存在检查失败项时执行 approve，拒绝批准\n- AC-037-2: 门禁拒绝代理直接把产物状态改为 Approved，也拒绝代理执行 `harness approve`。\n  - AC-037-2/N1: 代理编辑 PRD 的正文，放行\n  - AC-037-2/E1: 代理把 PRD 的 `Status: Draft` 改为 `Status: Approved`，拒绝\n  - AC-037-2/E2: 代理通过 Bash 执行 `harness approve prd`，拒绝\n- AC-037-3: 锁文件记录每次批准的批准人、时间、被批准内容的哈希；产物内容与批准哈希不一致时，`harness check` 将其视为 Draft 并报告\"批准已失效\"。\n  - AC-037-3/N1: 批准后内容未变，检查报告 PRD 为 Approved\n  - AC-037-3/E1: 批准后修改一条验收标准，检查报告\"批准已失效\"，PRD 视为 Draft\n  - AC-037-3/B1: 批准后只改变更日志之外的空白字符，规范化哈希不变，批准仍有效",
       "upstream": {}
     },
     "FR-038": {
@@ -1541,24 +1558,24 @@
       }
     },
     "IF-005": {
-      "at": "2026-11-27T08:55:00Z",
+      "at": "2026-11-28T00:48:51Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:f4dd1c6b9ed2ccff2edfda4823a5adbf48e70cf616512755696d616751975158",
       "text": "### IF-005 Normalize\n- Module: MOD-06\n- Covers: FR-004, FR-037, FR-041\n\n```go\n// IF-005\n// Normalize 统一换行为 LF，去掉行尾空白，合并连续空行，去掉首尾空行。\nfunc Normalize(text string) string\n// Hash 返回 \"sha256:<hex>\"，输入先经 Normalize。\nfunc Hash(text string) string\n```",
       "upstream": {
         "FR-004": "sha256:0e16b1afa8ce707af93250a657c653aefe05d2f6f8b45366fb4fed9944d21f35",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385"
       }
     },
     "IF-006": {
-      "at": "2026-11-27T08:55:00Z",
+      "at": "2026-11-28T00:48:51Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
       "text": "### IF-006 Lockfile\n- Module: MOD-06\n- Covers: FR-004, FR-037, FR-041, FR-047, FR-048\n\n```go\n// IF-006\ntype Lock struct {\n\tVersion   int                     // 2；读到 1 时 Units 为空，Legacy 保留按文件批准供迁移\n\tItems     map[string]string\n\tUnits     map[string]UnitApproval // 按批准单位编号（AC-047-1）\n\tLegacy    []Approval              // Release 1 的按文件批准，只读；Write 不再写出\n\tAudit     map[string]json.RawMessage\n}\ntype UnitApproval struct {\n\tHash, Text, By string\n\tAt             time.Time\n\tUpstream       map[string]string // 批准时各上游单位的哈希\n}\ntype Approval struct{ Artifact, Hash, By string; At time.Time }\n\nfunc Read(path string) (*Lock, error) // 文件不存在时返回空 Lock 而非错误\nfunc (l *Lock) Write(path string) error // 键排序，末尾换行，两次写出逐字节一致；忽略并删除 phase 字段（AC-048-1）\n```",
       "upstream": {
         "FR-004": "sha256:0e16b1afa8ce707af93250a657c653aefe05d2f6f8b45366fb4fed9944d21f35",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189"
@@ -1638,13 +1655,13 @@
       }
     },
     "IF-014": {
-      "at": "2026-11-27T09:52:57Z",
+      "at": "2026-11-28T00:48:49Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
       "text": "### IF-014 Rules\n- Module: MOD-05\n- Covers: FR-003, FR-007, FR-011\n\n```go\n// IF-014\n// Rules 返回全部内置规则；registry.go 中每条规则一行，供 app 在启动时注册。\nfunc Rules() []engine.Rule\n```",
       "upstream": {
         "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
-        "FR-007": "sha256:5494243ff6dcf221b6de4d74ba1e58b650a85b568a516c908de39a74c77bd824",
+        "FR-007": "sha256:d863073ba654aa998b476cd992e918c477e310111ea76cfad4af7602172db7f1",
         "FR-011": "sha256:7b0e8bd3c8ab7393300ec321e4c76fde05b5bf3268f56485b9a349688761b077"
       }
     },
@@ -1668,7 +1685,7 @@
       }
     },
     "IF-017": {
-      "at": "2026-11-26T12:17:56Z",
+      "at": "2026-11-28T00:48:53Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
       "text": "### IF-017 Decide\n- Module: MOD-11\n- Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048\n\n```go\n// IF-017\ntype Kind string // read / write / command / session_start / post_write / stop\ntype Request struct {\n\tKind      Kind\n\tRoot      string   // 项目根（绝对路径），由适配器从代理执行工具时的目录向上查找；快照、会话状态与判定都以它为根\n\tCwd       string   // 代理执行工具时的目录（绝对路径）；command 中的相对路径从这里开始解析\n\tPaths     []string // 已解析为仓库相对路径\n\tContent   string   // write 时的新内容或补丁\n\tCommand   string   // command 时的原始命令\n\tSessionID string\n}\ntype Decision struct {\n\tAllow    bool\n\tRule     string // 拒绝时的门禁规则编号，如 gate.write\n\tReason   string\n\tFeedback string // 反馈给代理的文字（检查结果、会话注入内容）\n}\nfunc Decide(s *workspace.Snapshot, req Request) Decision\n```",
@@ -1676,7 +1693,7 @@
         "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
         "FR-024": "sha256:f14699ad8abf11030b45096ee05d39780bf6dfa2b53194c0fe3013ffcabe4a27",
         "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189"
       }
@@ -1723,20 +1740,20 @@
       }
     },
     "IF-022": {
-      "at": "2026-11-27T09:52:51Z",
+      "at": "2026-11-28T00:48:47Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b",
-      "text": "### IF-022 Check\n- Module: MOD-02\n- Covers: FR-007, FR-017\n\n```go\n// IF-022\ntype CheckOptions struct {\n\tRules                []string\n\tCommits, MessageFile string // MessageFile：commit-msg hook 传入的提交信息文件\n\tJSON                 bool\n\tCommands             []string // cli 的全部子命令名（AC-030-2）\n}\n// Check 注册内置规则与项目自定义规则（IF-036），先用样本验证自定义规则（IF-013），再运行引擎。\nfunc Check(root string, opt CheckOptions) (engine.Report, error)\nfunc Trace(root, format string) ([]byte, error) // md / json 覆盖矩阵\n```",
+      "hash": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166",
+      "text": "### IF-022 Check\n- Module: MOD-02\n- Covers: FR-007, FR-017\n\n```go\n// IF-022\ntype CheckOptions struct {\n\tRules       []string // 规则编号或前缀；空表示全部\n\tCommits     string   // 提交范围；为空时检查暂存区\n\tMessageFile string   // commit-msg hook 传入的提交信息文件\n\tJSON        bool\n\tCommands    []string // cli 的全部子命令名（AC-030-2）\n}\n// Check 注册内置规则与项目自定义规则（IF-036），先用样本验证自定义规则（IF-013），再运行引擎。\n// 返回的 error 只表示内部错误，与\"有违规\"区分。\nfunc Check(root string, opt CheckOptions) (engine.Report, error)\n\n// TraceRow 是覆盖矩阵的一行：一条纳入范围的需求及覆盖它的有效设计元素。\ntype TraceRow struct {\n\tRequirement string   `json:\"requirement\"`\n\tTitle       string   `json:\"title\"`\n\tElements    []string `json:\"elements\"`\n}\nvar TraceFormats = []string{\"md\", \"json\"}\nfunc Trace(root, format string) ([]byte, error)\n```",
       "upstream": {
-        "FR-007": "sha256:5494243ff6dcf221b6de4d74ba1e58b650a85b568a516c908de39a74c77bd824",
+        "FR-007": "sha256:d863073ba654aa998b476cd992e918c477e310111ea76cfad4af7602172db7f1",
         "FR-017": "sha256:0553e33e220e3ce1f65b6a1a908982f12d2dd65ef1e3d02bc0ca58579eed0265"
       }
     },
     "IF-023": {
-      "at": "2026-11-27T08:54:57Z",
+      "at": "2026-11-28T00:48:47Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:c9a1ee5391322ba065c0ee970420d08ba40147a2b7183bb02eeb6038347b7283",
-      "text": "### IF-023 Lock\n- Module: MOD-02\n- Covers: FR-004, FR-047, FR-048\n\n```go\n// IF-023\n// Lock 在产物文档规则（不需要源码、测试报告、git 的规则）通过后重算哈希写入锁文件；保留批准记录，\n// Release 1 格式的按文件批准经 IF-029 Migrate 迁移，删除 phase 字段。\nfunc Lock(root string) error\n```",
+      "hash": "sha256:f8d4a0708785c603816a969e2e53eef04a548a28d272ca19965af9919b915ec3",
+      "text": "### IF-023 Lock\n- Module: MOD-02\n- Covers: FR-004, FR-047, FR-048\n\n```go\n// IF-023\n// ViolationsError 表示命令因检查未通过而没有执行（Lock、Approve 返回），cli 据此输出违规并以退出码 1 结束。\ntype ViolationsError struct{ Report engine.Report }\n\n// Lock 在产物文档规则（不需要源码、测试报告、git 的规则）通过后重算哈希写入锁文件；保留批准记录。\n// 写出的锁文件总是第 2 版：第 1 版的按文件批准经 IF-029 Migrate 迁移，读到的 phase 字段丢弃（AC-048-1）。\nfunc Lock(root string) error\n```",
       "upstream": {
         "FR-004": "sha256:0e16b1afa8ce707af93250a657c653aefe05d2f6f8b45366fb4fed9944d21f35",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
@@ -1744,12 +1761,12 @@
       }
     },
     "IF-024": {
-      "at": "2026-11-26T12:17:51Z",
+      "at": "2026-11-28T00:48:47Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
-      "text": "### IF-024 Approve\n- Module: MOD-02\n- Covers: FR-037, FR-047, FR-054\n\n```go\n// IF-024\ntype Terminal interface{ IsInteractive() bool; Confirm(prompt string) bool; Identity() string }\n// Approve 列出 target 范围内待批准的单位与差异（IF-029），运行批准前检查（MOD-15 内部设计、AC-054-5），\n// 人确认后把批准记录写入锁文件；没有待批准单位时提示并返回 nil。\nfunc Approve(root, target string, t Terminal) error\n```",
+      "hash": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810",
+      "text": "### IF-024 Approve\n- Module: MOD-02\n- Covers: FR-037, FR-047, FR-054\n\n```go\n// IF-024\ntype Terminal interface{ IsInteractive() bool; Confirm(prompt string) bool; Identity() string }\nvar ErrNotInteractive, ErrDeclined error // 不在交互式终端中；批准人在确认提示处拒绝\n// Approve 列出 target（产物路径、prd 或单位编号）范围内待批准的单位与差异（IF-029），\n// 运行批准前检查（MOD-15 内部设计、AC-054-5），人确认后把批准记录写入锁文件；没有待批准单位时提示并返回 nil。\n// 锁文件仍有第 1 版的按文件批准时返回错误，提示先运行 harness lock；检查未通过时返回 *ViolationsError。\nfunc Approve(root, target string, t Terminal) error\n```",
       "upstream": {
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-054": "sha256:383913c520d024c7aef642f0291b857bf8374102dda6f21c270ce55bbfcfa2d5"
       }
@@ -1880,10 +1897,10 @@
       }
     },
     "IF-038": {
-      "at": "2026-11-26T12:17:51Z",
+      "at": "2026-11-28T00:48:47Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
-      "hash": "sha256:861c935b4ef3a43bc75d208515d0885d141d75b6ecb3dce3f7c607f62bdb8719",
-      "text": "### IF-038 Run\n- Module: MOD-02\n- Covers: FR-014, FR-021, FR-055\n\n```go\n// IF-038\n// Run 运行外部工具并写报告（kind 为 lint、unit、smoke，调用 IF-030 ~ IF-032），\n// 然后重新加载快照、运行同名区域的规则（lint.*、unit.*、smoke.*）并返回结果。\nfunc Run(root, kind string) (engine.Report, error)\n```",
+      "hash": "sha256:888cad88450046d1ba01940f5055d8d3045f4bbbd4b33801ad1001797786fa9d",
+      "text": "### IF-038 Run\n- Module: MOD-02\n- Covers: FR-014, FR-021, FR-055\n\n```go\n// IF-038\n// MissingTool 是工具未安装时 Run 返回的错误，cli 据此给出安装提示（AC-014-2）。\ntype MissingTool = toolrun.MissingTool\nvar ToolKinds = []string{\"lint\", \"unit\", \"smoke\"}\n// Run 运行外部工具并写报告（kind 取 ToolKinds，调用 IF-030 ~ IF-032），\n// 然后重新加载快照、运行同名区域的规则（lint.*、unit.*、smoke.*）并返回结果。\nfunc Run(root, kind string) (engine.Report, error)\n```",
       "upstream": {
         "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
         "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
@@ -1900,7 +1917,7 @@
       }
     },
     "MOD-01": {
-      "at": "2026-11-27T13:09:10Z",
+      "at": "2026-11-28T00:48:34Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:6ccef5bd664005ea6b0fc7272c41117be9651e6692f7498703e356543cb02dbe",
       "text": "### MOD-01 cli\n- Paths: cmd/harness/**, internal/cli/**, go.mod, go.sum, .goreleaser.yaml, .github/workflows/release.yml\n- Public: cmd/harness/main.go\n- Depends: MOD-02, MOD-04, MOD-11, MOD-12, MOD-13, MOD-18\n- Interfaces:\n- Covers: FR-001, FR-007, FR-012, FR-037, FR-048, FR-049, NFR-002\n- Core: false\n- Coverage: 60\n\n命令行入口：参数解析、输出格式（文本 / `--json`）、退出码（0 通过 / 1 违规 / 2 内部错误）。同时拥有 Go 模块文件和发布配置（ADR-008）。",
@@ -1908,14 +1925,14 @@
         "FR-001": "sha256:bcf8817cb290c6fff9338fa6c2e441a857f3b5b3d9e39a73896ade4cdfa0457c",
         "FR-007": "sha256:d863073ba654aa998b476cd992e918c477e310111ea76cfad4af7602172db7f1",
         "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
         "FR-049": "sha256:765e0b6f3b403387ff75dcd60bef7dab96da73b623194fe1dbf91e23f6e7c367",
         "NFR-002": "sha256:1b9aa8ae4773d700beffc7653f801c01e1099f0b972001acfd7cc51db2976598"
       }
     },
     "MOD-02": {
-      "at": "2026-11-27T13:09:13Z",
+      "at": "2026-11-28T00:48:34Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:69e8e93a5a77fb87a7c19721daf951ea026dfff045dafe98291670a69e49a849",
       "text": "### MOD-02 app\n- Paths: internal/app/**\n- Public: internal/app/app.go\n- Depends: MOD-04, MOD-05, MOD-06, MOD-09, MOD-11, MOD-13, MOD-15, MOD-16, MOD-17\n- Interfaces: IF-022, IF-023, IF-024, IF-025, IF-026, IF-038, IF-039\n- Covers: FR-001, FR-004, FR-007, FR-012, FR-014, FR-017, FR-021, FR-037, FR-047, FR-052, FR-054, FR-055\n- Core: true\n- Coverage: 80\n\n用例编排：check、trace、lock、approve、门禁、init、外部工具报告（lint、unit、smoke）、接口快照。交互式终端判定在此层。代理协议转换在 cli 调用 adapter 完成，app 只接收门禁请求。",
@@ -1927,7 +1944,7 @@
         "FR-014": "sha256:70e2b7d6a6c115130fa8d01556eb3a64ae67df8080201f3521ecbe5df6416b0c",
         "FR-017": "sha256:0553e33e220e3ce1f65b6a1a908982f12d2dd65ef1e3d02bc0ca58579eed0265",
         "FR-021": "sha256:35cf3ac36aa7a588c2cab7b6f2992dad02fc680207cd606adf39ea6409287da4",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-052": "sha256:8489677566027f291fd7cd00fa595d467c7d366834c42251dbde7a8f8fa06cfb",
         "FR-054": "sha256:383913c520d024c7aef642f0291b857bf8374102dda6f21c270ce55bbfcfa2d5",
@@ -1961,7 +1978,7 @@
       }
     },
     "MOD-05": {
-      "at": "2026-11-27T13:01:13Z",
+      "at": "2026-11-28T00:48:34Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:a676dedf3565eeabad3a8fdfb5fb4d6ffafa396d92592f291e6e8f9b69695f68",
       "text": "### MOD-05 builtin\n- Paths: internal/rules/builtin/**\n- Public: internal/rules/builtin/registry.go\n- Depends: MOD-03, MOD-04, MOD-06, MOD-07, MOD-08, MOD-09, MOD-14, MOD-15\n- Interfaces: IF-014\n- Covers: FR-002, FR-003, FR-004, FR-005, FR-006, FR-007, FR-010, FR-011, FR-013, FR-014, FR-019, FR-020, FR-021, FR-024, FR-030, FR-031, FR-033, FR-034, FR-035, FR-037, FR-039, FR-040, FR-041, FR-042, FR-043, FR-047, FR-050, FR-052, FR-053, FR-055\n- Core: true\n- Coverage: 90\n\n全部内置规则，每条规则一个文件，样本在 `testdata/<规则编号>/`。",
@@ -1985,7 +2002,7 @@
         "FR-033": "sha256:ee931aefb0d0f42b5f12e042191d5939ee5af00648ef04359bc85768003b2875",
         "FR-034": "sha256:b8b23faad1fcf5c282789d10493b6258eab72b3e39d489847d6135849c7a656b",
         "FR-035": "sha256:73c6fb37ae06b7e007adeebd7aa4452f68d2cba1efe70a790fd032b3ce559ae0",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-039": "sha256:b91b973e0e29320e0d4fe7fbe9a7d6bc724eabd6e6df06f3dd57945cb2cedb60",
         "FR-040": "sha256:f1b989982e42a8704338e1aae6fd93742c792366f4fdf835b13ef079d0ed3ed7",
         "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
@@ -1999,13 +2016,13 @@
       }
     },
     "MOD-06": {
-      "at": "2026-11-27T08:54:53Z",
+      "at": "2026-11-28T00:48:34Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:33d87ec516d7a4efa65f776f6abce89f86d6f7f8d00f47a164b6a262c8dae59d",
       "text": "### MOD-06 lock\n- Paths: internal/lock/**\n- Public: internal/lock/lock.go\n- Depends:\n- Interfaces: IF-005, IF-006\n- Covers: FR-004, FR-037, FR-041, FR-047, FR-048\n- Core: true\n- Coverage: 90\n\n内容规范化与哈希、`harness.lock` 读写、批准记录、当前阶段。",
       "upstream": {
         "FR-004": "sha256:0e16b1afa8ce707af93250a657c653aefe05d2f6f8b45366fb4fed9944d21f35",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-041": "sha256:51935bf747b7003193c3bdc724a937f5484497e43b871522104ad8db2d9b3385",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189"
@@ -2058,7 +2075,7 @@
       }
     },
     "MOD-11": {
-      "at": "2026-11-27T10:18:03Z",
+      "at": "2026-11-28T00:48:34Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:b7f02ab9fd9eec80e455095e6114ff9dd75fc6182f208e59491a483f1a046121",
       "text": "### MOD-11 gate\n- Paths: internal/gate/**\n- Public: internal/gate/gate.go\n- Depends: MOD-03, MOD-04, MOD-09, MOD-15\n- Interfaces: IF-017, IF-018\n- Covers: FR-012, FR-024, FR-025, FR-037, FR-047, FR-048\n- Core: true\n- Coverage: 90\n\n与代理无关的门禁判定：读写、命令、会话开始、写后检查、结束检查；Bash 命令解析；写前快照与写后回滚。",
@@ -2066,7 +2083,7 @@
         "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
         "FR-024": "sha256:f14699ad8abf11030b45096ee05d39780bf6dfa2b53194c0fe3013ffcabe4a27",
         "FR-025": "sha256:e77c170bc282518e4e7ba9a0a8dd5c6351c858a9f0a9a5bd48da9586aebcc434",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189"
       }
@@ -2266,7 +2283,7 @@
       "upstream": {}
     },
     "T-001": {
-      "at": "2026-11-26T23:32:13Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:2b48b2138cba9669dd1da522a42dbe7356a073c6f0f4406946893a0a9485f433",
       "text": "### T-001 CLI 骨架与 PRD 编号、必填字段检查\n- Covers: AC-003-1, AC-003-2, AC-003-4, NFR-004\n- Design: FLOW-01, IF-001, IF-002, IF-009, IF-010, IF-011, IF-012, IF-013, IF-014, IF-022, ADR-001, ADR-002, ADR-007\n- Flow: FLOW-01\n- Scope: go.mod, cmd/harness/**, internal/cli/**, internal/app/app.go, internal/app/check.go, internal/model/**, internal/workspace/**, internal/rules/engine/**, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_01.go, internal/rules/builtin/testdata/prd.01/**, internal/rules/builtin/prd_02.go, internal/rules/builtin/testdata/prd.02/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**\n- Depends:\n\n端到端骨架（prd.02 同时实现 Release、Current-Release 与 NFR Type 字段校验，AC-003-5 的追溯部分在 T-006 验收）：model 解析器、workspace 加载配置与产物、engine 注册与运行（含样本自检与修复建议必填）、app.Check、`harness check [--json]` 与退出码 0/1/2。完成后 `harness check prd.01 prd.02` 可检查本仓库。engine 附 `TestExample_EXT_03` 示例规则测试。",
@@ -2284,12 +2301,12 @@
         "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
         "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b",
+        "IF-022": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166",
         "NFR-004": "sha256:e1b1bd48f0c4e5b94fbb27bd560f718ec2942a01c27bb2667c17a5f4ee6f03b4"
       }
     },
     "T-002": {
-      "at": "2026-11-27T08:55:12Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:e4759b32cd11fdcf784ca1e92e7e8ba55c736d1f1c58b8ef207548690e9d946b",
       "text": "### T-002 锁文件、`harness lock` 与需求变更追踪\n- Covers: FR-004, AC-003-3, AC-019-3\n- Design: FLOW-10, IF-005, IF-006, IF-023, ADR-004\n- Flow: FLOW-01\n- Scope: internal/lock/**, internal/workspace/**, internal/cli/**, internal/app/lock.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_03.go, internal/rules/builtin/testdata/prd.03/**, internal/rules/builtin/prd_08.go, internal/rules/builtin/testdata/prd.08/**, internal/app/lock_integration_test.go, internal/app/testdata/lock/**\n- Depends: T-001\n\n规范化与哈希、锁文件读写（键排序、逐字节稳定）、`harness lock`（检查通过才写，保留批准与阶段）、prd.03 编号不得消失或复用、prd.08 CHG 与哈希差异一致。",
@@ -2302,7 +2319,7 @@
         "FR-019": "sha256:684dd2a5cad1347eb024405c3ba952f8d24e28866d1fab1dd03f0c3e8417867e",
         "IF-005": "sha256:f4dd1c6b9ed2ccff2edfda4823a5adbf48e70cf616512755696d616751975158",
         "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
-        "IF-023": "sha256:c9a1ee5391322ba065c0ee970420d08ba40147a2b7183bb02eeb6038347b7283"
+        "IF-023": "sha256:f8d4a0708785c603816a969e2e53eef04a548a28d272ca19965af9919b915ec3"
       }
     },
     "T-003": {
@@ -2344,16 +2361,16 @@
       }
     },
     "T-006": {
-      "at": "2026-11-27T09:59:42Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:46be9a96fb171fa416297d64134b77737543f1e9198f9bf2af808d1e2d573e6d",
       "text": "### T-006 需求到设计追溯与覆盖矩阵\n- Covers: FR-007, AC-003-5\n- Design: FLOW-01, IF-014, IF-022\n- Flow: FLOW-01\n- Scope: internal/cli/**, internal/app/trace.go, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/testdata/trace.01/**, internal/rules/builtin/trace_02.go, internal/rules/builtin/testdata/trace.02/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/trace_integration_test.go, internal/app/testdata/trace/**\n- Depends: T-005\n\ntrace.01 ~ trace.03 与 `harness trace --format md|json`。完成后退役原型脚本 selfcheck.py。",
       "upstream": {
         "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
         "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
-        "FR-007": "sha256:5494243ff6dcf221b6de4d74ba1e58b650a85b568a516c908de39a74c77bd824",
+        "FR-007": "sha256:d863073ba654aa998b476cd992e918c477e310111ea76cfad4af7602172db7f1",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+        "IF-022": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166"
       }
     },
     "T-007": {
@@ -2421,7 +2438,7 @@
       }
     },
     "T-012": {
-      "at": "2026-11-27T08:55:12Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:563b39538d2f7609e23d059a48d286474eb19d30b22fa0157fccf15512bfe495",
       "text": "### T-012 提交检查\n- Covers: AC-013-1, AC-013-2, AC-013-4, AC-034-1\n- Design: FLOW-09, IF-007, IF-014, IF-022, ADR-008\n- Flow: FLOW-01\n- Scope: internal/cli/**, internal/app/check.go, internal/workspace/workspace.go, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/rules/builtin/commit_01.go, internal/rules/builtin/testdata/commit.01/**, internal/rules/builtin/commit_02.go, internal/rules/builtin/testdata/commit.02/**, internal/rules/builtin/commit_03.go, internal/rules/builtin/testdata/commit.03/**, internal/rules/builtin/commit_04.go, internal/rules/builtin/testdata/commit.04/**, internal/app/commit_integration_test.go, internal/app/testdata/commit/**\n- Depends: T-011\n\n`harness check commits <范围>`；commit.02 豁免产物文件和生成文件。",
@@ -2433,25 +2450,25 @@
         "FR-034": "sha256:b8b23faad1fcf5c282789d10493b6258eab72b3e39d489847d6135849c7a656b",
         "IF-007": "sha256:8278b4243171813daccaed77b5fb2e914673a1d6eb56373b5061a0824f01321f",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+        "IF-022": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166"
       }
     },
     "T-013": {
-      "at": "2026-11-27T10:18:29Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:c03714b24a771c6d653913f5e16f966e082c97195857b530e1b7e9fc3850170f",
       "text": "### T-013 人工批准与批准有效性\n- Covers: AC-037-1, AC-037-3\n- Design: FLOW-08, IF-005, IF-006, IF-024\n- Flow: FLOW-01\n- Scope: internal/cli/**, internal/app/approve.go, internal/workspace/approval.go, internal/lock/**, internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/approve_01.go, internal/rules/builtin/testdata/approve.01/**, internal/app/approve_integration_test.go, internal/app/testdata/approve/**\n- Depends: T-012\n\n`harness approve <产物>` 要求交互式终端并确认，写入批准人、时间、哈希；approve.01 内容与批准哈希不一致时视为 Draft。完成后用户在终端补录 PRD 与架构的批准。",
       "upstream": {
         "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
         "FLOW-08": "sha256:95db9bdb343824b12885a57b69a673d1a410e2869eaf51baba352a5be8c9a173",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "IF-005": "sha256:f4dd1c6b9ed2ccff2edfda4823a5adbf48e70cf616512755696d616751975158",
         "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
-        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74"
+        "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810"
       }
     },
     "T-014": {
-      "at": "2026-11-27T10:18:29Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:ca9f16d82bf6d2f13b4360f9b7af6064c8e071f31574da48de8f3a95b3fc2aaf",
       "text": "### T-014 流程阶段定义与推进\n- Covers: AC-045-1, AC-045-2\n- Design: FLOW-08, IF-015, IF-016, IF-024, ADR-005\n- Flow: FLOW-08\n- Scope: internal/phase/**, internal/lock/**, internal/cli/**, internal/app/phase.go, internal/app/app.go, internal/app/approve.go, internal/app/phase_integration_test.go, internal/app/testdata/phase/**\n- Depends: T-013\n\n内置四个阶段 JSON、项目配置合并、phase.01（由 phase 模块注册）、`harness phase list|next`（交互式终端、退出与进入规则通过）。AC-045-3 的 `phase next` 在本任务实现并写测试，但其 E3（门禁拒绝代理改阶段）依赖门禁，整条 AC 由 T-016 关联。phase 附 `TestExample_EXT_04` 示例阶段测试。",
@@ -2461,7 +2478,7 @@
         "FR-045": "sha256:efc03e02e46d19269848e97f5152ad252128bd8edcf3b6fceb11e5dd62007543",
         "IF-015": "sha256:18474bcfef2afc15f9e155451cc65b5e41b04dae55ae4bc453d4f5928d72d5e4",
         "IF-016": "sha256:980a4574511aea2be14e7b9c12def0f4a644c129464f6f9418957088d1a7eddb",
-        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74"
+        "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810"
       }
     },
     "T-015": {
@@ -2479,7 +2496,7 @@
       }
     },
     "T-016": {
-      "at": "2026-11-27T10:18:29Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:7f5bda6dcf1197ef0121706b419d91af8563719a71d2136145bc86177c9b0fad",
       "text": "### T-016 写操作门禁与 Claude Code 适配器\n- Covers: AC-012-1, AC-012-2, AC-012-5, AC-037-2, AC-045-3, AC-045-4\n- Design: FLOW-02, FLOW-03, IF-017, IF-018, IF-019, IF-025, ADR-003, ADR-006\n- Flow: FLOW-02\n- Scope: go.mod, go.sum, internal/gate/**, internal/adapter/**, internal/cli/**, internal/app/gate.go, internal/app/gate_integration_test.go, internal/app/testdata/gate/**\n- Depends: T-015\n\ngate.protect、gate.artifact、gate.write；Bash 命令用 mvdan.cc/sh 事前解析，事后快照比对与回滚（大于 1 MiB 只报告）；claudecode 适配器解码 PreToolUse、编码 deny，无法解析即拒绝；`harness gate`。adapter 附 `TestExample_EXT_02` 示例适配器测试。",
@@ -2489,7 +2506,7 @@
         "FLOW-02": "sha256:c5fe6032bdb0f8006e58fbb184ce32aac5eb4372d5a97415cf6422844188f243",
         "FLOW-03": "sha256:b06dcead297d29b7d1dbba69463213911be341286208a000539c8b49968ba6e8",
         "FR-012": "sha256:03b9f97ca31ebd3c8e2cb152872fa4e454f14f4dff74944586c29a39b7cdbc1a",
-        "FR-037": "sha256:c8b39b05b82095c7c173e7838ad232745522265f7844960adfc121db18232d2d",
+        "FR-037": "sha256:b7f921bb9fa13ca20ddd2ee76883e55badbc4eb24d7c9e79060fffac2c41865f",
         "FR-045": "sha256:efc03e02e46d19269848e97f5152ad252128bd8edcf3b6fceb11e5dd62007543",
         "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
         "IF-018": "sha256:026462d45210401744c68ca0486f26b6ab2c4b9dda435fe266b145a007bdcb37",
@@ -2745,7 +2762,7 @@
       }
     },
     "T-038": {
-      "at": "2026-11-26T12:48:57Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:08b7553940e256856dece9e5d487e4e39067b35153560685512e20dcf61d04c3",
       "text": "### T-038 需求取代关系（Replaces / Replaced-By）\n- Covers: AC-003-6\n- Design: FLOW-01, IF-014, IF-022\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/registry.go, internal/rules/builtin/util.go, internal/rules/builtin/prd_02.go, internal/rules/builtin/prd_12.go, internal/rules/builtin/trace_01.go, internal/rules/builtin/task_02.go, internal/rules/builtin/test_02.go, internal/rules/builtin/testdata/prd.12/**, internal/rules/builtin/trace_03.go, internal/rules/builtin/testdata/trace.03/**, internal/app/prd_integration_test.go, internal/app/testdata/prd/**\n- Depends: T-037\n\n被取代的条目在取代者的 Release 不大于 Current-Release 时按 Removed 判定：覆盖检查不再要求它，trace.03 报告对它的引用。新增 prd.12 校验 `Replaces` 与 `Replaced-By` 互相对应、引用存在、被取代者的 Release 小于取代者。",
@@ -2753,7 +2770,7 @@
         "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
         "FR-003": "sha256:311889ffbb147673106c37d513855ddb1c1c4b4dfd0876bf499df2eea340183a",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+        "IF-022": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166"
       }
     },
     "T-039": {
@@ -2784,7 +2801,7 @@
       }
     },
     "T-041": {
-      "at": "2026-11-27T10:18:29Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:7ca0578515ff79391ed66e8dd902737f15e7f102f5d616734cd3d5189b937c77",
       "text": "### T-041 按单位批准\n- Covers: AC-047-1, AC-047-2, AC-047-3\n- Design: MOD-15, IF-027, IF-028, IF-029, IF-006, IF-011, IF-024, FLOW-08\n- Flow: FLOW-08\n- Scope: internal/approval/**, internal/lock/**, internal/rules/engine/**, internal/rules/builtin/approve_01.go, internal/rules/builtin/task_07.go, internal/rules/builtin/testdata/approve.01/**, internal/rules/builtin/testdata/task.07/**, internal/rules/builtin/registry.go, internal/app/**, internal/cli/**\n- Depends: T-040\n\n批准单位与哈希、批准链与状态（IF-027、IF-028），锁文件第 2 版的 `units`，`harness approve <路径、prd 或单位编号>` 显示差异并按单位记录。engine 的告警（Violation.Warn，不影响退出码）在此加入；approve.01 在锁文件为第 2 版时按单位列出未批准与失效项（告警），task.07 在第 2 版时按批准链判定。",
@@ -2793,7 +2810,7 @@
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
         "IF-011": "sha256:42a4a490aab881ba60b0ac650cd352ddcdc419321d39765f59453012fc999c6c",
-        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+        "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810",
         "IF-027": "sha256:3799e27c399926e4cbc1b4ad4630d54e3640195c619c80c9dbdd7957107d1046",
         "IF-028": "sha256:428ef7a9301799478b870755a067a0ca13644a92e432a1bdbe3b540f54e6a972",
         "IF-029": "sha256:54206b45b55cc67ea23facba4d65ff0e619f23f06c6ce0213e33fd8b31fa6380",
@@ -2801,7 +2818,7 @@
       }
     },
     "T-042": {
-      "at": "2026-11-26T12:48:57Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:eb1d536f0f3343178bfeb3d433f6d1019779c0ebeab1c11a1985608dd49ba005",
       "text": "### T-042 锁文件迁移\n- Covers: AC-047-6\n- Design: IF-029, IF-006, IF-023, FLOW-10\n- Flow: FLOW-10\n- Scope: internal/approval/**, internal/lock/**, internal/app/**\n- Depends: T-041\n\n`harness lock` 把 Release 1 的按文件批准迁移为按单位批准，写审计记录；`phase` 字段由 T-054 删除（在此之前门禁仍按阶段判定产物写入）。在本仓库执行迁移后，任务需要按单位批准才能开工。",
@@ -2809,7 +2826,7 @@
         "FLOW-10": "sha256:fc179f1474858beaec7216e9cde7119971e440b1ed73c6aeaa44f9014d108be1",
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
         "IF-006": "sha256:945361f83d09e37a86858e8b41f0006103f359aa8790458f53ad11f365ec7fdd",
-        "IF-023": "sha256:c9a1ee5391322ba065c0ee970420d08ba40147a2b7183bb02eeb6038347b7283",
+        "IF-023": "sha256:f8d4a0708785c603816a969e2e53eef04a548a28d272ca19965af9919b915ec3",
         "IF-029": "sha256:54206b45b55cc67ea23facba4d65ff0e619f23f06c6ce0213e33fd8b31fa6380"
       }
     },
@@ -2829,7 +2846,7 @@
       }
     },
     "T-044": {
-      "at": "2026-11-27T10:18:29Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:d5a1b64847befb8367d80a12a8564efcf3e0d11aeb36569ec392d6ba1e12b91c",
       "text": "### T-044 声明式自定义规则\n- Covers: FR-054\n- Design: MOD-17, IF-036, IF-013, IF-024, FLOW-08\n- Flow: FLOW-08\n- Scope: internal/rules/custom/**, internal/workspace/**, internal/lock/**, internal/app/**\n- Depends: T-043\n\n按 `harness.json` 的 rules 构造 required、enum、ref、forbid 四类规则；校验编号前缀、样本与批准单位类型；样本目录纳入锁文件；`approveFor` 的规则在批准该类单位时运行。",
@@ -2837,13 +2854,13 @@
         "FLOW-08": "sha256:95db9bdb343824b12885a57b69a673d1a410e2869eaf51baba352a5be8c9a173",
         "FR-054": "sha256:383913c520d024c7aef642f0291b857bf8374102dda6f21c270ce55bbfcfa2d5",
         "IF-013": "sha256:66757fecbd7edcba054745ff2c4c3e9e7256ded418d79f925ead8fd55f97d0d5",
-        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+        "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810",
         "IF-036": "sha256:5aa92fb81827b2b249325bbd3115ac27f6734dd1053ee007d1c8fa4598d00dfb",
         "MOD-17": "sha256:930d9674a0a2f513a0678fc12cdf41c6857da203ef16a51db17a5e4e67eae150"
       }
     },
     "T-045": {
-      "at": "2026-11-27T02:03:40Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:a684fc61cb0313107c51e396c367f8d76e13823b5033d2419fd4c08816e15524",
       "text": "### T-045 外部工具运行器与 lint\n- Covers: AC-014-2, AC-014-3, AC-014-4, AC-014-5\n- Design: MOD-16, IF-030, IF-031, IF-032, IF-033, IF-034, IF-038, FLOW-11\n- Flow: FLOW-11\n- Scope: internal/toolrun/**, internal/lang/**, internal/testreport/**, internal/workspace/**, internal/app/**, internal/cli/**, internal/rules/builtin/lint_01.go, internal/rules/builtin/cfg_03.go, internal/rules/builtin/testdata/lint.01/**, internal/rules/builtin/testdata/cfg.03/**, internal/rules/builtin/registry.go\n- Depends: T-044\n\n五种语言的语言配置包（IF-034）；toolrun 的 Lint、Unit、Smoke 运行器与报告读写；`harness check lint|unit|smoke`；规则 lint.01、cfg.03。Unit 的覆盖率采集在 T-049 接入 Go。",
@@ -2855,7 +2872,7 @@
         "IF-032": "sha256:856657cd1cbeda2636c4d357481de5bbbeba651dde4a5e7492d59937143c0fe0",
         "IF-033": "sha256:14f032c6bd64269bf30a952afd01fdd5ac3495da071b286a259d2b9b8f21c926",
         "IF-034": "sha256:e28eb4a9965cc4ea0327573bd2b66821fe0f1811b8880e5d2afc20828e36bfd4",
-        "IF-038": "sha256:861c935b4ef3a43bc75d208515d0885d141d75b6ecb3dce3f7c607f62bdb8719",
+        "IF-038": "sha256:888cad88450046d1ba01940f5055d8d3045f4bbbd4b33801ad1001797786fa9d",
         "MOD-16": "sha256:8d746428ba215e9b4a580acbc234fc84b265004637eff503ccfaade6a1502366"
       }
     },
@@ -2942,7 +2959,7 @@
       }
     },
     "T-052": {
-      "at": "2026-11-27T09:59:42Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:850a46331a536ee0c6df643fc0f12227e6ab40a5008575d0edf533dc174e3c55",
       "text": "### T-052 文档引用检查\n- Covers: FR-030\n- Design: IF-007, IF-012, IF-014, IF-022, IF-009, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/doc_0*.go, internal/rules/builtin/testdata/doc.0*/**, internal/rules/builtin/registry.go, internal/rules/builtin/registry_test.go, internal/rules/builtin/util.go, internal/vcs/**, internal/workspace/**, internal/app/**, internal/cli/**\n- Depends: T-051, T-060\n\n规则 doc.02 ~ doc.05：受检 Markdown 行内代码中的路径、`harness` 子命令、编号引用，以及详细设计可能过期的告警；cli 把子命令名传入 CheckOptions。修正本仓库文档中被报告的过期引用。",
@@ -2953,7 +2970,7 @@
         "IF-009": "sha256:6c6842ed05c616ad21566a599e89b9daa56e8dc878cb51aae38db844d2761fc7",
         "IF-012": "sha256:6b426da2e8952ab0bac7a32251fbacc949a11d37dc3437805c1004945d8cd09b",
         "IF-014": "sha256:59c84702f13e2b4d648d6df271f01bfa1fef64a36126ad82ac7dc248cf024525",
-        "IF-022": "sha256:82d61569e6bd565628e39f9121d614bbf1e14e1903a569c70702d25c6357571b"
+        "IF-022": "sha256:456cc7c89396e657ff2d9c9c4c015fa103fccf284317cf9bd9a3f42e16483166"
       }
     },
     "T-053": {
@@ -2969,7 +2986,7 @@
       }
     },
     "T-054": {
-      "at": "2026-11-27T10:18:29Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:1faa715789a463b8ce92fea193193037cd2ab3d1f4376fd121fb5065237b3361",
       "text": "### T-054 删除阶段（门禁、命令）\n- Covers: AC-048-1\n- Design: IF-017, IF-024, FLOW-02\n- Flow: FLOW-02\n- Scope: internal/gate/**, internal/app/**, internal/cli/**\n- Depends: T-053, T-062\n\n去掉门禁、app、cli 中的阶段逻辑、对阶段模块的引用（含 phase.01 的注册与 AC-045 的测试）与 Release 1 的按文件批准分支；`harness phase` 提示已删除。Current-Release 为 1 时阶段需求仍生效，本任务与 T-055、T-061 在同一次推送中完成。",
@@ -2977,7 +2994,7 @@
         "FLOW-02": "sha256:c5fe6032bdb0f8006e58fbb184ce32aac5eb4372d5a97415cf6422844188f243",
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
         "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
-        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74"
+        "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810"
       }
     },
     "T-055": {
@@ -3024,13 +3041,13 @@
       }
     },
     "T-059": {
-      "at": "2026-11-27T11:18:16Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:2d89410a802251c3703ab2d37b08d72ceef44aec55ecd32d0919530fc2654fda",
       "text": "### T-059 批准前检查不等待下游\n- Covers: AC-047-2\n- Design: MOD-02, IF-024\n- Scope: internal/app/approveunit.go, internal/app/api_test.go\n- Depends: T-050",
       "upstream": {
         "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
-        "IF-024": "sha256:b8e8405469f6a147e0a8a644cc28659dcae355afa2e448f124c4196f131a3e74",
+        "IF-024": "sha256:7dd0221410fe9788612111d6bfa194c3029833bfc3e0acf02d021fff89023810",
         "MOD-02": "sha256:69e8e93a5a77fb87a7c19721daf951ea026dfff045dafe98291670a69e49a849"
       }
     },
@@ -3056,13 +3073,13 @@
       }
     },
     "T-062": {
-      "at": "2026-11-27T09:59:42Z",
+      "at": "2026-11-28T00:49:08Z",
       "by": "rainbow taxi <tomyforever@gmail.com>",
       "hash": "sha256:c9745f568c2260cc9076162d086d188eb3a84f9feeafb4a8b8974433e4c4a477",
       "text": "### T-062 Removed 的设计元素与历史记录\n- Covers: AC-007-5, AC-030-3\n- Design: MOD-05, FLOW-01\n- Flow: FLOW-01\n- Scope: internal/rules/builtin/**, internal/app/**\n- Depends: T-053\n\narch.01、trace.02、trace.03 不检查 Removed 的设计元素与 Superseded 的 ADR 自身，task.03 把 Removed 模块的 Paths 计入归属，task.03、task.05 不检查 Done 的任务；doc.04 在 ADR 与 Done 的任务中只检查编号存在；内置规则的 Covers 去掉已被取代的验收标准。",
       "upstream": {
         "FLOW-01": "sha256:e9edeae4d9d46e0482fee120ac46051d7273717066741cbb3ecee31264583568",
-        "FR-007": "sha256:5494243ff6dcf221b6de4d74ba1e58b650a85b568a516c908de39a74c77bd824",
+        "FR-007": "sha256:d863073ba654aa998b476cd992e918c477e310111ea76cfad4af7602172db7f1",
         "FR-030": "sha256:d93505480e0cf463dc76177dfdb3dd2349e604839ebecc2d1d6e8cf62c537cca",
         "MOD-05": "sha256:a676dedf3565eeabad3a8fdfb5fb4d6ffafa396d92592f291e6e8f9b69695f68"
       }
@@ -3124,6 +3141,17 @@
         "FR-048": "sha256:d5976659ffb61d8f3eccb9b6485c47a203e34d6851cfed05a049a7e1eee21189",
         "IF-017": "sha256:12ee76095a3c30843d827d0b96a1378add7cde797035c54a0dc570613992a560",
         "MOD-11": "sha256:b7f02ab9fd9eec80e455095e6114ff9dd75fc6182f208e59491a483f1a046121"
+      }
+    },
+    "T-068": {
+      "at": "2026-11-28T00:49:08Z",
+      "by": "rainbow taxi <tomyforever@gmail.com>",
+      "hash": "sha256:b60d3de5a7f1653f0014021df57b54093db6f974a1e7c8d5e43e3ed3384d7992",
+      "text": "### T-068 Lock 注释去掉第 1 版锁文件的过时说明\n- Covers: AC-047-6\n- Design: MOD-02, IF-023\n- Scope: internal/app/lock.go\n- Depends: T-061\n\nT-061 后 harness lock 写出的锁文件总是第 2 版，Lock 的注释仍写着\"没有批准记录的第 1 版锁文件在 Release 2 生效前保持第 1 版\"；改为与 IF-023 一致的说明，只改注释。",
+      "upstream": {
+        "FR-047": "sha256:c2a809081822ecda5370d6f4152babbbec08258547ce2ad0a0b772a89d417138",
+        "IF-023": "sha256:f8d4a0708785c603816a969e2e53eef04a548a28d272ca19965af9919b915ec3",
+        "MOD-02": "sha256:69e8e93a5a77fb87a7c19721daf951ea026dfff045dafe98291670a69e49a849"
       }
     },
     "TERM": {

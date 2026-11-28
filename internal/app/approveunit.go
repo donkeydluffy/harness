@@ -21,7 +21,8 @@ var downstreamRules = []string{"trace.01", "task.02", "if.03", "task.07"}
 
 // approveUnits 按批准单位批准（锁文件第 2 版，ADR-009）：列出 target 范围内待批准的单位与差异，
 // 运行这些单位自身的检查并要求上游已批准，确认后写入批准记录。不修改产物文件。
-func approveUnits(root string, s *workspace.Snapshot, target string, t Terminal) error {
+// 确认之后 busy 报告有代理命令开始执行时不写锁文件，返回 errAgentStarted。
+func approveUnits(root string, s *workspace.Snapshot, target string, t Terminal, busy func() bool) error {
 	pending, err := approval.PendingIn(s, target)
 	if err != nil {
 		return err
@@ -53,6 +54,9 @@ func approveUnits(root string, s *workspace.Snapshot, target string, t Terminal)
 	fmt.Fprintf(&b, "批准以上 %d 个单位？输入 y 确认：", len(units))
 	if !t.Confirm(b.String()) {
 		return ErrDeclined
+	}
+	if busy() {
+		return errAgentStarted
 	}
 	if s.Lock.Units == nil {
 		s.Lock.Units = map[string]lock.UnitApproval{}

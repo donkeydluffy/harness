@@ -17,6 +17,12 @@ import (
 // 返回全部输出与退出码。没有 script 命令的平台跳过。
 func inTerminal(t *testing.T, dir, prompt, answer string, args ...string) (string, int) {
 	t.Helper()
+	return inTerminalSeq(t, dir, prompt, []string{answer}, args...)
+}
+
+// inTerminalSeq 与 inTerminal 相同，但第 i 次出现 prompt 时回答 answers[i]。
+func inTerminalSeq(t *testing.T, dir, prompt string, answers []string, args ...string) (string, int) {
+	t.Helper()
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "darwin", "freebsd":
@@ -40,7 +46,10 @@ func inTerminal(t *testing.T, dir, prompt, answer string, args ...string) (strin
 	done := make(chan struct{})
 	go func() {
 		r := bufio.NewReader(out)
-		sent := prompt == ""
+		sent := 0
+		if prompt == "" {
+			sent = len(answers)
+		}
 		for {
 			c, err := r.ReadByte()
 			if err != nil {
@@ -48,9 +57,9 @@ func inTerminal(t *testing.T, dir, prompt, answer string, args ...string) (strin
 				return
 			}
 			b.WriteByte(c)
-			if !sent && strings.Contains(b.String(), prompt) {
-				io.WriteString(in, answer+"\n")
-				sent = true
+			if sent < len(answers) && strings.Count(b.String(), prompt) > sent {
+				io.WriteString(in, answers[sent]+"\n")
+				sent++
 			}
 		}
 	}()
@@ -147,5 +156,65 @@ func TestApprove_AC_037_1_E2(t *testing.T) {
 	}
 	if len(approvals(t, dir)) != 0 {
 		t.Fatal("拒绝后不应写入批准")
+	}
+}
+
+// ---- AC-056-1 批准等待正在执行的代理命令 ----
+
+const agentWaiting = "代理命令正在执行"
+
+// agentRunning 在 dir 中留下会话 s1 的命令前快照，表示代理命令正在执行；age 为快照的时长。
+func agentRunning(t *testing.T, dir string, age time.Duration) string {
+	t.Helper()
+	snap := filepath.Join(dir, ".harness", "snap", "s1")
+	if err := os.MkdirAll(snap, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	at := time.Now().Add(-age)
+	os.Chtimes(snap, at, at)
+	return snap
+}
+
+func TestApprove_AC_056_1_N1(t *testing.T) {
+	dir := lockedRepo(t, basePRD)
+	out, code := inTerminal(t, dir, confirmPrompt, "y", "approve", "prd")
+	if code != 0 || strings.Contains(out, agentWaiting) {
+		t.Fatalf("没有正在执行的代理命令时不应等待：%d %s", code, out)
+	}
+	if unitRecords(t, dir)["FR-001"] == nil {
+		t.Fatal("应写入批准记录")
+	}
+}
+
+func TestApprove_AC_056_1_E1(t *testing.T) {
+	dir := lockedRepo(t, basePRD)
+	snap := agentRunning(t, dir, 0)
+	go func() { time.Sleep(1500 * time.Millisecond); os.RemoveAll(snap) }() // 代理命令结束，After 清除快照
+	out, code := inTerminal(t, dir, confirmPrompt, "y", "approve", "prd")
+	if code != 0 || !strings.Contains(out, agentWaiting) {
+		t.Fatalf("代理命令执行期间应提示等待，结束后照常批准：%d %s", code, out)
+	}
+	if i, j := strings.Index(out, agentWaiting), strings.Index(out, "新增 FR-001"); j < i {
+		t.Fatalf("应在命令结束后才列出待批准单位：%s", out)
+	}
+	if unitRecords(t, dir)["FR-001"] == nil {
+		t.Fatal("命令结束后应写入批准记录")
+	}
+}
+
+func TestApprove_AC_056_1_B1(t *testing.T) {
+	dir := lockedRepo(t, basePRD)
+	agentRunning(t, dir, 11*time.Minute)
+	lockBefore := readFile(t, dir, "harness.lock")
+	out, code := inTerminal(t, dir, confirmPrompt, "n", "approve", "prd")
+	if code == 0 || !strings.Contains(out, "异常退出") || strings.Contains(out, agentWaiting) {
+		t.Fatalf("残留快照应询问人，输入 n 退出：%d %s", code, out)
+	}
+	if readFile(t, dir, "harness.lock") != lockBefore {
+		t.Fatal("输入 n 后锁文件不应改变")
+	}
+	out, code = inTerminalSeq(t, dir, confirmPrompt, []string{"y", "y"}, "approve", "prd")
+	if code != 0 || !strings.Contains(out, "异常退出") || unitRecords(t, dir)["FR-001"] == nil {
+		t.Fatalf("输入 y 后应照常批准：%d %s", code, out)
 	}
 }

@@ -692,7 +692,7 @@ T-063 改写 architect 模板的 description 时留下"依据已批准的需求 
 IF-018 After 恢复或删除文件前把当前内容另存到 `.harness/session/restored/<时间>/<路径>`，Change 增加 Saved；恢复报告列出另存位置，受保护文件被恢复时提示由人在终端复制回去（DEBT-021）。
 
 ### T-071 批准等待正在执行的代理命令
-- Status: Todo
+- Status: Done
 - Covers: AC-056-1
 - Design: IF-024, IF-018, FLOW-08
 - Flow: FLOW-08

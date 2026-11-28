@@ -50,6 +50,22 @@ func save(root, at, rel string) string {
 	return dst
 }
 
+// Running 报告是否有代理命令正在执行：.harness/snap/ 下存在未被 After 清除的命令前快照；
+// since 为其中最早的快照时间（IF-018，AC-056-1）。
+func Running(root string) (since time.Time, ok bool) {
+	ents, _ := os.ReadDir(filepath.Join(root, ".harness", "snap"))
+	for _, e := range ents {
+		info, err := e.Info()
+		if err != nil || !e.IsDir() {
+			continue
+		}
+		if !ok || info.ModTime().Before(since) {
+			since, ok = info.ModTime(), true
+		}
+	}
+	return since, ok
+}
+
 func snapDir(root, session string) string {
 	return filepath.Join(root, ".harness", "snap", filepath.Base(session))
 }

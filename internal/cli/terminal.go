@@ -32,6 +32,9 @@ func (t *stdTerminal) Confirm(prompt string) bool {
 	return a == "y" || a == "yes"
 }
 
+// Notify 向批准人显示一条提示，不等待输入。
+func (t *stdTerminal) Notify(msg string) { fmt.Fprint(t.out, msg) }
+
 // Identity 返回 git 配置的 "姓名 <邮箱>"；未配置时用操作系统用户名。
 func (t *stdTerminal) Identity() string {
 	name := gitConfig("user.name")

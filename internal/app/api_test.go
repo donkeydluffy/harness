@@ -6,7 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/donkeydluffy/harness/internal/gate"
 	"github.com/donkeydluffy/harness/internal/lock"
 	"github.com/donkeydluffy/harness/internal/scaffold"
 )
@@ -63,6 +65,7 @@ type noTTY struct{}
 
 func (noTTY) IsInteractive() bool { return false }
 func (noTTY) Confirm(string) bool { return true }
+func (noTTY) Notify(string)       {}
 func (noTTY) Identity() string    { return "t" }
 
 func TestApprove_IF_024(t *testing.T) {
@@ -103,6 +106,7 @@ type yesTTY struct{}
 
 func (yesTTY) IsInteractive() bool { return true }
 func (yesTTY) Confirm(string) bool { return true }
+func (yesTTY) Notify(string)       {}
 func (yesTTY) Identity() string    { return "t" }
 
 const approveOverview = "# 架构总览\n\n- Status: Draft\n\n### MOD-01 a\n- Status: Active\n- Paths: internal/a/**\n- Public: internal/a/a.go\n- Depends:\n- Interfaces: IF-001\n- Covers: FR-001\n- Core: false\n- Coverage: 0\n"
@@ -175,5 +179,46 @@ func TestApprove_IF_024_InProgressTask(t *testing.T) {
 	}
 	if err := Approve(dir, "T-001", yesTTY{}); err != nil {
 		t.Fatalf("InProgress 任务应能直接重新批准：%v", err)
+	}
+}
+
+// agentTTY 在第一次确认时模拟一条刚开始执行的代理命令，并在稍后结束它（AC-056-1）。
+type agentTTY struct {
+	root     string
+	confirms int
+	notes    []string
+}
+
+func (*agentTTY) IsInteractive() bool { return true }
+func (*agentTTY) Identity() string    { return "t" }
+func (a *agentTTY) Notify(msg string) { a.notes = append(a.notes, msg) }
+func (a *agentTTY) Confirm(string) bool {
+	a.confirms++
+	if a.confirms == 1 {
+		snap := filepath.Join(a.root, ".harness", "snap", "s1")
+		os.MkdirAll(snap, 0o755)
+		go func() { time.Sleep(300 * time.Millisecond); os.RemoveAll(snap) }()
+	}
+	return true
+}
+
+// 人确认后、写入锁文件前有代理命令开始执行：不写锁文件，等命令结束后重新列出并再次确认。
+func TestApprove_IF_024_AgentStarted(t *testing.T) {
+	dir := t.TempDir()
+	if _, err := Init(dir, scaffold.InitOptions{Languages: []string{"go"}, Version: "0.2.0"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Lock(dir); err != nil {
+		t.Fatal(err)
+	}
+	a := &agentTTY{root: dir}
+	if err := Approve(dir, "prd", a); err != nil {
+		t.Fatal(err)
+	}
+	if a.confirms != 2 || len(a.notes) == 0 || !strings.Contains(a.notes[0], "锁文件未写入") {
+		t.Fatalf("应提示后重新确认：%d %q", a.confirms, a.notes)
+	}
+	if _, ok := gate.Running(dir); ok {
+		t.Fatal("命令应已结束")
 	}
 }
